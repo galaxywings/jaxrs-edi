@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class Application {
     @RequestMapping("/")
     String home() {
-        return "来自Spring Boot的问候";
+        return "Hello from Spring Boot!";
     }
 
     public static void main(String[] args) {
