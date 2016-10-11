@@ -1,0 +1,19 @@
+dependencies {
+}
+
+buildscript {
+    dependencies {
+        classpath group: 'org.mulesoft.build', name: 'mule-gradle-plugin', version: '1.2.2'
+    }
+
+    repositories {
+        maven {
+            url 'http://repository.mulesoft.org/releases'
+        }
+    }
+}
+
+apply plugin: 'mule'
+
+mule.version = '3.8.1'
+mule.muleEnterprise = false
