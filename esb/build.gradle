@@ -1,4 +1,5 @@
 dependencies {
+    compile('org.mule.transports:mule-transport-amqp:3.7.0')
 }
 
 buildscript {
