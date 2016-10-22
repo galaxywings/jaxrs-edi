@@ -3,6 +3,7 @@ dependencies {
     compile('org.milyn:milyn-smooks-edi:1.7.0')
     compile group: 'org.milyn.edi.unedifact', name: 'd99b-mapping', version: '1.4'
     compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.40'
+    compile group: 'org.mule.modules', name: 'mule-module-redis', version: 'RELEASE'
 }
 
 buildscript {

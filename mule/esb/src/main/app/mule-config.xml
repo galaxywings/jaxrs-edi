@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+<mule xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+      xmlns="http://www.mulesoft.org/schema/mule/core"
       xmlns:amqp="http://www.mulesoft.org/schema/mule/amqp"
       xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
       xmlns:spring="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+      xsi:schemaLocation="http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/amqp http://www.mulesoft.org/schema/mule/amqp/current/mule-amqp.xsd
@@ -13,18 +16,40 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
                           doc:name="HTTP Listener Configuration"/>
 
     <amqp:connector name="defaultAmqpConnector"/>
-    <db:mysql-config name="MySQL_Configuration" host="${mysql.host}" port="3306" user="${mysql.username}" password="${mysql.password}" database="wujie" doc:name="MySQL Configuration"/>
+    <db:mysql-config name="MySQL_Configuration" host="${mysql.host}" port="3306" user="${mysql.username}"
+                     password="${mysql.password}" database="wujie" doc:name="MySQL Configuration"/>
 
     <flow name="rabbitmq-flow">
 
         <amqp:inbound-endpoint queueName="inbox"
                                connector-ref="defaultAmqpConnector"/>
-        <db:select config-ref="MySQL_Configuration" doc:name="Database">
-            <db:dynamic-query><![CDATA[select body from entities where added_id = 1]]></db:dynamic-query>
-        </db:select>
+        <set-variable variableName="originalMessage" value="#[payload]" doc:name="Variable"/>
+		<!-- 
+        <enricher doc:name="Message Enricher">
+            <db:select config-ref="MySQL_Configuration" doc:name="Database">
+                <db:dynamic-query><![CDATA[select body from entities where added_id = 1]]></db:dynamic-query>
+
+            </db:select>
+            <enrich target="#[variable:mapping-file]" source="#[payload]" />
+        </enricher>
+		 -->
         <custom-transformer encoding="UTF-8" class="com.wjelogistics.edi.esb.transformer.SmooksEdiToXmlTransformer"
-                            doc:name="Smooks Edi to Xml Transformer" />
-        <logger message="#[payload]" level="INFO" doc:name="Logger"/>
+                            doc:name="Smooks Edi to Xml Transformer"/>
+        <logger level="INFO" doc:name="Logger"/>
         <amqp:outbound-endpoint connector-ref="defaultAmqpConnector" queueName="outbox"/>
+        
+        <catch-exception-strategy doc:name="Catch Exception Strategy">
+            <set-payload value="#[flowVars['originalMessage']]" doc:name="Set Payload"/><amqp:outbound-endpoint connector-ref="defaultAmqpConnector" queueName="dead.letter"/>
+        </catch-exception-strategy>
+    </flow>
+    
+    <flow name="mule-configFlow">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/test" allowedMethods="GET" doc:name="HTTP"/>
+        <db:select config-ref="MySQL_Configuration" doc:name="Database">
+            <db:parameterized-query><![CDATA[select body from entities where added_id = 1;]]></db:parameterized-query>
+
+        </db:select>
+        <set-payload value="#[payload[0].body]" doc:name="Set Payload"/>
+
     </flow>
 </mule>

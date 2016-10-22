@@ -20,11 +20,12 @@ public class SmooksEdiToXmlTransformer extends AbstractMessageTransformer {
         String mapping = "http://kbuntu/edi-to-xml-mapping.xml";
         smooks.setReaderConfig(new EDIReaderConfigurator(mapping));
 
-        try {
-            smooks.filterSource(new StreamSource(new ByteArrayInputStream(message.getPayloadAsBytes())), result);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+		try {
+			smooks.filterSource(new StreamSource(new ByteArrayInputStream(message.getPayloadAsBytes())), result);
+		} catch (Exception e) {
+			throw new TransformerException(this, e);
+		}
+
         return result.getResult();
     }
 }
