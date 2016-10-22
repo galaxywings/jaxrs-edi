@@ -1,5 +1,4 @@
 allprojects {
-
 }
 
 subprojects {
@@ -7,7 +6,7 @@ subprojects {
     apply plugin: 'idea'
     apply plugin: 'eclipse'
 
-    repositories {
-        mavenCentral()
+    tasks.withType(AbstractCompile) {
+        options.encoding = 'UTF-8'
     }
 }

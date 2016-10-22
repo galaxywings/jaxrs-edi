@@ -11,28 +11,15 @@ http://www.mulesoft.org/schema/mule/amqp http://www.mulesoft.org/schema/mule/amq
     <http:listener-config name="HTTP_Listener_Configuration" host="0.0.0.0" port="${http.port}"
                           doc:name="HTTP Listener Configuration"/>
 
-    <amqp:connector name="defaultAmqpConnector"
-                    username="guest"
-                    password="guest" />
+    <amqp:connector name="defaultAmqpConnector"/>
 
-    <flow name="json-to-rabbitmqFlow">
-        <!--<http:listener allowedMethods="POST" config-ref="HTTP_Listener_Configuration" doc:name="Recieve HTTP request"-->
-        <!--path="/"/>-->
+    <flow name="rabbitmq-flow">
 
         <amqp:inbound-endpoint queueName="inbox"
-                               connector-ref="defaultAmqpConnector" />
-
-        <amqp:acknowledge-message />
-
-        <logger doc:name="Log the message content to be sent" level="INFO"
-                message="payload to be sent: #[new String(payload)]"/>
-
+                               connector-ref="defaultAmqpConnector"/>
+        <custom-transformer encoding="UTF-8" class="com.wjelogistics.edi.esb.transformer.SmooksTransformer"
+                            doc:name="Smooks Transformer" />
+        <logger message="#[payload]" level="INFO" doc:name="Logger"/>
         <amqp:outbound-endpoint connector-ref="defaultAmqpConnector" queueName="outbox"/>
     </flow>
-
-    <custom-processor class="com.wjelogistics.edi.esb.BrokerNotReadyInterceptor"/>
-
-    <notifications>
-        <notification event="CONTEXT"/>
-    </notifications>
 </mule>

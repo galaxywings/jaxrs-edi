@@ -1,5 +1,8 @@
 dependencies {
     compile('org.mule.transports:mule-transport-amqp:3.7.0')
+    compile('org.milyn:milyn-smooks-edi:1.7.0')
+    compile group: 'org.milyn.edi.unedifact', name: 'd99b-mapping', version: '1.4'
+    compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.40'
 }
 
 buildscript {
@@ -18,3 +21,11 @@ apply plugin: 'mulestudio'
 
 mule.version = '3.8.0'
 mule.muleEnterprise = false
+
+mule.components {
+    //exclude jdbc transport, deprecated in 3.5.0
+    transports -= 'jdbc'
+
+    //include DB module.
+    modules += 'db'
+}
