@@ -1,5 +1,16 @@
+*.py[co]
+
 ### PyCharm ###
 .idea
 *.iws
 *.iml
 *.ipr
+
+### Eclipse ###
+/.project
+/.pydevproject
+/.settings
+
+/manage.dev.py
+/dashboard/settings/dev.py
+/logs

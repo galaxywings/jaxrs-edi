@@ -1,0 +1,120 @@
+WARNING 2016-11-03 17:26:00,178 base 24608 123145412272128 Not Found: /
+WARNING 2016-11-03 17:26:00,458 base 24608 123145417527296 Not Found: /favicon.ico
+WARNING 2016-11-03 17:28:33,581 base 24661 123145566658560 Not Found: /
+ERROR 2016-11-03 17:28:51,444 exception 24668 123145449410560 Internal Server Error: /
+Traceback (most recent call last):
+  File "/Users/ace/.pyenv/versions/3.5.2/envs/dashboard/lib/python3.5/site-packages/django/core/handlers/exception.py", line 39, in inner
+    response = get_response(request)
+  File "/Users/ace/.pyenv/versions/3.5.2/envs/dashboard/lib/python3.5/site-packages/django/core/handlers/base.py", line 217, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/ace/.pyenv/versions/3.5.2/envs/dashboard/lib/python3.5/site-packages/django/core/handlers/base.py", line 215, in _get_response
+    response = response.render()
+  File "/Users/ace/.pyenv/versions/3.5.2/envs/dashboard/lib/python3.5/site-packages/django/template/response.py", line 109, in render
+    self.content = self.rendered_content
+  File "/Users/ace/.pyenv/versions/3.5.2/envs/dashboard/lib/python3.5/site-packages/rest_framework/response.py", line 57, in rendered_content
+    assert renderer, ".accepted_renderer not set on Response"
+AssertionError: .accepted_renderer not set on Response
+ERROR 2016-11-03 17:30:01,635 exception 24693 123145385238528 Internal Server Error: /
+Traceback (most recent call last):
+  File "/Users/ace/.pyenv/versions/3.5.2/envs/dashboard/lib/python3.5/site-packages/django/core/handlers/exception.py", line 39, in inner
+    response = get_response(request)
+  File "/Users/ace/.pyenv/versions/3.5.2/envs/dashboard/lib/python3.5/site-packages/django/core/handlers/base.py", line 217, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/ace/.pyenv/versions/3.5.2/envs/dashboard/lib/python3.5/site-packages/django/core/handlers/base.py", line 215, in _get_response
+    response = response.render()
+  File "/Users/ace/.pyenv/versions/3.5.2/envs/dashboard/lib/python3.5/site-packages/django/template/response.py", line 109, in render
+    self.content = self.rendered_content
+  File "/Users/ace/.pyenv/versions/3.5.2/envs/dashboard/lib/python3.5/site-packages/rest_framework/response.py", line 57, in rendered_content
+    assert renderer, ".accepted_renderer not set on Response"
+AssertionError: .accepted_renderer not set on Response
+ERROR 2016-11-03 17:30:03,580 exception 24693 123145385238528 Internal Server Error: /
+Traceback (most recent call last):
+  File "/Users/ace/.pyenv/versions/3.5.2/envs/dashboard/lib/python3.5/site-packages/django/core/handlers/exception.py", line 39, in inner
+    response = get_response(request)
+  File "/Users/ace/.pyenv/versions/3.5.2/envs/dashboard/lib/python3.5/site-packages/django/core/handlers/base.py", line 217, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/ace/.pyenv/versions/3.5.2/envs/dashboard/lib/python3.5/site-packages/django/core/handlers/base.py", line 215, in _get_response
+    response = response.render()
+  File "/Users/ace/.pyenv/versions/3.5.2/envs/dashboard/lib/python3.5/site-packages/django/template/response.py", line 109, in render
+    self.content = self.rendered_content
+  File "/Users/ace/.pyenv/versions/3.5.2/envs/dashboard/lib/python3.5/site-packages/rest_framework/response.py", line 57, in rendered_content
+    assert renderer, ".accepted_renderer not set on Response"
+AssertionError: .accepted_renderer not set on Response
+ERROR 2016-11-03 17:30:04,268 exception 24693 123145385238528 Internal Server Error: /
+Traceback (most recent call last):
+  File "/Users/ace/.pyenv/versions/3.5.2/envs/dashboard/lib/python3.5/site-packages/django/core/handlers/exception.py", line 39, in inner
+    response = get_response(request)
+  File "/Users/ace/.pyenv/versions/3.5.2/envs/dashboard/lib/python3.5/site-packages/django/core/handlers/base.py", line 217, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/ace/.pyenv/versions/3.5.2/envs/dashboard/lib/python3.5/site-packages/django/core/handlers/base.py", line 215, in _get_response
+    response = response.render()
+  File "/Users/ace/.pyenv/versions/3.5.2/envs/dashboard/lib/python3.5/site-packages/django/template/response.py", line 109, in render
+    self.content = self.rendered_content
+  File "/Users/ace/.pyenv/versions/3.5.2/envs/dashboard/lib/python3.5/site-packages/rest_framework/response.py", line 57, in rendered_content
+    assert renderer, ".accepted_renderer not set on Response"
+AssertionError: .accepted_renderer not set on Response
+ERROR 2016-11-03 17:30:04,829 exception 24693 123145385238528 Internal Server Error: /
+Traceback (most recent call last):
+  File "/Users/ace/.pyenv/versions/3.5.2/envs/dashboard/lib/python3.5/site-packages/django/core/handlers/exception.py", line 39, in inner
+    response = get_response(request)
+  File "/Users/ace/.pyenv/versions/3.5.2/envs/dashboard/lib/python3.5/site-packages/django/core/handlers/base.py", line 217, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/ace/.pyenv/versions/3.5.2/envs/dashboard/lib/python3.5/site-packages/django/core/handlers/base.py", line 215, in _get_response
+    response = response.render()
+  File "/Users/ace/.pyenv/versions/3.5.2/envs/dashboard/lib/python3.5/site-packages/django/template/response.py", line 109, in render
+    self.content = self.rendered_content
+  File "/Users/ace/.pyenv/versions/3.5.2/envs/dashboard/lib/python3.5/site-packages/rest_framework/response.py", line 57, in rendered_content
+    assert renderer, ".accepted_renderer not set on Response"
+AssertionError: .accepted_renderer not set on Response
+ERROR 2016-11-03 17:30:05,362 exception 24693 123145385238528 Internal Server Error: /
+Traceback (most recent call last):
+  File "/Users/ace/.pyenv/versions/3.5.2/envs/dashboard/lib/python3.5/site-packages/django/core/handlers/exception.py", line 39, in inner
+    response = get_response(request)
+  File "/Users/ace/.pyenv/versions/3.5.2/envs/dashboard/lib/python3.5/site-packages/django/core/handlers/base.py", line 217, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/ace/.pyenv/versions/3.5.2/envs/dashboard/lib/python3.5/site-packages/django/core/handlers/base.py", line 215, in _get_response
+    response = response.render()
+  File "/Users/ace/.pyenv/versions/3.5.2/envs/dashboard/lib/python3.5/site-packages/django/template/response.py", line 109, in render
+    self.content = self.rendered_content
+  File "/Users/ace/.pyenv/versions/3.5.2/envs/dashboard/lib/python3.5/site-packages/rest_framework/response.py", line 57, in rendered_content
+    assert renderer, ".accepted_renderer not set on Response"
+AssertionError: .accepted_renderer not set on Response
+ERROR 2016-11-03 17:30:05,903 exception 24693 123145385238528 Internal Server Error: /
+Traceback (most recent call last):
+  File "/Users/ace/.pyenv/versions/3.5.2/envs/dashboard/lib/python3.5/site-packages/django/core/handlers/exception.py", line 39, in inner
+    response = get_response(request)
+  File "/Users/ace/.pyenv/versions/3.5.2/envs/dashboard/lib/python3.5/site-packages/django/core/handlers/base.py", line 217, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/ace/.pyenv/versions/3.5.2/envs/dashboard/lib/python3.5/site-packages/django/core/handlers/base.py", line 215, in _get_response
+    response = response.render()
+  File "/Users/ace/.pyenv/versions/3.5.2/envs/dashboard/lib/python3.5/site-packages/django/template/response.py", line 109, in render
+    self.content = self.rendered_content
+  File "/Users/ace/.pyenv/versions/3.5.2/envs/dashboard/lib/python3.5/site-packages/rest_framework/response.py", line 57, in rendered_content
+    assert renderer, ".accepted_renderer not set on Response"
+AssertionError: .accepted_renderer not set on Response
+ERROR 2016-11-03 17:30:06,448 exception 24693 123145390493696 Internal Server Error: /
+Traceback (most recent call last):
+  File "/Users/ace/.pyenv/versions/3.5.2/envs/dashboard/lib/python3.5/site-packages/django/core/handlers/exception.py", line 39, in inner
+    response = get_response(request)
+  File "/Users/ace/.pyenv/versions/3.5.2/envs/dashboard/lib/python3.5/site-packages/django/core/handlers/base.py", line 217, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/ace/.pyenv/versions/3.5.2/envs/dashboard/lib/python3.5/site-packages/django/core/handlers/base.py", line 215, in _get_response
+    response = response.render()
+  File "/Users/ace/.pyenv/versions/3.5.2/envs/dashboard/lib/python3.5/site-packages/django/template/response.py", line 109, in render
+    self.content = self.rendered_content
+  File "/Users/ace/.pyenv/versions/3.5.2/envs/dashboard/lib/python3.5/site-packages/rest_framework/response.py", line 57, in rendered_content
+    assert renderer, ".accepted_renderer not set on Response"
+AssertionError: .accepted_renderer not set on Response
+ERROR 2016-11-03 17:30:06,979 exception 24693 123145385238528 Internal Server Error: /
+Traceback (most recent call last):
+  File "/Users/ace/.pyenv/versions/3.5.2/envs/dashboard/lib/python3.5/site-packages/django/core/handlers/exception.py", line 39, in inner
+    response = get_response(request)
+  File "/Users/ace/.pyenv/versions/3.5.2/envs/dashboard/lib/python3.5/site-packages/django/core/handlers/base.py", line 217, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/ace/.pyenv/versions/3.5.2/envs/dashboard/lib/python3.5/site-packages/django/core/handlers/base.py", line 215, in _get_response
+    response = response.render()
+  File "/Users/ace/.pyenv/versions/3.5.2/envs/dashboard/lib/python3.5/site-packages/django/template/response.py", line 109, in render
+    self.content = self.rendered_content
+  File "/Users/ace/.pyenv/versions/3.5.2/envs/dashboard/lib/python3.5/site-packages/rest_framework/response.py", line 57, in rendered_content
+    assert renderer, ".accepted_renderer not set on Response"
+AssertionError: .accepted_renderer not set on Response
