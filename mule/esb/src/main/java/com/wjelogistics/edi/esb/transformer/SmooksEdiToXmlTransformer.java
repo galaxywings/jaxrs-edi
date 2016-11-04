@@ -12,20 +12,19 @@ import java.io.ByteArrayInputStream;
 
 public class SmooksEdiToXmlTransformer extends AbstractMessageTransformer {
 
-    @Override
-    public Object transformMessage(MuleMessage message, String outputEncoding) throws TransformerException {
-        Smooks smooks = new Smooks();
-        StringResult result = new StringResult();
-
-        String mapping = "http://kbuntu/edi-to-xml-mapping.xml";
-        smooks.setReaderConfig(new EDIReaderConfigurator(mapping));
-
+	@Override
+	public Object transformMessage(MuleMessage message, String outputEncoding) throws TransformerException {
+		Smooks smooks = new Smooks();
+		StringResult result = new StringResult();
 		try {
+			byte[] bytes = message.getInvocationProperty("mapping_file");
+			smooks.setReaderConfig(new EDIReaderConfigurator(new String(bytes)));
+
 			smooks.filterSource(new StreamSource(new ByteArrayInputStream(message.getPayloadAsBytes())), result);
 		} catch (Exception e) {
 			throw new TransformerException(this, e);
 		}
 
-        return result.getResult();
-    }
+		return result.getResult();
+	}
 }

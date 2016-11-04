@@ -1,9 +1,10 @@
 dependencies {
-    compile('org.mule.transports:mule-transport-amqp:3.7.0')
-    compile('org.milyn:milyn-smooks-edi:1.7.0')
+    compile group: 'org.mule.transports', name: 'mule-transport-amqp', version: '3.7.0'
+    compile group: 'org.milyn', name: 'milyn-smooks-edi', version: '1.7.0'
     compile group: 'org.milyn.edi.unedifact', name: 'd99b-mapping', version: '1.4'
     compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.40'
-    compile group: 'org.mule.modules', name: 'mule-module-redis', version: 'RELEASE'
+    compile group: 'org.mule.modules', name: 'wujie-connector', version: '1.0.0-SNAPSHOT'
+    compile group: 'redis.clients', name: 'jedis', version: '2.8.1'
 }
 
 buildscript {

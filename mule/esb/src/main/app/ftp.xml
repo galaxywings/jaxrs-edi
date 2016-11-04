@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db"
+      xmlns:http="http://www.mulesoft.org/schema/mule/http"
+      xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:amqp="http://www.mulesoft.org/schema/mule/amqp"
+      xmlns:wujie="http://www.mulesoft.org/schema/mule/wujie"
+      xmlns:spring="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:script="http://www.mulesoft.org/schema/mule/core"
+      xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+      xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
+      xmlns:mulerequester="http://www.mulesoft.org/schema/mule/mulerequester"
+      xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/amqp http://www.mulesoft.org/schema/mule/amqp/current/mule-amqp.xsd
+http://www.mulesoft.org/schema/mule/wujie http://www.mulesoft.org/schema/mule/wujie/current/mule-wujie.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
+http://www.mulesoft.org/schema/mule/mulerequester http://www.mulesoft.org/schema/mule/mulerequester/1.0-SNAPSHOT/mule-mulerequester.xsd">
+
+
+    <mulerequester:config name="Mule_Requester" doc:name="Mule Requester"/>
+
+    <flow name="uploadFilesToFtp">
+        <amqp:inbound-endpoint queueName="ftp-inbox"
+                               connector-ref="defaultAmqpConnector"/>
+
+        <!-- Get FTP destination information by metadata within header from dashboard -->
+        <enricher doc:name="Message Enricher">
+            <db:select config-ref="MySQL_Configuration" doc:name="Database">
+                <db:parameterized-query><![CDATA[select body from entities where id = 3;]]></db:parameterized-query>
+            </db:select>
+            <enrich target="#[flowVars['ftp_host']]" source="#[payload[0].body]" />
+            <enrich target="#[flowVars['ftp_user']]" source="#[payload[0].body]" />
+            <enrich target="#[flowVars['ftp_password']]" source="#[payload[0].body]" />
+            <enrich target="#[flowVars['ftp_path']]" source="#[payload[0].body]" />
+
+        </enricher>
+
+        <byte-array-to-string-transformer/>
+
+        <logger level="INFO"/>
+
+        <catch-exception-strategy doc:name="Catch Exception Strategy">
+            <set-payload value="#[flowVars['originalMessage']]" doc:name="Set Payload"/>
+            <set-property propertyName="EXCEPTION_SUMMARY" value="#[exception.getSummaryMessage()]"
+                          doc:name="Property"/>
+            <amqp:outbound-endpoint connector-ref="defaultAmqpConnector" queueName="dead.letter"/>
+        </catch-exception-strategy>
+    </flow>
+</mule>
