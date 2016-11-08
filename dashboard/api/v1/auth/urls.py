@@ -1,11 +1,10 @@
 from django.conf.urls import url, include
 from rest_framework import routers
 
-from authx.api.v1 import views
-
+from api.v1.auth import views
 
 router = routers.DefaultRouter()
-router.register('users', views.UserRetrieveUpdateViewSet)
+router.register('users', views.UserViewSet)
 
 urlpatterns = [
     url(r'^', include(router.urls)),

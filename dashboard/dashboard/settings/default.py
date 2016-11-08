@@ -11,9 +11,12 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
+from datetime import timedelta
+from os.path import dirname
+from django.utils.translation import ugettext_lazy as _
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.realpath(dirname(dirname(dirname(__file__))))
 
 
 # Quick-start development settings - unsuitable for production
@@ -39,6 +42,10 @@ INSTALLED_APPS = [
     
     'pytz',
     'rest_framework',
+
+    'common',
+    'authx',
+    'api',
 ]
 
 MIDDLEWARE = [
@@ -49,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'api.middleware.VersionSwitch',
 ]
 
 ROOT_URLCONF = 'dashboard.urls'
@@ -224,3 +232,59 @@ def update_log_level(logger, level):
             else:
                 update_log_level(logger[key], level)
 
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.AllowAny', # for the time being only
+    ), 
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'authx.authentication.JSONWebTokenAuthenticationQS',    # almost for debug only
+    ),
+    # this should align the same as django GenericListView paginate_by, page_size mechanism
+    'DEFAULT_FILTER_BACKENDS': (
+                                #'url_filter.integrations.drf.DjangoFilterBackend',
+                                'rest_framework.filters.DjangoFilterBackend',
+                                'rest_framework.filters.SearchFilter',
+                                #'rest_framework.filters.OrderingFilter', 
+                                'common.filters.RelatedOrderingFilter'), 
+    'SEARCH_PARAM': 'q',
+    'ORDERING_PARAM': 'ordering', 
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 20,
+    #'PAGE_QUERY_PARAM': 'page', # sadly no this config, 'page' already is the default query param for this PageNumberPagination
+    'PAGINATE_BY_PARAM': 'page_size',
+}
+QS_JWT_KEY = 'jwt' # for authx.authentication to parse query_params if any jwt
+
+AUTH_USER_MODEL = 'authx.User'
+
+JWT_AUTH = {
+    #'JWT_PAYLOAD_HANDLER': 'rest_framework_jwt.utils.jwt_payload_handler',
+    'JWT_PAYLOAD_HANDLER': 'authx.utils.jwt_payload_handler', # we should make the payload count
+    #'JWT_RESPONSE_PAYLOAD_HANDLER': 'authx.utils.jwt_response_payload_handler',
+    
+    # default stuff with comments no more doc looking up
+    'JWT_VERIFY': True,
+    'JWT_VERIFY_EXPIRATION': True,
+    'JWT_LEEWAY': 0,    # in seconds
+                        # This allows you to validate an expiration time which is in the past but no very far. 
+                        # For example, if you have a JWT payload with an expiration time set to 30 seconds after creation 
+                        # but you know that sometimes you will process it after 30 seconds, 
+                        # you can set a leeway of 10 seconds in order to have some margin
+    'JWT_AUDIENCE': None,   # This is a string that will be checked against the aud field of the token, if present. Default is None(fail if aud present on JWT).
+    'JWT_ISSUER': None,     # This is a string that will be checked against the iss field of the token. Default is None(do not check iss on JWT).
+    
+    'JWT_EXPIRATION_DELTA': timedelta(hours=1), # used to be seconds=300, original should be no longer than JWT_REFRESH_EXPIRATION_DELTA
+    
+    # as recommended @http://stackoverflow.com/questions/26739167/jwt-json-web-token-automatic-prolongation-of-expiration?rq=1
+    # a generic JWT_EXPIRATION_DELTA would be 1 hour, renew should go with every time user open the page and one hour with a setTimeout(maybe?)
+    # and JWT_REFRESH_EXPIRATION_DELTA should be 1 week
+    'JWT_ALLOW_REFRESH': True,     # Enable token refresh functionality. Token issued from rest_framework_jwt.views.obtain_jwt_token will have an orig_iat field.
+    
+    'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=7), #Limit on token refresh, is a datetime.timedelta instance. 
+                                                    # This is how much time after the original token that future tokens can be refreshed from.
+    'JWT_AUTH_HEADER_PREFIX': 'JWT', # that HTTP Header Authorization: Bearer xxx, Bearer part
+}

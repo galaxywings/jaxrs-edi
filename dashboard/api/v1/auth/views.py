@@ -3,18 +3,17 @@ from django.contrib.auth import get_user_model
 from rest_condition import Or
 from rest_framework import status
 from rest_framework.decorators import api_view
-from rest_framework.mixins import UpdateModelMixin, RetrieveModelMixin
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.viewsets import GenericViewSet
+from rest_framework.viewsets import ModelViewSet
 from rest_framework_jwt.serializers import VerifyJSONWebTokenSerializer
 from rest_framework_jwt.settings import api_settings
 from rest_framework_jwt.views import (obtain_jwt_token as drf_obtain_jwt_token,
                                       refresh_jwt_token as drf_refresh_jwt_token,
                                       verify_jwt_token as drf_verify_jwt_token)
 
-from authx.api.v1.serializers import UserSerializer
-from authx.permissions import IsAdminUser, SelfOnly
+from api.v1.auth.serializers import UserSerializer
+from authx.permissions import IsAdminUser
 
 
 jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
@@ -102,13 +101,11 @@ def login(*args, **kwargs):
         response = jwt_response_special_handling(response)
     return response
 
-class UserRetrieveUpdateViewSet(RetrieveModelMixin,
-                                UpdateModelMixin, 
-                                GenericViewSet):
+class UserViewSet(ModelViewSet):
     queryset = get_user_model().objects.all()
     serializer_class = UserSerializer
     permission_classes = (IsAuthenticated,
-                          Or(IsAdminUser, SelfOnly), )
+                          Or(IsAdminUser), )
     
     '''
     # as we are no ModelViewSet, this get_permissions method is not necessary

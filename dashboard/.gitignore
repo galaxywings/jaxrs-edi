@@ -5,6 +5,7 @@
 *.iws
 *.iml
 *.ipr
+*.log
 
 ### Eclipse ###
 /.project

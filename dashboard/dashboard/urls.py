@@ -13,8 +13,9 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url
-from common import views as common_view
+from django.conf.urls import url, include
+from .views import index
 urlpatterns = [
-    url(r'^$', common_view.index),
+    url(r'^$', index),
+    url(r'^api/', include('api.urls', namespace='api')),
 ]

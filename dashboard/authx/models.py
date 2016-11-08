@@ -35,7 +35,7 @@ class AbstractUser(AbstractBaseUser, PermissionsMixin):
             'unique': _("A user with that username already exists."),
         })
     nickname = models.CharField(_('nickname'), max_length=30, blank=True)
-    selfie_path = models.CharField(_('selfie path'), max_length=120, blank=True)
+    #selfie_path = models.CharField(_('selfie path'), max_length=120, blank=True)
     email = models.EmailField(_('email address'), blank=True)
     is_staff = models.BooleanField(_('staff status'), default=False,
         help_text=_('Designates whether the user can log into this admin '
