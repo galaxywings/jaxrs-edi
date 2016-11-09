@@ -1,7 +1,7 @@
 from django.conf.urls import url, include
 from rest_framework import routers
 
-from api.v1.auth import views
+from . import views
 
 router = routers.DefaultRouter()
 router.register('users', views.UserViewSet)
@@ -13,4 +13,5 @@ urlpatterns = [
     url(r'^token/verify/$', views.verify_jwt_token),
     url(r'^register/$', views.register),
     url(r'^login/$', views.login),
+    url(r'^test/$', views.test),
 ]

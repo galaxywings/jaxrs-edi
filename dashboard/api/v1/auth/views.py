@@ -21,6 +21,10 @@ jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
 jwt_response_payload_handler = api_settings.JWT_RESPONSE_PAYLOAD_HANDLER
 # just a simple wrapper with extra version parameter
 
+@api_view(['GET'])
+def test(*args, **kwargs):
+    return Response({'msg': 'v1 test'})
+    
 @api_view(['POST'])
 def obtain_jwt_token(*args, **kwargs):
     kwargs.pop('version', None)
