@@ -12,8 +12,14 @@ class UserManager(BaseAuthUserManager):
         '''
             make email to be optional 
         '''
-        return self._create_user(username, email, password, True, True,
-                                 **extra_fields)
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('Superuser must have is_staff=True.')
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True.')
+        return self._create_user(username, email, password,**extra_fields)
 
 class AbstractUser(AbstractBaseUser, PermissionsMixin):
     """
