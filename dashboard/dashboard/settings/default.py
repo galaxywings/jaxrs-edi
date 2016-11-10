@@ -269,7 +269,7 @@ JWT_AUTH = {
     # default stuff with comments no more doc looking up
     'JWT_VERIFY': True,
     'JWT_VERIFY_EXPIRATION': True,
-    'JWT_LEEWAY': 0,    # in seconds
+    'JWT_LEEWAY': 300,    # in seconds
                         # This allows you to validate an expiration time which is in the past but no very far. 
                         # For example, if you have a JWT payload with an expiration time set to 30 seconds after creation 
                         # but you know that sometimes you will process it after 30 seconds, 
@@ -277,13 +277,15 @@ JWT_AUTH = {
     'JWT_AUDIENCE': None,   # This is a string that will be checked against the aud field of the token, if present. Default is None(fail if aud present on JWT).
     'JWT_ISSUER': None,     # This is a string that will be checked against the iss field of the token. Default is None(do not check iss on JWT).
     
+    'JWT_ALLOW_REFRESH': True,     # Enable token refresh functionality. Token issued from rest_framework_jwt.views.obtain_jwt_token will have an orig_iat field.
+    # for usage clarification of the following two options 
+    # plz refer to https://github.com/GetBlimp/django-rest-framework-jwt/issues/92#issuecomment-227763338
+    # in this situation, once the user is forced to log off, you will have to login again with username/password
+    # if you want the user stay logon for a really long time(which is not good), you might as well set the JWT_EXPIRATION_DELTA long enough, but JWT_EXPIRATION_DELTA<JWT_REFRESH_EXPIRATION_DELTA for sure  
     'JWT_EXPIRATION_DELTA': timedelta(hours=1), # used to be seconds=300, original should be no longer than JWT_REFRESH_EXPIRATION_DELTA
-    
     # as recommended @http://stackoverflow.com/questions/26739167/jwt-json-web-token-automatic-prolongation-of-expiration?rq=1
     # a generic JWT_EXPIRATION_DELTA would be 1 hour, renew should go with every time user open the page and one hour with a setTimeout(maybe?)
     # and JWT_REFRESH_EXPIRATION_DELTA should be 1 week
-    'JWT_ALLOW_REFRESH': True,     # Enable token refresh functionality. Token issued from rest_framework_jwt.views.obtain_jwt_token will have an orig_iat field.
-    
     'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=7), #Limit on token refresh, is a datetime.timedelta instance. 
                                                     # This is how much time after the original token that future tokens can be refreshed from.
     'JWT_AUTH_HEADER_PREFIX': 'JWT', # that HTTP Header Authorization: Bearer xxx, Bearer part
