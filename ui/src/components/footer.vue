@@ -2,7 +2,7 @@
   <footer class="footer">
     <div class="container">
       <div class="footer-main">
-        <p class="footer-main-title">无界EDI</p>
+        <p class="footer-main-title">{{ $t('global.title') }}</p>
       </div>
     </div>
   </footer>
