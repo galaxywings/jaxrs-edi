@@ -1,7 +1,6 @@
 <template>
-  <div id="app">
-    <router-view></router-view>
-  </div>
+  <!-- since the id="app" has been defined in index.html already -->
+  <router-view></router-view>
 </template>
 
 <script>
