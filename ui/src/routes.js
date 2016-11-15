@@ -41,11 +41,11 @@ export default [
           {
             path: 'test2',
             name: 'test2',
+            // meta: {
+            //   loginRequired: true
+            // },
             components: {
               test: require('./pages/modules/nested/test2')
-            },
-            meta: {
-              loginRequired: true
             }
           }
         ]

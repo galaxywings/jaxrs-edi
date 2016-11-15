@@ -13,6 +13,7 @@ var webpackConfig = process.env.NODE_ENV === 'testing'
 var port = process.env.PORT || config.dev.port
 // Define HTTP proxies to your custom API backend
 // https://github.com/chimurai/http-proxy-middleware
+// in /config/index.js
 var proxyTable = config.dev.proxyTable
 
 var app = express()

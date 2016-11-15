@@ -8,6 +8,9 @@
 # install dependencies
 npm install
 
+# default backend endpoint change to suite your need
+# usually our dashboard django backend
+export backend_endpoint="http://localhost:8090"
 # serve with hot reload at localhost:8080
 npm run dev
 
