@@ -2,6 +2,7 @@
 export default [
   {
     path: '/login',
+    name: 'login',
     component: require('./pages/login')
   },
   {
@@ -12,6 +13,11 @@ export default [
     path: '/404',
     name: 'notFound',
     component: require('./pages/404')
+  },
+  {
+    path: '/403',
+    name: 'forbidden',
+    component: require('./pages/403')
   },
   {
     path: '/',
@@ -41,9 +47,9 @@ export default [
           {
             path: 'test2',
             name: 'test2',
-            // meta: {
-            //   loginRequired: true
-            // },
+            meta: {
+              auth: true
+            },
             components: {
               test: require('./pages/modules/nested/test2')
             }
