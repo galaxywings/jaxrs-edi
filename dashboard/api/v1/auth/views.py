@@ -2,16 +2,16 @@
 from django.contrib.auth import get_user_model
 from rest_condition import Or
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, list_route
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_jwt.serializers import VerifyJSONWebTokenSerializer
 from rest_framework_jwt.settings import api_settings
-from rest_framework_jwt.views import obtain_jwt_token,\
+from rest_framework_jwt.views import obtain_jwt_token, \
     refresh_jwt_token, verify_jwt_token
 
-from api.v1.auth.serializers import UserSerializer
+from api.v1.auth.serializers import UserSerializer, UserGroupSerializer
 from authx.permissions import IsAdminUser
 
 
@@ -71,3 +71,12 @@ class UserViewSet(ModelViewSet):
     serializer_class = UserSerializer
     permission_classes = (IsAuthenticated,
                           Or(IsAdminUser), )
+
+    @list_route(
+        methods=['get'],
+        url_path='user-info'
+    )
+    def current_user_info(self, request):
+        # may go with groups
+        serializer = UserGroupSerializer(request.user)
+        return Response(serializer.data)
