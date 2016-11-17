@@ -30,11 +30,9 @@ module.exports = function () {
     // Overrideable
 
     function _routerBeforeEach(cb) {
-
         if (this.options.tokenExpired.call(this)) {
             this.options.refreshPerform.call(this, {});
         }
-
         if (this.watch.authenticated === null && __token.get.call(this)) {
             if ( ! __cookie.exists.call(this)) {
                 this.options.logoutProcess.call(this, null, {});
@@ -191,9 +189,9 @@ module.exports = function () {
         this.options.fetchPerform.call(this, {
             success: function () {
                 if (data.success) { data.success.call(this, res); }
-
-                if (data.redirect && _this.options.check.call(_this)) {
-                    _this.options._routerGo.call(_this, data.redirect);
+                var next = _this.options.router.currentRoute.query.next || data.redirect
+                if (next && _this.options.check.call(_this)) {
+                    _this.options._routerGo.call(_this, next);
                 }
             }
         });
@@ -321,6 +319,22 @@ module.exports = function () {
         }
     }
 
+    function _resolveRouteAuth(transition) {
+      // return false
+      var auth = false;
+      transition.matched.forEach( function(item) {
+        // as detailed in https://router.vuejs.org/en/api/route-object.html, the last one is the exactRoute
+        // When the URL is /foo/bar, $route.matched will be an Array containing both objects (cloned), in parent to child order.
+        // in parent to child order.
+        // typeof only usage to see if a variable is undefined
+        // please refer to http://bonsaiden.github.io/JavaScript-Garden/#types.typeof
+        if (item.meta && typeof item.meta.auth !== 'undefined') {
+          auth = item.meta.auth;
+        }
+      })
+      return auth
+    }
+
     var defaultOptions = {
 
         // Variables
@@ -397,6 +411,8 @@ module.exports = function () {
         logoutOtherProcess: _logoutOtherProcess,
 
         oauth2Perform:      _oauth2Perform,
+
+        resolveRouteAuth:   _resolveRouteAuth,
 
         // Auth drivers
 

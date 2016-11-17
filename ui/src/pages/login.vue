@@ -39,6 +39,7 @@ export default {
     return {
       context: 'login context',
       data: {
+        // body is fixex variable naming in `vue-resource` do not CHANGE it!!!
         body: {
           username: 'admin',
           password: 'admin'
@@ -54,9 +55,6 @@ export default {
       this.$auth.login({
         body: this.data.body,
         rememberMe: this.data.rememberMe,
-        redirect: {
-          name: ''
-        },
         success () {
           console.log('success ' + this.context)
         },

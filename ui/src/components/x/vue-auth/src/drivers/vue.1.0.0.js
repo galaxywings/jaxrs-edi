@@ -90,19 +90,8 @@ module.exports = {
                     // }
 
                     // change to inheritate from parent routes
-                    auth = false;
-                    transition.matched.forEach( function(item) {
-                      // as detailed in https://router.vuejs.org/en/api/route-object.html, the last one is the exactRoute
-                      // When the URL is /foo/bar, $route.matched will be an Array containing both objects (cloned), in parent to child order.
-                      // in parent to child order.
-                      // typeof only usage to see if a variable is undefined
-                      // please refer to http://bonsaiden.github.io/JavaScript-Garden/#types.typeof
-                      if (item.meta && typeof item.meta.auth !== 'undefined') {
-                        auth = item.meta.auth;
-                      }
-                    })
+                    auth = _this.options.resolveRouteAuth(transition)
                 }
-
                 transitionEach.call(_this, auth, function (redirect) {
                     if (!redirect) {
                         (next || transition.next)();
