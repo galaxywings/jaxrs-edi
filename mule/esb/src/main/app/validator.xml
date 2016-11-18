@@ -37,11 +37,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 
         <logger level="INFO" doc:name="Logger"/>
 
-        <catch-exception-strategy doc:name="Catch Exception Strategy">
-            <set-payload value="#[flowVars['originalMessage']]" doc:name="Set Payload"/>
-            <set-property propertyName="EXCEPTION_SUMMARY" value="#[exception.getSummaryMessage()]" doc:name="Property"/>
-            <amqp:outbound-endpoint connector-ref="defaultAmqpConnector" queueName="dead.letter"/>
-        </catch-exception-strategy>
+        <exception-strategy ref="SentToQueue_Strategy" />
     </flow>
 
 </mule>

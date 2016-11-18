@@ -44,6 +44,8 @@ http://www.mulesoft.org/schema/mule/mulerequester http://www.mulesoft.org/schema
         </foreach>
 
         <set-payload value="Done!" />
+
+        <exception-strategy ref="SentToQueue_Strategy" />
     </flow>
 
     <!--

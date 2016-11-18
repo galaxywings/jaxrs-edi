@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.mule.modules</groupId>
+    <artifactId>redis-connector</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>mule-module</packaging>
+    <name>Mule Redis Anypoint Connector</name>
+    
+    <properties>
+        <category>Community</category>
+        <licensePath>LICENSE.md</licensePath>
+        <devkit.studio.package.skip>false</devkit.studio.package.skip>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <jdk.version>1.8</jdk.version>
+    </properties>
+    
+    <parent>
+        <groupId>org.mule.tools.devkit</groupId>
+        <artifactId>mule-devkit-parent</artifactId>
+        <version>3.8.2</version>
+    </parent>
+    
+	<dependencies>
+		<dependency>
+			<groupId>redis.clients</groupId>
+			<artifactId>jedis</artifactId>
+			<version>2.8.1</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+       	<!-- TESTING -->
+		<dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>6.9.10</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- REDIS  -->
+		<dependency>
+		  <groupId>com.github.kstyrc</groupId>
+		  <artifactId>embedded-redis</artifactId>
+		  <version>0.6</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+		</plugins>
+	</build>
+    
+    <repositories>
+         <repository>
+            <id>Central-maven2</id>
+            <name>Cenatral Maven2</name>
+            <url>http://central.maven.org/maven2/</url>
+            <layout>default</layout>
+        </repository>
+        <repository>
+            <id>mulesoft-releases</id>
+            <name>MuleSoft Releases Repository</name>
+            <url>http://repository.mulesoft.org/releases/</url>
+            <layout>default</layout>
+        </repository>
+    </repositories>
+    
+</project>

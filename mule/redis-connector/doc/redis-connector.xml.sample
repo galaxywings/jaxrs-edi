@@ -1,0 +1,31 @@
+<!-- BEGIN_INCLUDE(redis:ping) -->
+    <redis:ping config-ref="Redis__Configuration" doc:name="Redis-ping()"/>
+<!-- END_INCLUDE(redis:ping) -->
+
+<!-- BEGIN_INCLUDE(redis:set) -->
+<redis:set config-ref="Redis__Configuration" doc:name="Redis-set(&quot;Hello&quot;, &quot;World&quot;, -1)"/>
+<!-- END_INCLUDE(redis:set) -->
+
+<!-- BEGIN_INCLUDE(redis:get) -->
+<redis:get config-ref="Redis__Configuration" key="Hello" doc:name="Redis-get(&quot;Hello&quot;)"/>
+<!-- END_INCLUDE(redis:get) -->
+
+<!-- BEGIN_INCLUDE(redis:delete) -->
+<redis:delete config-ref="Redis__Configuration" key="Hello" doc:name="Redis-delete(&quot;Hello&quot;)"/>
+<!-- END_INCLUDE(redis:delete) -->
+
+<!-- BEGIN_INCLUDE(redis:exists) -->
+<redis:exists config-ref="Redis__Configuration" key="Hello" doc:name="Redis-exists(&quot;Hello&quot;)"/>
+<!-- END_INCLUDE(redis:exists) -->
+
+<!-- BEGIN_INCLUDE(redis:expire) -->
+<redis:expire config-ref="Redis__Configuration" key="Hello" timeout="10" doc:name="Redis-expire(&quot;Hello&quot;,10)"/>
+<!-- END_INCLUDE(redis:expire) -->
+
+<!-- BEGIN_INCLUDE(redis:get-ttl) -->
+<redis:get-ttl config-ref="Redis__Configuration" key="Hello" doc:name="Redis-getTtl(&quot;Hello&quot;)"/>
+<!-- END_INCLUDE(redis:get-ttl) -->
+
+<!-- BEGIN_INCLUDE(redis:persist) -->
+<redis:persist config-ref="Redis__Configuration" key="Hello" doc:name="Redis-persist(&quot;Hello&quot;)"/>
+<!-- END_INCLUDE(redis:persist) -->

@@ -14,7 +14,7 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 http://www.mulesoft.org/schema/mule/amqp http://www.mulesoft.org/schema/mule/amqp/current/mule-amqp.xsd
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
 
-    <flow name="rabbitmq-flow">
+    <flow name="service-smooks-transformer">
 
         <amqp:inbound-endpoint queueName="inbox"
                                connector-ref="defaultAmqpConnector"/>
@@ -33,12 +33,6 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
         <logger level="INFO" doc:name="Logger"/>
         <amqp:outbound-endpoint connector-ref="defaultAmqpConnector" queueName="outbox"/>
 
-        <catch-exception-strategy doc:name="Catch Exception Strategy">
-            <set-payload value="#[flowVars['originalMessage']]" doc:name="Set Payload"/>
-            <set-property propertyName="EXCEPTION_SUMMARY" value="#[exception.getSummaryMessage()]"
-                          doc:name="Property"/>
-
-            <amqp:outbound-endpoint connector-ref="defaultAmqpConnector" queueName="dead.letter"/>
-        </catch-exception-strategy>
+        <exception-strategy ref="SentToQueue_Strategy" />
     </flow>
 </mule>

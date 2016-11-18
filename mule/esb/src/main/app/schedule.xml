@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:http="http://www.mulesoft.org/schema/mule/http"
+      xmlns:spring="http://www.springframework.org/schema/beans"
+      xmlns:redis="http://www.mulesoft.org/schema/mule/redis"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans-current.xsd
+      http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+      http://www.mulesoft.org/schema/mule/redis http://www.mulesoft.org/schema/mule/redis/current/mule-redis.xsd
+      http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+
+    <!-- Scheduler Beater -->
+    <flow name="scheduleFlow">
+
+        <poll>
+
+            <!-- Should create a "schedule" entity in dashboard? -->
+
+            <!-- 10秒钟跑一次 -->
+            <fixed-frequency-scheduler frequency="10" timeUnit="SECONDS" startDelay="3" />
+
+            <!-- 从数据库/Redis 里读取 流程 和 定时 信息 -->
+            <!-- for 循环 -->
+            <redis:get config-ref="Redis_Configuration" key="hello" />
+              <!-- 该流程是否定时该跑了？ current Time > executeTime -->
+                <!-- 跑这个流程 -->
+
+            <!-- Access database or Redis or REST call to dashboard ? -->
+
+            <!-- 隐含第一个步骤，可以是去获取流程信息。防止更改了配置，导致现有的消息处理受到影响 -->
+
+            <!-- Get all runtime data at once and put into message header? Like a rundown list -->
+
+            <!-- split -->
+            <!-- Send to first queue -->
+        </poll>
+        <object-to-string-transformer />
+        <logger level="INFO" message="************** #[payload] ***************" />
+    </flow>
+
+</mule>

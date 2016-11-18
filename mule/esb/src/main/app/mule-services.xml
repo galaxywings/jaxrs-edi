@@ -21,7 +21,8 @@ http://www.mulesoft.org/schema/mule/ftp http://www.mulesoft.org/schema/mule/ftp/
 http://www.mulesoft.org/schema/mule/mulerequester http://www.mulesoft.org/schema/mule/mulerequester/1.0-SNAPSHOT/mule-mulerequester.xsd
 http://www.mulesoft.org/schema/mule/documentation">
 
-    <flow name="muleServiceFlow">
+    <!--
+    <flow name="greetFlow">
         <http:listener config-ref="HTTP_Listener_Configuration" path="/mule/greet" allowedMethods="GET"
                        doc:name="HTTP"/>
         <set-variable variableName="method" value="greet"/>
@@ -41,7 +42,23 @@ http://www.mulesoft.org/schema/mule/documentation">
         <object-to-string-transformer/>
 
         <component>
-            <interceptor-stack ref="default"/>
+            <singleton-object class="com.wjelogistics.edi.esb.component.MuleService"/>
+        </component>
+    </flow>
+
+    -->
+
+    <flow name="muleServiceFlow">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/mule/{action}">
+            <http:response-builder>
+                <http:header headerName="Content-Type" value="application/json"/>
+            </http:response-builder>
+        </http:listener>
+
+        <set-variable variableName="method" value="#[message.inboundProperties.'http.uri.params'.action]"/>
+        <object-to-string-transformer/>
+
+        <component>
             <singleton-object class="com.wjelogistics.edi.esb.component.MuleService"/>
         </component>
     </flow>

@@ -10,6 +10,7 @@ import groovy.lang.GroovyShell;
 import groovy.ui.SystemOutputInterceptor;
 import org.joda.time.DateTime;
 import org.mule.api.MuleContext;
+import org.mule.api.MuleMessage;
 import org.mule.api.annotations.expressions.Expr;
 import org.mule.api.annotations.expressions.Lookup;
 import org.mule.api.annotations.param.Payload;
@@ -23,8 +24,8 @@ import java.util.Map;
 public class MuleService {
 
     @InvokeFromFlow
-    public String greet(@Expr(value = "#[message.inboundProperties.'http.query.params'.name]") String params) {
-        return "Hello " + params;
+    public String greet(@Expr(value = "#[message.inboundProperties.'http.query.params'.name]") String name) {
+        return "{\"name\": \"" + name + "\"}";
     }
 
     @InvokeFromFlow

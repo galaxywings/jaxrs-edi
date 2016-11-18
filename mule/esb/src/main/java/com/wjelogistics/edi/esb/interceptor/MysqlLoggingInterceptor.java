@@ -13,10 +13,14 @@ import java.util.List;
 public class MysqlLoggingInterceptor extends AbstractEnvelopeInterceptor {
 
     @Inject
-    public MuleContext muleContext;
+    private MuleContext muleContext;
+
+    private JdbcTemplate jdbcTemplate;
 
     @Inject
-    JdbcTemplate jdbcTemplate;
+    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     @Override
     public MuleEvent before(MuleEvent event) throws MuleException {

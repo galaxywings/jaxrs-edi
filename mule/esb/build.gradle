@@ -1,12 +1,18 @@
 dependencies {
-    compile group: 'org.mule.transports', name: 'mule-transport-amqp', version: '3.7.0'
+    compile group: 'net.greghaines', name: 'jesque', version: '2.1.1'
+    compile group: 'redis.clients', name: 'jedis', version: '2.8.1'
+
+    // This may have to be put under $MULE_HOME/lib/user
+    compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.33'
+
+    // Smooks for EDI transforming
     compile group: 'org.milyn', name: 'milyn-smooks-edi', version: '1.7.0'
     compile group: 'org.milyn.edi.unedifact', name: 'd99b-mapping', version: '1.4'
-    compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.33'
-    compile group: 'org.mule.modules', name: 'wujie-connector', version: '1.0.0-SNAPSHOT'
-    compile group: 'redis.clients', name: 'jedis', version: '2.8.1'
+
+    compile group: 'org.mule.modules', name: 'redis-connector', version: '1.0.0-SNAPSHOT'
+
+    compile group: 'org.mule.transports', name: 'mule-transport-amqp', version: '3.7.0'
     compile group: 'org.mule.modules', name: 'mule-module-requester', version: '1.3'
-    compile group: 'org.mule.module.dynamicFlows', name: 'dynamic-flows', version: '1.0'
 }
 
 buildscript {
@@ -15,13 +21,13 @@ buildscript {
     }
 
     repositories {
-        maven {
-            url 'http://repository.mulesoft.org/releases'
-        }
+//        maven { url 'http://repository.mulesoft.org/releases' }
+        maven { url 'https://repository.mulesoft.org/nexus/content/repositories/public'}
     }
 }
 
 apply plugin: 'mulestudio'
+apply plugin: 'maven'
 
 mule.version = '3.8.0'
 mule.muleEnterprise = false
@@ -33,5 +39,4 @@ mule.components {
 
     //include DB module.
     modules += 'db'
-
 }

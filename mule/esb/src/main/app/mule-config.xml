@@ -5,35 +5,56 @@
         xmlns:http="http://www.mulesoft.org/schema/mule/http"
         xmlns="http://www.mulesoft.org/schema/mule/core"
         xmlns:amqp="http://www.mulesoft.org/schema/mule/amqp"
+        xmlns:redis="http://www.mulesoft.org/schema/mule/redis"
         xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
         xmlns:spring="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/amqp http://www.mulesoft.org/schema/mule/amqp/current/mule-amqp.xsd
+http://www.mulesoft.org/schema/mule/redis http://www.mulesoft.org/schema/mule/redis/current/mule-redis.xsd
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
 
     <!-- HTTP -->
-    <http:listener-config name="HTTP_Listener_Configuration" host="0.0.0.0" port="${http.port}"
+    <http:listener-config name="HTTP_Listener_Configuration" host="${http.bind.interface}" port="${http.port}"
                           doc:name="HTTP Listener Configuration"/>
 
     <!-- RabbitMQ -->
     <amqp:connector name="defaultAmqpConnector"/>
 
     <!-- MySQL -->
-
     <spring:beans>
-        <spring:bean id="mysqlDataSource" name="mysqlDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" scope="singleton">
-            <spring:property name="driverClass" value="com.mysql.jdbc.Driver" />
+        <spring:bean id="mysqlDataSource" name="mysqlDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+                     scope="singleton">
+            <spring:property name="driverClass" value="com.mysql.jdbc.Driver"/>
             <spring:property name="jdbcUrl" value="jdbc:mysql://${mysql.host}:3306/${mysql.database}"/>
             <spring:property name="user" value="${mysql.username}"/>
             <spring:property name="password" value="${mysql.password}"/>
         </spring:bean>
 
         <spring:bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
-            <spring:constructor-arg ref="mysqlDataSource" />
+            <spring:constructor-arg ref="mysqlDataSource"/>
         </spring:bean>
     </spring:beans>
 
-    <db:generic-config name="MySQL_Configuration"  doc:name="MySQL Configuration" dataSource-ref="mysqlDataSource"/>
+
+    <db:generic-config name="MySQL_Configuration" doc:name="MySQL Configuration" dataSource-ref="mysqlDataSource"/>
+
+    <!-- Redis -->
+    <redis:config name="Redis_Configuration" host="${redis.host}"/>
+
+    <!-- Exception Strategy -->
+    <catch-exception-strategy name="SentToQueue_Strategy">
+        <choice>
+            <when expression="#[flowVars['originalMessage']] != null">
+                <set-payload value="#[flowVars['originalMessage']]"/>
+            </when>
+        </choice>
+
+        <set-property propertyName="EXCEPTION_SUMMARY" value="#[exception.getSummaryMessage()]"/>
+
+        <amqp:outbound-endpoint connector-ref="defaultAmqpConnector" queueName="dead.letter">
+            <amqp:transaction action="ALWAYS_JOIN"/>
+        </amqp:outbound-endpoint>
+    </catch-exception-strategy>
 </mule>
