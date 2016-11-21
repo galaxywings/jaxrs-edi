@@ -45,6 +45,9 @@ INSTALLED_APPS = [
 
     'common',
     'authx',
+    'customer',
+    'task',
+    
     'api',
 ]
 
