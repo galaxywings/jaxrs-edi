@@ -49,7 +49,7 @@ http://www.mulesoft.org/schema/mule/documentation">
     -->
 
     <flow name="muleServiceFlow">
-        <http:listener config-ref="HTTP_Listener_Configuration" path="/mule/{action}">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/mule/manage/{action}">
             <http:response-builder>
                 <http:header headerName="Content-Type" value="application/json"/>
             </http:response-builder>
@@ -61,6 +61,18 @@ http://www.mulesoft.org/schema/mule/documentation">
         <component>
             <singleton-object class="com.wjelogistics.edi.esb.component.MuleService"/>
         </component>
+    </flow>
+
+
+    <flow name="serviceDefsFlow">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/mule/services.json">
+            <http:response-builder>
+                <http:header headerName="Content-Type" value="application/json"/>
+            </http:response-builder>
+        </http:listener>
+
+        <set-payload value="#[Thread.currentThread().getContextClassLoader().getResourceAsStream('services.json')]"/>
+
     </flow>
 
 </mule>

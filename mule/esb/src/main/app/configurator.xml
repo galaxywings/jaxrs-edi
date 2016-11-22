@@ -24,6 +24,7 @@ http://www.mulesoft.org/schema/mule/documentation">
     <flow name="configuratorFlow">
         <amqp:inbound-endpoint queueName="configurator.inbox"
                                connector-ref="defaultAmqpConnector"/>
+
         <set-variable variableName="originalMessage" value="#[payload]" doc:name="Variable"/>
 
         <logger level="INFO" message="#[payload]" />

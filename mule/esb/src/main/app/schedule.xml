@@ -19,13 +19,13 @@
             <!-- Should create a "schedule" entity in dashboard? -->
 
             <!-- 10秒钟跑一次 -->
-            <fixed-frequency-scheduler frequency="10" timeUnit="SECONDS" startDelay="3" />
+            <fixed-frequency-scheduler frequency="10" timeUnit="SECONDS" startDelay="3"/>
 
             <!-- 从数据库/Redis 里读取 流程 和 定时 信息 -->
             <!-- for 循环 -->
-            <redis:get config-ref="Redis_Configuration" key="hello" />
-              <!-- 该流程是否定时该跑了？ current Time > executeTime -->
-                <!-- 跑这个流程 -->
+            <redis:get config-ref="Redis_Configuration" key="hello"/>
+            <!-- 该流程是否定时该跑了？ current Time > executeTime -->
+            <!-- 跑这个流程 -->
 
             <!-- Access database or Redis or REST call to dashboard ? -->
 
@@ -36,8 +36,8 @@
             <!-- split -->
             <!-- Send to first queue -->
         </poll>
-        <object-to-string-transformer />
-        <logger level="INFO" message="************** #[payload] ***************" />
+        <object-to-string-transformer/>
+        <redis:get config-ref="Redis_Configuration" key="hello"/>
     </flow>
 
 </mule>

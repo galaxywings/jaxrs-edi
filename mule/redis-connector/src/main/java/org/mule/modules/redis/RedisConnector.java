@@ -59,7 +59,7 @@ public class RedisConnector implements LoggerInterface {
      * @return Status code reply
      */
     @Processor(name = "set")
-    public String set(@Default("Hello") String key, @Default("World") String value, @Default("-1") int timeout) throws Exception {
+
     	getLogger().debug("RedisConnector.set(String key, String value, int timeout)::START");
 
     	Redis redis = new Redis(this.jedisPool);

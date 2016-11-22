@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db"
+      xmlns:http="http://www.mulesoft.org/schema/mule/http"
+      xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:amqp="http://www.mulesoft.org/schema/mule/amqp"
+      xmlns:ftp="http://www.mulesoft.org/schema/mule/ftp"
+      xmlns:spring="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:script="http://www.mulesoft.org/schema/mule/core"
+      version="CE-3.8.0"
+      xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+      xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
+      xmlns:mulerequester="http://www.mulesoft.org/schema/mule/mulerequester"
+      xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/amqp http://www.mulesoft.org/schema/mule/amqp/current/mule-amqp.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
+http://www.mulesoft.org/schema/mule/ftp http://www.mulesoft.org/schema/mule/ftp/current/mule-ftp.xsd
+http://www.mulesoft.org/schema/mule/mulerequester http://www.mulesoft.org/schema/mule/mulerequester/1.0-SNAPSHOT/mule-mulerequester.xsd
+http://www.mulesoft.org/schema/mule/documentation">
+
+    <flow name="testFlow">
+        <amqp:inbound-endpoint queueName="test.inbox"
+                               connector-ref="defaultAmqpConnector"/>
+
+        <set-session-variable variableName="WUJIE_PROCESS_STEPS" value="step1,step2,step3"/>
+        <set-session-variable variableName="WUJIE_STEP1_PARAM1" value="### 1111111 ###"/>
+        <set-session-variable variableName="WUJIE_STEP2_PARAM1" value="### 2222222 ###"/>
+        <set-session-variable variableName="WUJIE_STEP3_PARAM1" value="### 3333333 ###"/>
+
+        <logger level="INFO"/>
+        <amqp:outbound-endpoint connector-ref="defaultAmqpConnector" queueName="step1.inbox"/>
+    </flow>
+
+    <flow name="service-Step1">
+        <amqp:inbound-endpoint queueName="step1.inbox"
+                               connector-ref="defaultAmqpConnector"/>
+
+        <!-- Register service -->
+
+        <!-- name, type -->
+        <set-variable variableName="FTP_SERVER" value="#[sessionVars.WUJIE_FTP_STRING_SERVER]" />
+        <set-variable variableName="FTP_USERNAME" value="#[sessionVars.WUJIE_FTP_STRING_USERNAME]" />
+        <set-variable variableName="FTP_FILE" value="#[sessionVars.WUJIE_FTP_BLOB_FILE]" />
+
+        <!-- Suppose we need ftp server, username, password, path -->
+        <logger level="INFO" message="#[sessionVars.WUJIE_FTP_SERVER]" />
+        <logger level="INFO" message="#[sessionVars.WUJIE_FTP_USERNAME]" />
+
+        <logger level="INFO" message="#[sessionVars.WUJIE_STEP1_PARAM1]"/>
+        <amqp:outbound-endpoint connector-ref="defaultAmqpConnector" queueName="step2.inbox"/>
+    </flow>
+
+    <flow name="service-Step2">
+        <amqp:inbound-endpoint queueName="step2.inbox"
+                               connector-ref="defaultAmqpConnector"/>
+        <logger level="INFO" message="#[sessionVars.WUJIE_STEP2_PARAM1]"/>
+        <amqp:outbound-endpoint connector-ref="defaultAmqpConnector" queueName="step3.inbox"/>
+    </flow>
+
+    <flow name="service-Step3">
+        <amqp:inbound-endpoint queueName="step3.inbox"
+                               connector-ref="defaultAmqpConnector"/>
+        <logger level="INFO" message="#[sessionVars.WUJIE_STEP3_PARAM1]"/>
+        <amqp:outbound-endpoint connector-ref="defaultAmqpConnector" queueName="test.outbox"/>
+    </flow>
+
+</mule>

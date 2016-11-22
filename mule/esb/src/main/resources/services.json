@@ -1,0 +1,25 @@
+{
+  "desc" : "Mule Services Definitions",
+  "version" : 0.01,
+  "services": {
+    "ftp": {
+      "name": "ftp",
+      "params": [
+        {"name": "host", "type": "string", "displayName": "服务器", "desc": "用户FTP服务器的地址"},
+        {"name": "username", "type": "string", "displayName": "用户名", "desc": "登录FTP所用的用户名"},
+        {"name": "port", "type": "int", "displayName": "端口号", "desc": "FTP服务器端口号"},
+        {"name": "metaFile", "type": "blob", "displayName": "blob文件，测试用", "desc": "blob文件，测试用"}
+      ]
+    },
+
+    "test2": {
+      "name": "test2",
+      "params": []
+    },
+
+    "test3": {
+      "name": "test3",
+      "params": []
+    }
+  }
+}
