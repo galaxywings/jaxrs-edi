@@ -41,7 +41,7 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
     <db:generic-config name="MySQL_Configuration" doc:name="MySQL Configuration" dataSource-ref="mysqlDataSource"/>
 
     <!-- Redis -->
-    <redis:config name="Redis_Configuration" host="${redis.host}"/>
+    <redis:config name="Redis_Configuration" host="${redis.host}" port="${redis.port}"/>
 
     <!-- Exception Strategy -->
     <catch-exception-strategy name="SentToQueue_Strategy">

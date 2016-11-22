@@ -46,7 +46,6 @@ public class MuleService {
 
 //                    .map(flow -> ((String)((Flow)flow).getAnnotations().values().toArray()[2]))
 
-
             return ObjectMapperFactory.get().writeValueAsString(services);
         } catch (JsonProcessingException e) {
             return "{\"error\" : \"Error when generating JSON output\"}";

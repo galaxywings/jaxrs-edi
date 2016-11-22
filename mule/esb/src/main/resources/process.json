@@ -1,0 +1,22 @@
+{
+  "desc" : "Dashboard schedules",
+  "processes": [
+    {
+      "id": 1,
+      "name": "Test process 1",
+      "steps": [
+        {
+          "seq": 1,
+          "service": "ftp",
+          "params": [
+            {"host": "kbuntu"},
+            {"username": "john"},
+            {"password": "123456"},
+            {"port": 21}
+          ]
+        }
+      ]
+
+    }
+  ]
+}

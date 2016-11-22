@@ -1,0 +1,12 @@
+{
+  "schedules": [
+    {
+      "id": 12345,
+      "frequency": 60
+    },
+    {
+      "id": 23456,
+      "frequency": 120
+    }
+  ]
+}

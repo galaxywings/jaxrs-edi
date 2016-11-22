@@ -1,203 +1,176 @@
 package org.redis;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.google.common.collect.Sets;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.util.SafeEncoder;
 
-public class Redis implements LoggerInterface{
-	protected static final Logger logger = LoggerFactory.getLogger(Redis.class);
-	private JedisPool jedisPool = null;
-	
-	@Override
-	public Logger getLogger() {
-		logger.debug("Redis.getLogger()::START");
-		logger.debug("Redis.getLogger()::END");
-		return logger;
-	}
-	
-	public Redis(JedisPool jedisPool) throws Exception{
-		getLogger().debug("Redis.(JedisPool jedisPool="+jedisPool+")::START");
-		this.jedisPool = jedisPool;
-		getLogger().debug("Redis.(JedisPool jedisPool="+jedisPool+")::END");
-	}
-	
-	public byte[] get(String key) throws Exception{
-		getLogger().debug("Redis.Get(String key="+"key"+")::START");
-		byte[] result = null;
-		try (Jedis jedis = jedisPool.getResource();) {
-			byte[] keyAsBytes = SafeEncoder.encode(key);
-			result = jedis.get(keyAsBytes);
-		} 
-		getLogger().debug("Redis.Get(String "+"key"+")::END = "+result);
-		return result;
-	}
-	
-	public String set(String key, String value, String encoding) throws Exception{
-		getLogger().debug("Redis.set(String key="+key+", String value="+value+", String encoding="+encoding+")::START");
-		String result = null;
+import java.util.Set;
 
-		byte[] keyAsBytes = SafeEncoder.encode(key);
-		byte[] valueAsBytes = RedisUtils.toBytes(value, encoding);
-		result = this.set(keyAsBytes, valueAsBytes, -1);
+public class Redis{
+    private JedisPool jedisPool = null;
 
-		getLogger().debug("Redis.set(String key="+key+", String value="+value+", String encoding="+encoding+")::END = "+result);
-		return result;
-	}
-	
-	public String set(String key, byte[] valueAsBytes, String encoding) throws Exception{
-		getLogger().debug("Redis.set(String key="+key+", byte[] valueAsBytes="+valueAsBytes+", String encoding"+encoding+")::START");
-		String result = null;
+    public Redis(JedisPool jedisPool) throws Exception {
+        this.jedisPool = jedisPool;
+    }
 
-		byte[] keyAsBytes = SafeEncoder.encode(key);
-		result = this.set(keyAsBytes, valueAsBytes, -1);
+    public byte[] get(String key) throws Exception {
+        byte[] result = null;
+        try (Jedis jedis = jedisPool.getResource();) {
+            byte[] keyAsBytes = SafeEncoder.encode(key);
+            result = jedis.get(keyAsBytes);
+        }
+        return result;
+    }
 
-		getLogger().debug("Redis.set(String key="+key+", byte[] valueAsBytes="+valueAsBytes+", String encoding"+encoding+")::END = "+result);
-		return result;
-	}
+    public String set(String key, String value, String encoding) throws Exception {
+        String result = null;
 
-	public String set(String key, String value, int timeout, String encoding) throws Exception{
-		getLogger().debug("Redis.set(String key="+key+", String value="+value+", int timeout="+timeout+", String encoding="+encoding+")::START");
-		String result = null;
+        byte[] keyAsBytes = SafeEncoder.encode(key);
+        byte[] valueAsBytes = RedisUtils.toBytes(value, encoding);
+        result = this.set(keyAsBytes, valueAsBytes, -1);
 
-		byte[] keyAsBytes = SafeEncoder.encode(key);
-		byte[] valueAsBytes = RedisUtils.toBytes(value, encoding);
-		result = this.set(keyAsBytes, valueAsBytes, timeout);
+        return result;
+    }
 
-		getLogger().debug("Redis.set(String key="+key+", String value="+value+", int timeout="+timeout+", String encoding="+encoding+")::END = "+result);
-		return result;
-	}
-	
-	public String set(String key, byte[] valueAsBytes, int timeout, String encoding) throws Exception{
-		getLogger().debug("Redis.set(String key="+key+", byte[] valueAsBytes="+valueAsBytes+", int timeout="+timeout+", String encoding="+encoding+")::START");
-		String result = null;
+    public String set(String key, byte[] valueAsBytes, String encoding) throws Exception {
+        String result = null;
 
-		byte[] keyAsBytes = SafeEncoder.encode(key);
-		result = this.set(keyAsBytes, valueAsBytes, timeout);
+        byte[] keyAsBytes = SafeEncoder.encode(key);
+        result = this.set(keyAsBytes, valueAsBytes, -1);
 
-		getLogger().debug("Redis.set(String key="+key+", byte[] valueAsBytes="+valueAsBytes+", int timeout="+timeout+", String encoding="+encoding+")::END = "+result);
-		return result;
-	}
-	
-	public String set(byte[] keyAsBytes, byte[] valueAsBytes, int timeout) throws Exception{
-		getLogger().debug("Redis.set(byte[] keyAsBytes="+keyAsBytes+", byte[] valueAsBytes="+valueAsBytes+", int timeout="+timeout+")::START");
-		String set_result = null;
-		Long set_timeout = (long) -1;
+        return result;
+    }
 
-		try (Jedis jedis = jedisPool.getResource();) {
+    public String set(String key, String value, int timeout, String encoding) throws Exception {
+        String result = null;
 
-			set_result = jedis.set(keyAsBytes, valueAsBytes);
-			if(timeout > -1){
-				set_timeout = jedis.expire(keyAsBytes, timeout);
-			}
+        byte[] keyAsBytes = SafeEncoder.encode(key);
+        byte[] valueAsBytes = RedisUtils.toBytes(value, encoding);
+        result = this.set(keyAsBytes, valueAsBytes, timeout);
 
-		} 
+        return result;
+    }
 
-		String result = set_result + "," + set_timeout ;
-		getLogger().debug("Redis.set(byte[] keyAsBytes="+keyAsBytes+", byte[] valueAsBytes="+valueAsBytes+", int timeout="+timeout+")::END = "+result);
-		return result;
-	}
-	
-	public Long expire(String key, int timeout) throws Exception{
-		getLogger().debug("Redis.expire(String key="+key+", int timeout="+timeout+")::START");
-		Long set_timeout = (long) 0;
+    public String set(String key, byte[] valueAsBytes, int timeout, String encoding) throws Exception {
+        String result = null;
 
-		try (Jedis jedis = jedisPool.getResource();) {
+        byte[] keyAsBytes = SafeEncoder.encode(key);
+        result = this.set(keyAsBytes, valueAsBytes, timeout);
 
-			byte[] keyAsBytes = SafeEncoder.encode(key);
+        return result;
+    }
 
-			set_timeout = jedis.expire(keyAsBytes, timeout);
+    public String set(byte[] keyAsBytes, byte[] valueAsBytes, int timeout) throws Exception {
+        String set_result = null;
+        Long set_timeout = (long) -1;
 
-		} 
+        try (Jedis jedis = jedisPool.getResource();) {
 
-		Long result = set_timeout;
-		getLogger().debug("Redis.expire(String key="+key+", int timeout="+timeout+")::END = "+result);
-		return result ;
-	}
+            set_result = jedis.set(keyAsBytes, valueAsBytes);
+            if (timeout > -1) {
+                set_timeout = jedis.expire(keyAsBytes, timeout);
+            }
 
-	public Long persist(String key) throws Exception{
-		getLogger().debug("Redis.persist(String key="+key+")::START");
-		Long set_timeout = (long) 0;
+        }
 
-		try (Jedis jedis = jedisPool.getResource();) {
+        String result = set_result + "," + set_timeout;
+        return result;
+    }
 
-			byte[] keyAsBytes = SafeEncoder.encode(key);
+    public Long expire(String key, int timeout) throws Exception {
+        Long set_timeout = (long) 0;
 
-			set_timeout = jedis.persist(keyAsBytes);
+        try (Jedis jedis = jedisPool.getResource();) {
 
-		} 
+            byte[] keyAsBytes = SafeEncoder.encode(key);
 
-		Long result = set_timeout;
-		getLogger().debug("Redis.persist(String key="+key+")::END = "+result);
-		return result ;
-	}
-	
-	public Boolean exists(String key) throws Exception{
-		getLogger().debug("Redis.exists(String key="+key+")::START");
-		Boolean result = false;
+            set_timeout = jedis.expire(keyAsBytes, timeout);
+
+        }
+
+        Long result = set_timeout;
+        return result;
+    }
+
+    public Long persist(String key) throws Exception {
+        Long set_timeout = (long) 0;
+
+        try (Jedis jedis = jedisPool.getResource();) {
+
+            byte[] keyAsBytes = SafeEncoder.encode(key);
+
+            set_timeout = jedis.persist(keyAsBytes);
+
+        }
+
+        Long result = set_timeout;
+        return result;
+    }
+
+    public Boolean exists(String key) throws Exception {
+        Boolean result = false;
 
 
-		try (Jedis jedis = jedisPool.getResource();) {
+        try (Jedis jedis = jedisPool.getResource();) {
 
-			byte[] keyAsBytes = SafeEncoder.encode(key);
+            byte[] keyAsBytes = SafeEncoder.encode(key);
 
-			result = jedis.exists(keyAsBytes);
+            result = jedis.exists(keyAsBytes);
 
-		} 
+        }
 
-		getLogger().debug("Redis.exists(String key="+key+")::END = "+result);
-		return result ;
-	}
-	
-	public Long delete(String key) throws Exception{
-		getLogger().debug("Redis.delete(String key="+key+")::START");
-		Long result = (long) -1;
+        return result;
+    }
 
-		try (Jedis jedis = jedisPool.getResource();) {
+    public Long delete(String key) throws Exception {
+        Long result = (long) -1;
 
-			byte[] keyAsBytes = SafeEncoder.encode(key);
+        try (Jedis jedis = jedisPool.getResource();) {
 
-			result = jedis.del(keyAsBytes);
+            byte[] keyAsBytes = SafeEncoder.encode(key);
 
-		} 
+            result = jedis.del(keyAsBytes);
 
-		getLogger().debug("Redis.delete(String key="+key+")::END = "+result);
-		return result ;
-	}
-	
-	public Long ttl(String key) throws Exception{
-		getLogger().debug("Redis.ttl(String key="+key+")::START");
-		Long result = (long) -1;
+        }
+
+        return result;
+    }
+
+    public Long ttl(String key) throws Exception {
+        Long result = (long) -1;
 
 
-		try (Jedis jedis = jedisPool.getResource();) {
+        try (Jedis jedis = jedisPool.getResource();) {
 
-			byte[] keyAsBytes = SafeEncoder.encode(key);
+            byte[] keyAsBytes = SafeEncoder.encode(key);
 
-			result = jedis.ttl(keyAsBytes);
+            result = jedis.ttl(keyAsBytes);
 
-		} 
+        }
 
-		getLogger().debug("Redis.ttl(String key="+key+")::END = "+result);
-		return result ;
-	}
-	
-	public String ping() throws Exception{
-		getLogger().debug("Redis.ping()::START");
-		String result = null;
+        return result;
+    }
 
+    public String ping() throws Exception {
+        String result = null;
 
-		try (Jedis jedis = jedisPool.getResource();) {
+        try (Jedis jedis = jedisPool.getResource();) {
+            result = jedis.ping();
+        }
 
-			result = jedis.ping();
+        return result;
+    }
 
-		} 
+    public Set<String> zrangeByScore(String key, Double min, Double max) throws Exception {
+        Set<String> result;
 
-		getLogger().debug("Redis.ping()::END = "+result);
-		return result ;
-	}
-	
+        try (Jedis jedis = jedisPool.getResource()) {
+            result = jedis.zrangeByScore(key, min, max);
+        }
+
+        return (result != null) ? result : Sets.newHashSet();
+    }
 
 }
