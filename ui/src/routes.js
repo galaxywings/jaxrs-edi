@@ -34,6 +34,39 @@ export default [
         component: require('./pages/modules/dashboard')
       },
       {
+        path: 'task',
+        meta: {
+          auth: true
+        },
+        children: [
+          {
+            path: '',
+            name: 'taskIndex',
+            component: require('./pages/modules/task/service_list')
+          },
+          {
+            path: 'services',
+            name: 'taskServiceList',
+            component: require('./pages/modules/task/service_list')
+          },
+          {
+            path: 'processes',
+            name: 'taskProcessList',
+            component: require('./pages/modules/task/process_list')
+          },
+          {
+            path: 'processes/:id',
+            name: 'taskProcessEdit',
+            component: require('./pages/modules/task/process_edit')
+          },
+          {
+            path: 'processes/new',
+            name: 'taskProcessNew',
+            component: require('./pages/modules/task/process_new')
+          }
+        ]
+      },
+      {
         path: 'nested',
         name: 'nested',
         component: require('./pages/modules/nested/index'),
