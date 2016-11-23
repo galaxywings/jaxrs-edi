@@ -5,7 +5,6 @@
       xmlns="http://www.mulesoft.org/schema/mule/core"
       xmlns:amqp="http://www.mulesoft.org/schema/mule/amqp"
       xmlns:ftp="http://www.mulesoft.org/schema/mule/ftp"
-      xmlns:wujie="http://www.mulesoft.org/schema/mule/wujie"
       xmlns:spring="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xmlns:script="http://www.mulesoft.org/schema/mule/core"
       xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
@@ -15,7 +14,6 @@
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/amqp http://www.mulesoft.org/schema/mule/amqp/current/mule-amqp.xsd
-http://www.mulesoft.org/schema/mule/wujie http://www.mulesoft.org/schema/mule/wujie/current/mule-wujie.xsd
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
 http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
 http://www.mulesoft.org/schema/mule/ftp http://www.mulesoft.org/schema/mule/ftp/current/mule-ftp.xsd
@@ -26,15 +24,15 @@ http://www.mulesoft.org/schema/mule/mulerequester http://www.mulesoft.org/schema
     <mulerequester:config name="Mule_Requester" doc:name="Mule Requester"/>
     <ftp:connector name="FTPConfig" doc:name="FTP" validateConnections="true"/>
 
-    <flow name="requestFtpFiles">
-        <http:listener config-ref="HTTP_Listener_Configuration" path="/ftp/{customerId}" allowedMethods="GET"
-                       doc:name="HTTP"/>
+    <flow name="service-ftp">
+        <amqp:inbound-endpoint queueName="ftp.inbox"
+                               connector-ref="defaultAmqpConnector"/>
 
-        <!-- Get information from dashboard
-            1. FTP credentials;
-            2. Next process queue;
-            3. Save logs;
-        -->
+        <set-variable variableName="ftpServer" value="#[sessionVars.FTP_SERVER]" />
+        <set-variable variableName="ftpSername" value="#[sessionVars.FTP_USERNAME]" />
+        <set-variable variableName="ftpPassword" value="#[sessionVars.FTP_PASSWORD]" />
+        <set-variable variableName="ftpPath" value="#[sessionVars.FTP_PATH]" />
+
         <mulerequester:request-collection config-ref="Mule_Requester" count="-1"
                                           resource="ftp://john:123456@kbuntu:21/#[message.inboundProperties.'http.uri.params'.customerId]/inbox/?connector=FTPConfig"/>
 

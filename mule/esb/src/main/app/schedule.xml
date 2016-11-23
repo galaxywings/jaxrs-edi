@@ -4,13 +4,14 @@
       xmlns:http="http://www.mulesoft.org/schema/mule/http"
       xmlns:spring="http://www.springframework.org/schema/beans"
       xmlns:redis="http://www.mulesoft.org/schema/mule/redis"
+      xmlns:amqp="http://www.mulesoft.org/schema/mule/amqp"
       xmlns:json="http://www.mulesoft.org/schema/mule/json"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
       http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
       http://www.mulesoft.org/schema/mule/redis http://www.mulesoft.org/schema/mule/redis/current/mule-redis.xsd
-      http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
-      http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd">
+      http://www.mulesoft.org/schema/mule/amqp http://www.mulesoft.org/schema/mule/amqp/current/mule-amqp.xsd
+      http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
 
     <flow name="scheduleTestFlow">
         <http:listener config-ref="HTTP_Listener_Configuration" path="/dashboard/schedules.json">
@@ -25,18 +26,19 @@
 
     <!-- Scheduler Beater -->
     <flow name="scheduleFlow">
-
         <poll>
             <fixed-frequency-scheduler frequency="5" timeUnit="SECONDS" startDelay="0"/>
-            <redis:get-schedule-jobs config-ref="Redis_Configuration" queueKey="dashboard:jobs"
-                                     frequencyKey="dashboard:frequency"/>
+            <redis:get-schedule-jobs config-ref="Redis_Configuration" queueKey="mule:jobs"
+                                     frequencyKey="mule:frequency"/>
             <!--<redis:zrange-by-score config-ref="Redis_Configuration" key="dashboard:jobs" />-->
         </poll>
 
         <choice>
             <when expression="#[payload != empty]">
                 <collection-splitter/>
+
                 <logger level="INFO" message="#[payload]"/>
+                <amqp:outbound-endpoint connector-ref="defaultAmqpConnector" queueName="configurator.inbox"/>
             </when>
 
             <!-- http://stackoverflow.com/questions/29105709/how-do-i-implement-if-in-mulesoft -->
@@ -44,7 +46,5 @@
                 <logger message="" />
             </otherwise>
         </choice>
-
     </flow>
-
 </mule>

@@ -52,6 +52,21 @@ public class MuleService {
         }
     }
 
+    @InvokeFromFlow
+    public String executeScript(@Lookup MuleContext context, @Payload String script) {
+        try {
+            return ObjectMapperFactory.get().writeValueAsString(eval(script));
+        } catch (Exception t) {
+            Map<String, String> resultMap = Maps.newHashMap();
+            resultMap.put("error", ExceptionUtils.getFullStackTrace(t));
+            try {
+                return ObjectMapperFactory.get().writeValueAsString(resultMap);
+            } catch (JsonProcessingException e) {
+                return "{\"error\" : \"Error when generating JSON output\"}";
+            }
+        }
+    }
+
     static class ServiceDef implements Serializable{
         private String name;
         private Map<String, String> params;
@@ -73,20 +88,6 @@ public class MuleService {
         }
     }
 
-    @InvokeFromFlow
-    public String executeScript(@Lookup MuleContext context, @Payload String script) {
-        try {
-            return ObjectMapperFactory.get().writeValueAsString(eval(script));
-        } catch (Exception t) {
-            Map<String, String> resultMap = Maps.newHashMap();
-            resultMap.put("error", ExceptionUtils.getFullStackTrace(t));
-            try {
-                return ObjectMapperFactory.get().writeValueAsString(resultMap);
-            } catch (JsonProcessingException e) {
-                return "{\"error\" : \"Error when generating JSON output\"}";
-            }
-        }
-    }
 
     private String eval(String script, HashMap<String, Object> bindingValues) {
         GroovyShell shell = createShell(bindingValues);

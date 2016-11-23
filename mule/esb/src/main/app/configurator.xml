@@ -4,9 +4,12 @@
       xmlns:http="http://www.mulesoft.org/schema/mule/http"
       xmlns="http://www.mulesoft.org/schema/mule/core"
       xmlns:amqp="http://www.mulesoft.org/schema/mule/amqp"
+      xmlns:redis="http://www.mulesoft.org/schema/mule/redis"
       xmlns:ftp="http://www.mulesoft.org/schema/mule/ftp"
-      xmlns:spring="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:spring="http://www.springframework.org/schema/beans"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xmlns:script="http://www.mulesoft.org/schema/mule/core"
+      xmlns:json="http://www.mulesoft.org/schema/mule/json"
       version="CE-3.8.0"
       xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
       xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
@@ -15,23 +18,28 @@
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/amqp http://www.mulesoft.org/schema/mule/amqp/current/mule-amqp.xsd
+http://www.mulesoft.org/schema/mule/redis http://www.mulesoft.org/schema/mule/redis/current/mule-redis.xsd
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
 http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
 http://www.mulesoft.org/schema/mule/ftp http://www.mulesoft.org/schema/mule/ftp/current/mule-ftp.xsd
 http://www.mulesoft.org/schema/mule/mulerequester http://www.mulesoft.org/schema/mule/mulerequester/1.0-SNAPSHOT/mule-mulerequester.xsd
-http://www.mulesoft.org/schema/mule/documentation">
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd">
 
     <flow name="configuratorFlow">
         <amqp:inbound-endpoint queueName="configurator.inbox"
                                connector-ref="defaultAmqpConnector"/>
 
-        <set-variable variableName="originalMessage" value="#[payload]" doc:name="Variable"/>
+        <set-variable variableName="originalMessage" value="#[payload]"/>
+        <byte-array-to-string-transformer/>
 
-        <logger level="INFO" message="#[payload]" />
+        <redis:get key="mule:job:#[payload]:config" config-ref="Redis_Configuration"/>
+        <logger level="INFO" message="Getting configuration for #[payload] from DASHBOARD"/>
+
+        <json:object-to-json-transformer/>
+        <json:json-to-object-transformer returnClass="java.util.Map"/>
 
         <amqp:outbound-endpoint connector-ref="defaultAmqpConnector" queueName="outbox"/>
-
-        <exception-strategy ref="SentToQueue_Strategy" />
+        <exception-strategy ref="SentToQueue_Strategy"/>
     </flow>
 
 </mule>

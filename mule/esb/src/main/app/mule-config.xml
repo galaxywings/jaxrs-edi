@@ -37,7 +37,6 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
         </spring:bean>
     </spring:beans>
 
-
     <db:generic-config name="MySQL_Configuration" doc:name="MySQL Configuration" dataSource-ref="mysqlDataSource"/>
 
     <!-- Redis -->
@@ -46,7 +45,7 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
     <!-- Exception Strategy -->
     <catch-exception-strategy name="SentToQueue_Strategy">
         <choice>
-            <when expression="#[flowVars['originalMessage']] != null">
+            <when expression="#[flowVars['originalMessage'] != null]">
                 <set-payload value="#[flowVars['originalMessage']]"/>
             </when>
         </choice>
@@ -54,7 +53,7 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
         <set-property propertyName="EXCEPTION_SUMMARY" value="#[exception.getSummaryMessage()]"/>
 
         <amqp:outbound-endpoint connector-ref="defaultAmqpConnector" queueName="dead.letter">
-            <amqp:transaction action="ALWAYS_JOIN"/>
+            <amqp:transaction action="JOIN_IF_POSSIBLE"/>
         </amqp:outbound-endpoint>
     </catch-exception-strategy>
 </mule>

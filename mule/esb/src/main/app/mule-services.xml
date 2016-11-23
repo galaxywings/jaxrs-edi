@@ -63,6 +63,28 @@ http://www.mulesoft.org/schema/mule/documentation">
         </component>
     </flow>
 
+    <flow name="schedulerManageFlow">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/mule/scheduler/{action}">
+            <http:response-builder>
+                <http:header headerName="Content-Type" value="text/plain"/>
+            </http:response-builder>
+        </http:listener>
+
+        <choice>
+            <when expression="#[message.inboundProperties.'http.uri.params'.action == 'stop']">
+                <expression-component>app.registry.scheduleFlow.stop();</expression-component>
+                <set-payload value="schedule flow stopped..." />
+            </when>
+            <when expression="#[message.inboundProperties.'http.uri.params'.action == 'start']">
+                <expression-component>app.registry.scheduleFlow.start();</expression-component>
+                <set-payload value="schedule flow started... " />
+            </when>
+            <otherwise>
+                <set-payload value="Schedule flow status: #[app.registry.scheduleFlow.started]" />
+            </otherwise>
+        </choice>
+    </flow>
+
 
     <flow name="serviceDefsFlow">
         <http:listener config-ref="HTTP_Listener_Configuration" path="/mule/services.json">
