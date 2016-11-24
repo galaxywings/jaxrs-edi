@@ -1,8 +1,7 @@
 <template>
   <el-menu default-active="1"
     class="el-menu-vertical-demo"
-    router="true"
-    @select="handleSelect">
+    :router="true">
     <el-submenu index="1">
       <template slot="title"><i class="el-icon-message"></i>导航1</template>
       <el-menu-item-group title="分组一">
@@ -13,10 +12,10 @@
         <el-menu-item index="1-3">选项3</el-menu-item>
       </el-menu-item-group>
     </el-submenu>
-    <el-menu-item index="/auth/index">
+    <el-menu-item index="/auth">
       <i class="el-icon-menu"></i>Auth
     </el-menu-item>
-    <el-menu-item index="/customer/index">
+    <el-menu-item index="/customer">
       <i class="el-icon-setting"></i>客户管理
     </el-menu-item>
     <el-submenu index="/task">

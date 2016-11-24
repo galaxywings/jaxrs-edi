@@ -34,15 +34,51 @@ export default [
         component: require('./pages/modules/dashboard')
       },
       {
+        path: 'customer',
+        meta: {
+          auth: true
+        },
+        component: {
+          render (c) { return c('router-view') }
+        },
+        children: [
+          {
+            path: '',
+            name: 'customerIndex',
+            redirect: { name: 'customerCustomerList' }
+          },
+          {
+            path: 'customers',
+            name: 'customerCustomerList',
+            component: require('./pages/modules/customer/customer_list')
+          },
+          {
+            path: 'customers/:id',
+            name: 'customerCustomerEdit',
+            component: require('./pages/modules/customer/customer_edit')
+          },
+          {
+            path: 'customers/new',
+            name: 'customerCustomerNew',
+            component: require('./pages/modules/customer/customer_new')
+          }
+        ]
+      },
+      {
         path: 'task',
         meta: {
           auth: true
+        },
+        // create a container component
+        // please refer to https://github.com/vuejs/vue-router/issues/745
+        component: {
+          render (c) { return c('router-view') }
         },
         children: [
           {
             path: '',
             name: 'taskIndex',
-            component: require('./pages/modules/task/service_list')
+            redirect: {name: 'taskProcessList'}
           },
           {
             path: 'services',
@@ -74,7 +110,7 @@ export default [
           {
             path: 'test1',
             name: 'test1',
-            // here default is the default component within dashboard not root
+            // here default is the default component within nested not root
             component: require('./pages/modules/nested/test1')
           },
           {

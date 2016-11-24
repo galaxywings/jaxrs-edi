@@ -13,7 +13,7 @@ export default {
   },
   mounted () {
     console.log('abc')
-    this.getCustomers()
+    // this.getCustomers()
   },
   methods: {
     getCustomers () {
