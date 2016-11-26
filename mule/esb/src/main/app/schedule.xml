@@ -32,19 +32,10 @@
                                      frequencyKey="mule:frequency"/>
             <!--<redis:zrange-by-score config-ref="Redis_Configuration" key="dashboard:jobs" />-->
         </poll>
-
-        <choice>
-            <when expression="#[payload != empty]">
-                <collection-splitter/>
-
-                <logger level="INFO" message="#[payload]"/>
-                <amqp:outbound-endpoint connector-ref="defaultAmqpConnector" queueName="configurator.inbox"/>
-            </when>
-
-            <!-- http://stackoverflow.com/questions/29105709/how-do-i-implement-if-in-mulesoft -->
-            <otherwise>
-                <logger message="" />
-            </otherwise>
-        </choice>
+          
+        <expression-filter expression="#[payload != empty]"/>
+        <collection-splitter/>
+        <logger level="INFO" message="#[payload]"/>
+        <amqp:outbound-endpoint connector-ref="defaultAmqpConnector" queueName="configurator.inbox"/>
     </flow>
 </mule>
