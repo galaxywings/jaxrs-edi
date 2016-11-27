@@ -70,34 +70,6 @@
       layout="total, sizes, prev, pager, next, jumper"
       :total="tableData.length">
     </el-pagination>
-
-    <el-table
-    :data="tableData3"
-    border
-    selection-mode="multiple"
-    style="width: 100%"
-    @selection-change="handleSelectionChange">
-    <el-table-column
-      type="selection"
-      width="50">
-    </el-table-column>
-    <el-table-column
-      inline-template
-      label="Date"
-      width="120">
-      <div>{{ row.date }}</div>
-    </el-table-column>
-    <el-table-column
-      property="name"
-      label="Name"
-      width="120">
-    </el-table-column>
-    <el-table-column
-      property="address"
-      label="Address"
-      show-overflow-tooltip>
-    </el-table-column>
-  </el-table>
   </div>
 </template>
 <script>
