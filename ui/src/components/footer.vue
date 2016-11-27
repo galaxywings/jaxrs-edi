@@ -15,7 +15,6 @@
     color: #a4aebd;
     width: 100%;
     z-index: 1000;
-    margin-top: -120px;
   }
   .footer .footer-main {
     font-size: 0;
