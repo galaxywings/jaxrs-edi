@@ -2,12 +2,11 @@
   <div>
     <el-table
       :data="tableData"
-      :stripe="true"
+      border
       selection-mode="multiple"
       style="width: 100%"
       @selection-change="handleSelectionChange">
       <el-table-column
-        fixed
         type="selection"
         width="50">
       </el-table-column>
@@ -71,18 +70,48 @@
       layout="total, sizes, prev, pager, next, jumper"
       :total="tableData.length">
     </el-pagination>
+
+    <el-table
+    :data="tableData3"
+    border
+    selection-mode="multiple"
+    style="width: 100%"
+    @selection-change="handleSelectionChange">
+    <el-table-column
+      type="selection"
+      width="50">
+    </el-table-column>
+    <el-table-column
+      inline-template
+      label="Date"
+      width="120">
+      <div>{{ row.date }}</div>
+    </el-table-column>
+    <el-table-column
+      property="name"
+      label="Name"
+      width="120">
+    </el-table-column>
+    <el-table-column
+      property="address"
+      label="Address"
+      show-overflow-tooltip>
+    </el-table-column>
+  </el-table>
   </div>
 </template>
 <script>
 export default {
   data () {
-    let tableData = Array(11).fill({
-      date: '2016-05-03',
-      name: 'Tom',
-      state: 'California',
-      city: 'Los Angeles',
-      address: 'No. 189, Grove St, Los Angeles',
-      zip: 'CA 90036'
+    let tableData = Array(11).fill({}).map((_, i) => {
+      return {
+        date: `2016-05-${i}`,
+        name: 'Tom',
+        state: 'California',
+        city: 'Los Angeles',
+        address: 'No. 189, Grove St, Los Angeles',
+        zip: 'CA 90036'
+      }
     })
 
     return {
