@@ -4,6 +4,7 @@ django-filter==0.15.3
 django-rest-auth==0.8.2
 djangorestframework==3.5.2
 djangorestframework-jwt==1.8.0
+jsonfield==1.0.3
 PyJWT==1.4.2
 PyMySQL==0.7.9
 pytz==2016.7
