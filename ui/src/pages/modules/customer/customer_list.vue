@@ -1,13 +1,38 @@
 <template>
   <div>
+    <el-breadcrumb separator="/" class="breadcrumb-bar">
+      <el-breadcrumb-item :to="{ path: '/' }">Home</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/customer'}">客户管理</el-breadcrumb-item>
+      <el-breadcrumb-item>客户列表</el-breadcrumb-item>
+    </el-breadcrumb>
+    <el-form :inline="true" :model="customerListForm" >
+      <el-form-item>
+        <el-input placeholder="Code / Name" v-model="customerListForm.q">
+          <el-button slot="append" icon="search" @click="search"></el-button>
+        </el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" size="small">
+          <router-link :to="{ name: 'customerCustomerNew' }">
+            <i class="el-icon-plus"></i>
+          </router-link>
+        </el-button>
+        <el-button type="danger" size="small"
+          :disabled="multipleSelection.length==0"
+          @click="removeItems">
+          <i class="el-icon-close"></i>
+        </el-button>
+      </el-form-item>
+    </el-form>
     <el-table
       :data="tableData"
-      border
+      :stripe="true"
       selection-mode="multiple"
       style="width: 100%"
       @selection-change="handleSelectionChange">
       <el-table-column
         type="selection"
+        fixed
         width="50">
       </el-table-column>
       <el-table-column
@@ -54,7 +79,6 @@
           </el-button>
           <el-button
             size="small"
-            type="danger"
             @click="handleDelete($index, row)">
             <i class="el-icon-close"></i>
           </el-button>
@@ -64,18 +88,18 @@
     <el-pagination
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :current-page="1"
+      :current-page="pagination.page"
       :page-sizes="[10, 20, 50, 100]"
-      :page-size="10"
+      :page-size="pagination.pageSize"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="tableData.length">
+      :total="pagination.itemTotal">
     </el-pagination>
   </div>
 </template>
 <script>
 export default {
   data () {
-    let tableData = Array(11).fill({}).map((_, i) => {
+    let tableData = Array(3).fill({}).map((_, i) => {
       return {
         date: `2016-05-${i}`,
         name: 'Tom',
@@ -85,10 +109,17 @@ export default {
         zip: 'CA 90036'
       }
     })
-
     return {
       tableData: tableData,
-      multipleSelection: []
+      multipleSelection: [],
+      customerListForm: {
+        q: ''
+      },
+      pagination: {
+        page: 1,
+        pageSize: 10,
+        itemTotal: 0
+      }
     }
   },
   methods: {
@@ -102,11 +133,25 @@ export default {
       this.multipleSelection = val
     },
     handleSizeChange (val) {
-      console.log(`${val} items per page`)
+      this.pagination.pageSize = val
     },
     handleCurrentChange (val) {
-      console.log(`current page: ${val}`)
+      this.pagination.page = val
+    },
+    search () {
+      console.log(`search with q: ${this.customerListForm.q}, pagination: ${this.pagination}`)
+    },
+    removeItems () {
+      if (this.multipleSelection.length > 0) {
+        this.doRemoveItems(this.multipleSelection)
+      }
+    },
+    doRemoveItems (items) {
+      console.log(`remove items: ${items}`)
     }
+  },
+  mounted () {
+    this.search()
   }
 }
 </script>
