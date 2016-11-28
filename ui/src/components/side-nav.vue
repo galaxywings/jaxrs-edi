@@ -1,6 +1,5 @@
 <template>
   <el-menu default-active="1"
-    class="el-menu-vertical-demo"
     :router="true">
     <el-submenu index="1">
       <template slot="title"><i class="el-icon-message"></i>导航1</template>
@@ -33,7 +32,3 @@
 
 <script>
 </script>
-
-<style>
-
-</style>
