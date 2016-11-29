@@ -9,11 +9,11 @@
         xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
         xmlns:spring="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
-http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
-http://www.mulesoft.org/schema/mule/amqp http://www.mulesoft.org/schema/mule/amqp/current/mule-amqp.xsd
-http://www.mulesoft.org/schema/mule/redis http://www.mulesoft.org/schema/mule/redis/current/mule-redis.xsd
-http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+        http://www.mulesoft.org/schema/mule/amqp http://www.mulesoft.org/schema/mule/amqp/current/mule-amqp.xsd
+        http://www.mulesoft.org/schema/mule/redis http://www.mulesoft.org/schema/mule/redis/current/mule-redis.xsd
+        http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
 
     <!-- HTTP -->
     <http:listener-config name="HTTP_Listener_Configuration" host="${http.bind.interface}" port="${http.port}"
@@ -27,7 +27,7 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
         <spring:bean id="mysqlDataSource" name="mysqlDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
                      scope="singleton">
             <spring:property name="driverClass" value="com.mysql.jdbc.Driver"/>
-            <spring:property name="jdbcUrl" value="jdbc:mysql://${mysql.host}:3306/${mysql.database}"/>
+            <spring:property name="jdbcUrl" value="jdbc:mysql://${mysql.host}:${mysql.port}/${mysql.database}"/>
             <spring:property name="user" value="${mysql.username}"/>
             <spring:property name="password" value="${mysql.password}"/>
         </spring:bean>

@@ -26,19 +26,20 @@ http://www.mulesoft.org/schema/mule/mulerequester http://www.mulesoft.org/schema
 http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd">
 
     <flow name="configuratorFlow">
-        <amqp:inbound-endpoint queueName="configurator.inbox"
-                               connector-ref="defaultAmqpConnector"/>
+        <amqp:inbound-endpoint queueName="configurator.inbox" connector-ref="defaultAmqpConnector"/>
 
         <set-variable variableName="originalMessage" value="#[payload]"/>
+
         <byte-array-to-string-transformer/>
 
-        <redis:get key="mule:job:#[payload]:config" config-ref="Redis_Configuration"/>
-        <logger level="INFO" message="Getting configuration for #[payload] from DASHBOARD"/>
+        <logger level="INFO" message="#[message.inboundProperties.'MULE_CORRELATION_ID']"/>
 
-        <json:object-to-json-transformer/>
-        <json:json-to-object-transformer returnClass="java.util.Map"/>
+        <!--<redis:get key="mule:job:#[payload]:config" config-ref="Redis_Configuration"/>-->
 
-        <amqp:outbound-endpoint connector-ref="defaultAmqpConnector" queueName="outbox"/>
+        <!--<json:object-to-json-transformer/>-->
+        <!--<json:json-to-object-transformer returnClass="java.util.Map"/>-->
+
+        <amqp:outbound-endpoint connector-ref="defaultAmqpConnector" queueName="test.inbox"/>
         <exception-strategy ref="SentToQueue_Strategy"/>
     </flow>
 

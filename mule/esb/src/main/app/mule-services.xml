@@ -18,8 +18,7 @@ http://www.mulesoft.org/schema/mule/amqp http://www.mulesoft.org/schema/mule/amq
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
 http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
 http://www.mulesoft.org/schema/mule/ftp http://www.mulesoft.org/schema/mule/ftp/current/mule-ftp.xsd
-http://www.mulesoft.org/schema/mule/mulerequester http://www.mulesoft.org/schema/mule/mulerequester/1.0-SNAPSHOT/mule-mulerequester.xsd
-http://www.mulesoft.org/schema/mule/documentation">
+http://www.mulesoft.org/schema/mule/mulerequester http://www.mulesoft.org/schema/mule/mulerequester/1.0-SNAPSHOT/mule-mulerequester.xsd">
 
     <!--
     <flow name="greetFlow">
@@ -49,11 +48,7 @@ http://www.mulesoft.org/schema/mule/documentation">
     -->
 
     <flow name="muleServiceFlow">
-        <http:listener config-ref="HTTP_Listener_Configuration" path="/mule/manage/{action}">
-            <http:response-builder>
-                <http:header headerName="Content-Type" value="application/json"/>
-            </http:response-builder>
-        </http:listener>
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/mule/manage/{action}" />
 
         <set-variable variableName="method" value="#[message.inboundProperties.'http.uri.params'.action]"/>
         <object-to-string-transformer/>
@@ -61,6 +56,8 @@ http://www.mulesoft.org/schema/mule/documentation">
         <component>
             <singleton-object class="com.wjelogistics.edi.esb.component.MuleService"/>
         </component>
+
+        <set-property propertyName="Content-Type" value="application/json" />
     </flow>
 
     <flow name="schedulerManageFlow">
@@ -84,7 +81,6 @@ http://www.mulesoft.org/schema/mule/documentation">
             </otherwise>
         </choice>
     </flow>
-
 
     <flow name="serviceDefsFlow">
         <http:listener config-ref="HTTP_Listener_Configuration" path="/mule/services.json">

@@ -18,8 +18,7 @@ http://www.mulesoft.org/schema/mule/amqp http://www.mulesoft.org/schema/mule/amq
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
 http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
 http://www.mulesoft.org/schema/mule/ftp http://www.mulesoft.org/schema/mule/ftp/current/mule-ftp.xsd
-http://www.mulesoft.org/schema/mule/mulerequester http://www.mulesoft.org/schema/mule/mulerequester/1.0-SNAPSHOT/mule-mulerequester.xsd
-http://www.mulesoft.org/schema/mule/documentation">
+http://www.mulesoft.org/schema/mule/mulerequester http://www.mulesoft.org/schema/mule/mulerequester/1.0-SNAPSHOT/mule-mulerequester.xsd">
 
     <flow name="testFlow">
         <amqp:inbound-endpoint queueName="test.inbox"
@@ -30,7 +29,8 @@ http://www.mulesoft.org/schema/mule/documentation">
         <set-session-variable variableName="WUJIE_STEP2_PARAM1" value="### 2222222 ###"/>
         <set-session-variable variableName="WUJIE_STEP3_PARAM1" value="### 3333333 ###"/>
 
-        <logger level="INFO"/>
+        <logger level="INFO" message="#[message.inboundProperties.'MULE_CORRELATION_ID']"/>
+
         <amqp:outbound-endpoint connector-ref="defaultAmqpConnector" queueName="step1.inbox"/>
     </flow>
 
@@ -45,25 +45,37 @@ http://www.mulesoft.org/schema/mule/documentation">
         <set-variable variableName="FTP_USERNAME" value="#[sessionVars.WUJIE_FTP_STRING_USERNAME]" />
         <set-variable variableName="FTP_FILE" value="#[sessionVars.WUJIE_FTP_BLOB_FILE]" />
 
-        <!-- Suppose we need ftp server, username, password, path -->
+        <!-- Suppose we need ftp server, username, password, path
         <logger level="INFO" message="#[sessionVars.WUJIE_FTP_SERVER]" />
         <logger level="INFO" message="#[sessionVars.WUJIE_FTP_USERNAME]" />
-
         <logger level="INFO" message="#[sessionVars.WUJIE_STEP1_PARAM1]"/>
+        -->
+
+        <logger level="INFO" message="#[message.inboundProperties.'MULE_CORRELATION_ID']"/>
+
         <amqp:outbound-endpoint connector-ref="defaultAmqpConnector" queueName="step2.inbox"/>
     </flow>
 
     <flow name="service-Step2">
         <amqp:inbound-endpoint queueName="step2.inbox"
                                connector-ref="defaultAmqpConnector"/>
+        <!--
         <logger level="INFO" message="#[sessionVars.WUJIE_STEP2_PARAM1]"/>
+        -->
+
+        <logger level="INFO" message="#[message.inboundProperties.'MULE_CORRELATION_ID']"/>
+
         <amqp:outbound-endpoint connector-ref="defaultAmqpConnector" queueName="step3.inbox"/>
     </flow>
 
     <flow name="service-Step3">
         <amqp:inbound-endpoint queueName="step3.inbox"
                                connector-ref="defaultAmqpConnector"/>
+        <!--
         <logger level="INFO" message="#[sessionVars.WUJIE_STEP3_PARAM1]"/>
+        -->
+        <logger level="INFO" message="#[message.inboundProperties.'MULE_CORRELATION_ID']"/>
+
         <amqp:outbound-endpoint connector-ref="defaultAmqpConnector" queueName="test.outbox"/>
     </flow>
 

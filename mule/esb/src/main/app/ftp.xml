@@ -21,57 +21,34 @@ http://www.mulesoft.org/schema/mule/mulerequester http://www.mulesoft.org/schema
 
     <!-- Use Mule Requester to get files from FTP -->
 
-    <mulerequester:config name="Mule_Requester" doc:name="Mule Requester"/>
+    <mulerequester:config name="Mule_Requester" />
     <ftp:connector name="FTPConfig" doc:name="FTP" validateConnections="true"/>
 
     <flow name="service-ftp">
         <amqp:inbound-endpoint queueName="ftp.inbox"
                                connector-ref="defaultAmqpConnector"/>
 
+        <!-- Get config from redis? mule:job:12345 1 -->
+        <!-- mule:job:12345:seq is a list -->
+
+        <!-- Potential concurrency problem ... -->
+
         <set-variable variableName="ftpServer" value="#[sessionVars.FTP_SERVER]" />
-        <set-variable variableName="ftpSername" value="#[sessionVars.FTP_USERNAME]" />
+        <set-variable variableName="ftpUsername" value="#[sessionVars.FTP_USERNAME]" />
         <set-variable variableName="ftpPassword" value="#[sessionVars.FTP_PASSWORD]" />
+        <set-variable variableName="ftpPort" value="#[sessionVars.FTP_PASSWORD]" />
         <set-variable variableName="ftpPath" value="#[sessionVars.FTP_PATH]" />
 
         <mulerequester:request-collection config-ref="Mule_Requester" count="-1"
-                                          resource="ftp://john:123456@kbuntu:21/#[message.inboundProperties.'http.uri.params'.customerId]/inbox/?connector=FTPConfig"/>
+            resource="ftp://#[flowVars.ftpUsername]:#[flowVars.ftpPassword]@#[flowVars.ftpServer]
+            :#[flowVars.ftpPort]/#[flowVars.ftpPath]/inbox/?connector=FTPConfig"/>
 
         <foreach collection="#[payload]">
             <amqp:outbound-endpoint connector-ref="defaultAmqpConnector" queueName="ftp.outbox"/>
             <logger level="INFO" />
         </foreach>
 
-        <set-payload value="Done!" />
-
         <exception-strategy ref="SentToQueue_Strategy" />
     </flow>
 
-    <!--
-    <flow name="uploadFilesToFtp">
-        <amqp:inbound-endpoint queueName="ftp-inbox"
-                               connector-ref="defaultAmqpConnector"/>
-
-        <enricher doc:name="Message Enricher">
-            <db:select config-ref="MySQL_Configuration" doc:name="Database">
-                <db:parameterized-query><![CDATA[select body from entities where id = 3;]]></db:parameterized-query>
-            </db:select>
-            <enrich target="#[flowVars['ftp_host']]" source="#[payload[0].body]" />
-            <enrich target="#[flowVars['ftp_user']]" source="#[payload[0].body]" />
-            <enrich target="#[flowVars['ftp_password']]" source="#[payload[0].body]" />
-            <enrich target="#[flowVars['ftp_path']]" source="#[payload[0].body]" />
-
-        </enricher>
-
-        <byte-array-to-string-transformer/>
-
-        <logger level="INFO"/>
-
-        <catch-exception-strategy doc:name="Catch Exception Strategy">
-            <set-payload value="#[flowVars['originalMessage']]" doc:name="Set Payload"/>
-            <set-property propertyName="EXCEPTION_SUMMARY" value="#[exception.getSummaryMessage()]"
-                          doc:name="Property"/>
-            <amqp:outbound-endpoint connector-ref="defaultAmqpConnector" queueName="dead.letter"/>
-        </catch-exception-strategy>
-    </flow>
-    -->
 </mule>

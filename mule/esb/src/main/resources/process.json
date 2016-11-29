@@ -1,22 +1,39 @@
 {
-  "desc" : "Dashboard schedules",
-  "processes": [
+  "id": 1,
+  "steps": [
     {
-      "id": 1,
-      "name": "Test process 1",
-      "steps": [
+      "service": "ftp",
+      "params": [
         {
-          "seq": 1,
-          "service": "ftp",
-          "params": [
-            {"host": "kbuntu"},
-            {"username": "john"},
-            {"password": "123456"},
-            {"port": 21}
-          ]
+          "host": "kbuntu"
+        },
+        {
+          "username": "john"
+        },
+        {
+          "password": "123456"
+        },
+        {
+          "port": 21
         }
       ]
-
+    },
+    {
+      "service": "ftp",
+      "params": [
+        {
+          "host": "kbuntu"
+        },
+        {
+          "username": "john"
+        },
+        {
+          "password": "123456"
+        },
+        {
+          "port": 21
+        }
+      ]
     }
   ]
 }

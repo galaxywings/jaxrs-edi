@@ -1,0 +1,23 @@
+#** GENERATED CONTENT ** Mule Custom Properties file.
+#Tue Oct 11 23:50:48 CST 2016
+
+# Scheduler
+scheduler.jobs.key=mule:jobs
+scheduler.frequency.key=mule:frequency
+
+# Http
+http.bind.interface=0.0.0.0
+http.port=8081
+
+# MySQL
+mysql.host=localhost
+mysql.port=3306
+mysql.username=wujie
+mysql.password=wujie
+mysql.database=wujie
+
+# RabbitMQ
+
+# Redis
+redis.host=localhost
+redis.port=6379
