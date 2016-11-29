@@ -255,10 +255,10 @@ REST_FRAMEWORK = {
                                 'common.filters.RelatedOrderingFilter'), 
     'SEARCH_PARAM': 'q',
     'ORDERING_PARAM': 'ordering', 
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'DEFAULT_PAGINATION_CLASS': 'common.pagination.StandardResultsSetPagination',
     'PAGE_SIZE': 20,
     #'PAGE_QUERY_PARAM': 'page', # sadly no this config, 'page' already is the default query param for this PageNumberPagination
-    'PAGINATE_BY_PARAM': 'page_size',
+    #'PAGINATE_BY_PARAM': 'page_size', # this is also in REMOVED_SETTINGS
 }
 QS_JWT_KEY = 'jwt' # for authx.authentication to parse query_params if any jwt
 
