@@ -53,7 +53,7 @@ export default [
             component: require('./pages/modules/customer/customer_list')
           },
           {
-            path: 'customers/:id',
+            path: 'customers/:id/edit',
             name: 'customerCustomerEdit',
             component: require('./pages/modules/customer/customer_edit')
           },

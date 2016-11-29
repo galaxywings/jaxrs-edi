@@ -8,7 +8,7 @@
     <el-form :inline="true" :model="customerListForm" >
       <el-form-item>
         <el-input placeholder="Code / Name" v-model="customerListForm.q">
-          <el-button slot="append" icon="search" @click="search"></el-button>
+          <el-button slot="append" icon="search" @click.native="search"></el-button>
         </el-input>
       </el-form-item>
       <el-form-item>
@@ -27,6 +27,7 @@
     <el-table
       :data="tableData"
       :stripe="true"
+      v-loading="isLoadingData"
       selection-mode="multiple"
       style="width: 100%"
       @selection-change="handleSelectionChange">
@@ -36,8 +37,8 @@
         width="50">
       </el-table-column>
       <el-table-column
-        prop="date"
-        label="Date"
+        prop="code"
+        label="Code"
         width="150">
       </el-table-column>
       <el-table-column
@@ -46,24 +47,13 @@
         width="120">
       </el-table-column>
       <el-table-column
-        prop="state"
-        label="State"
+        prop="active"
+        label="Active"
+        :filters="[{ text: 'Enabled', value: 'Enabled' }, { text: 'Disabled', value: 'Disabled' }]"
+        :filter-method="filterActive"
+        inline-template
         width="120">
-      </el-table-column>
-      <el-table-column
-        prop="city"
-        label="City"
-        width="120">
-      </el-table-column>
-      <el-table-column
-        prop="address"
-        label="Address"
-        width="300">
-      </el-table-column>
-      <el-table-column
-        prop="zip"
-        label="Zip"
-        width="120">
+        <el-tag :type="row.active? 'primary' : 'success'" close-transition>{{row.active? 'Enabled': 'Disabled'}}</el-tag>
       </el-table-column>
       <el-table-column
         :context="_self"
@@ -97,21 +87,14 @@
   </div>
 </template>
 <script>
+import _ from 'lodash'
+
 export default {
   data () {
-    let tableData = Array(3).fill({}).map((_, i) => {
-      return {
-        date: `2016-05-${i}`,
-        name: 'Tom',
-        state: 'California',
-        city: 'Los Angeles',
-        address: 'No. 189, Grove St, Los Angeles',
-        zip: 'CA 90036'
-      }
-    })
     return {
-      tableData: tableData,
+      tableData: [],
       multipleSelection: [],
+      isLoadingData: false,
       customerListForm: {
         q: ''
       },
@@ -124,23 +107,51 @@ export default {
   },
   methods: {
     handleEdit ($index, row) {
-      console.log($index, row)
-    },
-    handleClose ($index, row) {
-      console.log($index, row)
+      this.$router.push({name: 'customerCustomerEdit', params: {id: row.id}})
     },
     handleSelectionChange (val) {
       this.multipleSelection = val
     },
     handleSizeChange (val) {
       this.pagination.pageSize = val
+      this.search()
     },
     handleCurrentChange (val) {
       this.pagination.page = val
+      this.search()
     },
-    search () {
-      console.log(`search with q: ${this.customerListForm.q}, pagination: ${this.pagination}`)
-    },
+    search: _.debounce(function () {
+      // should go with format _.debounce( function () {...} )
+      this.isLoadingData = true
+      this.$http.get('/api/v1/customer/customers/',
+        {
+          params: {
+            q: this.customerListForm.q,
+            page: this.pagination.page,
+            page_size: this.pagination.pageSize
+          }
+        }).then((response) => {
+          // use response.body to avoid nested hell
+          let data = response.body
+          this.pagination.itemTotal = data.count
+          this.$set(this, 'tableData', data.results)
+          // response.json().then((res) => {
+          //   this.pagination.itemTotal = res.count
+          //   this.$set(this, 'tableData', res.results)
+          // })
+        }, (response) => {
+          let msg = 'Empty Response'
+          if (response) {
+            msg = response.body.detail
+          }
+          this.$notify.error({
+            title: response.statusText,
+            message: msg
+          })
+        }).finally(() => {
+          this.isLoadingData = false
+        })
+    }, 500),
     removeItems () {
       if (this.multipleSelection.length > 0) {
         this.doRemoveItems(this.multipleSelection)
@@ -148,6 +159,18 @@ export default {
     },
     doRemoveItems (items) {
       console.log(`remove items: ${items}`)
+    },
+    filterActive (value, row) {
+      if (value === 'Enabled') {
+        return row.active
+      } else {
+        return !row.active
+      }
+    }
+  },
+  watch: {
+    'customerListForm.q': function () {
+      this.search()
     }
   },
   mounted () {
