@@ -249,7 +249,8 @@ REST_FRAMEWORK = {
     # this should align the same as django GenericListView paginate_by, page_size mechanism
     'DEFAULT_FILTER_BACKENDS': (
                                 #'url_filter.integrations.drf.DjangoFilterBackend',
-                                'rest_framework.filters.DjangoFilterBackend',
+                                #'rest_framework.filters.DjangoFilterBackend',
+                                'django_filters.rest_framework.DjangoFilterBackend',
                                 'rest_framework.filters.SearchFilter',
                                 #'rest_framework.filters.OrderingFilter', 
                                 'common.filters.RelatedOrderingFilter'), 
