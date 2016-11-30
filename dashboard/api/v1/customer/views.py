@@ -1,16 +1,19 @@
 
 from rest_framework.decorators import list_route
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
+from rest_framework_bulk.generics import BulkModelViewSet
 
+from api.v1.customer.filtersets import CustomerGenericFilterSet
 from api.v1.customer.serializers import CustomerSerializer
 from authx.permissions import IsAdminUser
 from customer.models import Customer
 
 
-class CustomerViewSet(ModelViewSet):
+class CustomerViewSet(BulkModelViewSet):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
+    filter_class = CustomerGenericFilterSet
+    search_fields = ('code', 'name')
     permission_classes = (IsAdminUser, )
     
     @list_route(
