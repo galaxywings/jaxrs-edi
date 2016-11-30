@@ -1,0 +1,53 @@
+swagger: '2.0'
+
+info:
+  version: "0.0.1"
+  title: Wujie Mule APIs
+
+basePath: /mule
+schemes:
+  - http
+produces:
+  - application/json
+
+paths:
+  /services:
+    get:
+      description: |
+        Gets `Service` objects.
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/definitions/Service'
+
+definitions:
+  Service:
+    type: object
+    properties:
+      name:
+        type: string
+      display_name:
+        type: string
+      params:
+        type: array
+        items:
+              $ref: '#/definitions/ServiceParam'
+  ServiceParam:
+    type: object
+    properties:
+      name:
+        type: string
+      display_name:
+        type: string
+      desc:
+        type: string
+      is_optional:
+        type: boolean
+      param_type:
+        type: string
