@@ -53,7 +53,7 @@
         :filter-method="filterActive"
         inline-template
         width="120">
-        <el-tag :type="row.active? 'primary' : 'success'" close-transition>{{row.active? 'Enabled': 'Disabled'}}</el-tag>
+        <el-tag :type="row.active? 'primary' : 'dark'" close-transition>{{row.active? 'Enabled': 'Disabled'}}</el-tag>
       </el-table-column>
       <el-table-column
         :context="_self"
@@ -84,6 +84,20 @@
       layout="total, sizes, prev, pager, next, jumper"
       :total="pagination.itemTotal">
     </el-pagination>
+    <el-dialog title="Sure to delete" v-model="removeDialogVisible">
+      <el-table :data="toBeRemoved" :stripe="true">
+        <el-table-column property="code" label="Code" width="150"></el-table-column>
+        <el-table-column property="name" label="Name" width="200"></el-table-column>
+        <el-table-column property="active" label="Active" inline-template>
+          <el-tag :type="row.active? 'primary' : 'success'" close-transition>{{row.active? 'Enabled': 'Disabled'}}</el-tag>
+        </el-table-column>
+      </el-table>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click.native="removeDialogVisible = false">Cancel</el-button>
+        <el-button type="primary" @click.native="doRemoveItems">Confirm</el-button>
+      </span>
+    </el-dialog>
+
   </div>
 </template>
 <script>
@@ -102,7 +116,9 @@ export default {
         page: 1,
         pageSize: 10,
         itemTotal: 0
-      }
+      },
+      toBeRemoved: [],
+      removeDialogVisible: false
     }
   },
   methods: {
@@ -154,11 +170,34 @@ export default {
     }, 500),
     removeItems () {
       if (this.multipleSelection.length > 0) {
-        this.doRemoveItems(this.multipleSelection)
+        this.$set(this, 'toBeRemoved', this.multipleSelection)
+        this.removeDialogVisible = true
       }
     },
-    doRemoveItems (items) {
-      console.log(`remove items: ${items}`)
+    handleDelete ($index, row) {
+      this.$set(this, 'toBeRemoved', [row])
+      this.removeDialogVisible = true
+    },
+    doRemoveItems () {
+      let toBeRemovedIds = this.toBeRemoved.map(x => x.id).join(',')
+      this.$http.delete('/api/v1/customer/customers/', {
+        params: {
+          id__in: toBeRemovedIds
+        }
+      }).then((response) => {
+        this.search()
+      }, (response) => {
+        let msg = 'Empty Response'
+        if (response) {
+          msg = response.body.detail
+        }
+        this.$notify.error({
+          title: response.statusText,
+          message: msg
+        })
+      }).finally(() => {
+        this.removeDialogVisible = false
+      })
     },
     filterActive (value, row) {
       if (value === 'Enabled') {
