@@ -91,7 +91,7 @@ export default [
             component: require('./pages/modules/task/process_list')
           },
           {
-            path: 'processes/:id',
+            path: 'processes/:id/edit',
             name: 'taskProcessEdit',
             component: require('./pages/modules/task/process_edit')
           },

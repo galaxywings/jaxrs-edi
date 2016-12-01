@@ -6,7 +6,7 @@
     </el-menu-item>
     <el-submenu index="/customer">
       <template slot="title"><i class="el-icon-setting"></i>客户管理</template>
-      <el-menu-item index="/customer/costomers/new">新建客户</el-menu-item>
+      <el-menu-item index="/customer/customers/new">新建客户</el-menu-item>
       <el-menu-item index="/customer/customers">客户列表</el-menu-item>
     </el-submenu>
     <el-submenu index="/task">
