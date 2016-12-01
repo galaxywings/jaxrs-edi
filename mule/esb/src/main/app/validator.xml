@@ -20,7 +20,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 
     <flow name="validator">
 
-        <amqp:inbound-endpoint queueName="validator-inbox"
+        <amqp:inbound-endpoint queueName="validator-inbox" queueDurable="true"
                                connector-ref="defaultAmqpConnector"/>
 
         <!--<http:listener path="/{amount}" doc:name="HTTP Connector" config-ref="http_conf"/>-->

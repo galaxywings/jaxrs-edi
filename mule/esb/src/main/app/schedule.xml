@@ -29,8 +29,15 @@
         </poll>
           
         <expression-filter expression="#[payload != empty]"/>
-        <collection-splitter/>
-        <logger level="INFO" message="#[payload]"/>
-        <amqp:outbound-endpoint connector-ref="defaultAmqpConnector" queueName="configurator.inbox"/>
+        <!-- https://docs.mulesoft.com/mule-user-guide/v/3.8/splitter-flow-control-reference -->
+        <collection-splitter />
+
+        <set-property propertyName="MULE_CORRELATION_ID" value="#[message.correlationId + '-'
+         + message.correlationSequence]" />
+
+        <amqp:outbound-endpoint connector-ref="defaultAmqpConnector"
+                                queueName="configurator.inbox" queueDurable="true"/>
+
+        <exception-strategy ref="SentToQueue_Strategy" />
     </flow>
 </mule>

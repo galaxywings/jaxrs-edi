@@ -25,13 +25,10 @@ http://www.mulesoft.org/schema/mule/mulerequester http://www.mulesoft.org/schema
     <ftp:connector name="FTPConfig" doc:name="FTP" validateConnections="true"/>
 
     <flow name="service-ftp">
-        <amqp:inbound-endpoint queueName="ftp.inbox"
+        <amqp:inbound-endpoint queueName="ftp.inbox" queueDurable="true"
                                connector-ref="defaultAmqpConnector"/>
 
-        <!-- Get config from redis? mule:job:12345 1 -->
-        <!-- mule:job:12345:seq is a list -->
-
-        <!-- Potential concurrency problem ... -->
+        <flow-ref name="serviceCommonFlow" />
 
         <set-variable variableName="ftpServer" value="#[sessionVars.FTP_SERVER]" />
         <set-variable variableName="ftpUsername" value="#[sessionVars.FTP_USERNAME]" />
@@ -45,6 +42,8 @@ http://www.mulesoft.org/schema/mule/mulerequester http://www.mulesoft.org/schema
 
         <foreach collection="#[payload]">
             <amqp:outbound-endpoint connector-ref="defaultAmqpConnector" queueName="ftp.outbox"/>
+            <set-property propertyName="MULE_CORRELATION_ID" value="#[message.correlationId + '-'
+         + message.correlationSequence]" />
             <logger level="INFO" />
         </foreach>
 

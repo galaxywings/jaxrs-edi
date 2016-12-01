@@ -2,7 +2,7 @@
   "id": 1,
   "steps": [
     {
-      "service": "ftp",
+      "service": "ftpInbound",
       "params": [
         {
           "host": "kbuntu"

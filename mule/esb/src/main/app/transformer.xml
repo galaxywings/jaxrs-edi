@@ -16,7 +16,7 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 
     <flow name="service-smooks-transformer">
 
-        <amqp:inbound-endpoint queueName="inbox"
+        <amqp:inbound-endpoint queueName="inbox" queueDurable="true"
                                connector-ref="defaultAmqpConnector"/>
         <set-variable variableName="originalMessage" value="#[payload]" doc:name="Variable"/>
 

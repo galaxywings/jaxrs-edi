@@ -26,20 +26,24 @@ http://www.mulesoft.org/schema/mule/mulerequester http://www.mulesoft.org/schema
 http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd">
 
     <flow name="configuratorFlow">
-        <amqp:inbound-endpoint queueName="configurator.inbox" connector-ref="defaultAmqpConnector"/>
+        <amqp:inbound-endpoint queueName="configurator.inbox" queueDurable="true" connector-ref="defaultAmqpConnector"/>
 
         <set-variable variableName="originalMessage" value="#[payload]"/>
 
         <byte-array-to-string-transformer/>
 
-        <logger level="INFO" message="#[message.inboundProperties.'MULE_CORRELATION_ID']"/>
+        <redis:get key="mule:job:#[payload]:config" config-ref="Redis_Configuration"/>
+        <!-- org.mule.module.json.transformers.JsonToObject.transformMessage
+             Can read from bytes array directly.
+        -->
+        <json:json-to-object-transformer returnClass="java.util.Map"/>
 
-        <!--<redis:get key="mule:job:#[payload]:config" config-ref="Redis_Configuration"/>-->
+        <set-session-variable variableName="WUJIE_PROCESS_SEQ" value="#[payload.seq]"/>
 
-        <!--<json:object-to-json-transformer/>-->
-        <!--<json:json-to-object-transformer returnClass="java.util.Map"/>-->
+        <!--<redis:set key="mule:job:#[message.inboundProperties.'MULE_CORRELATION_ID']" value="#[payload.seq]"-->
+                   <!--config-ref="Redis_Configuration" />-->
 
-        <amqp:outbound-endpoint connector-ref="defaultAmqpConnector" queueName="test.inbox"/>
+        <amqp:outbound-endpoint connector-ref="defaultAmqpConnector" queueName="#[ payload.seq.split(',', 2)[0] + '.inbox']"/>
         <exception-strategy ref="SentToQueue_Strategy"/>
     </flow>
 

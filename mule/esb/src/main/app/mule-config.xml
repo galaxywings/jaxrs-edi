@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule
-        xmlns:db="http://www.mulesoft.org/schema/mule/db"
+<mule   xmlns:db="http://www.mulesoft.org/schema/mule/db"
         xmlns:http="http://www.mulesoft.org/schema/mule/http"
         xmlns="http://www.mulesoft.org/schema/mule/core"
         xmlns:amqp="http://www.mulesoft.org/schema/mule/amqp"
@@ -19,8 +18,13 @@
     <http:listener-config name="HTTP_Listener_Configuration" host="${http.bind.interface}" port="${http.port}"
                           doc:name="HTTP Listener Configuration"/>
 
-    <!-- RabbitMQ -->
-    <amqp:connector name="defaultAmqpConnector"/>
+    <!-- RabbitMQ
+         https://docs.mulesoft.com/mule-user-guide/v/3.8/amqp-connector
+    -->
+    <amqp:connector name="defaultAmqpConnector" host="${rabbitmq.host}" port="${rabbitmq.port}"
+                    username="${rabbitmq.username}" password="${rabbitmq.password}"
+                    virtualHost="${rabbitmq.virtualHost}" fallbackAddresses="${rabbitmq.fallbackAddresses}"
+                    activeDeclarationsOnly="true" />
 
     <!-- MySQL -->
     <spring:beans>
@@ -48,12 +52,28 @@
             <when expression="#[flowVars['originalMessage'] != null]">
                 <set-payload value="#[flowVars['originalMessage']]"/>
             </when>
+
+            <!-- Must have <otherwise> otherwise flow will fail if no <when> matched -->
+            <otherwise>
+                <set-payload value="Original message not available." />
+            </otherwise>
         </choice>
 
         <set-property propertyName="EXCEPTION_SUMMARY" value="#[exception.getSummaryMessage()]"/>
 
-        <amqp:outbound-endpoint connector-ref="defaultAmqpConnector" queueName="dead.letter">
+        <amqp:outbound-endpoint connector-ref="defaultAmqpConnector" queueName="dead.letter" queueDurable="true">
             <amqp:transaction action="JOIN_IF_POSSIBLE"/>
         </amqp:outbound-endpoint>
     </catch-exception-strategy>
+
+    <!-- https://docs.mulesoft.com/mule-user-guide/v/3.8/sharing-custom-configuration-fragments -->
+    <sub-flow name="serviceCommonFlow">
+        <!-- Set original message in order for exception strategy to recover -->
+        <set-variable variableName="originalMessage" value="#[payload]"/>
+
+        <!-- Remove current service from processing sequences -->
+        <set-session-variable variableName="WUJIE_PROCESS_SEQ"
+                              value="#[sessionVars.WUJIE_PROCESS_SEQ.contains(',') ?
+                              sessionVars.WUJIE_PROCESS_SEQ.split(',', 2)[1] : '']"/>
+    </sub-flow>
 </mule>

@@ -1,56 +1,22 @@
-{
-  "desc": "Mule Services Definitions",
-  "version": 0.01,
-  "services": [
-    {
-      "name": "ftp",
-      "params": [
-        {
-          "name": "host",
-          "optional": false,
-          "type": "string",
-          "displayName": "服务器",
-          "desc": "用户FTP服务器的地址"
-        },
-        {
-          "name": "username",
-          "optional": false,
-          "type": "string",
-          "displayName": "用户名",
-          "desc": "登录FTP所用的用户名"
-        },
-        }
-        {
-          "name": "password",
-          "optional": false,
-          "type": "string",
-          "displayName": "密码",
-          "desc": "登录FTP所用的密码"
-        }
-        {
-          "name": "port",
-          "optional": false,
-          "type": "int",
-          "displayName": "端口号",
-          "desc": "FTP服务器端口号"
-        },
-        {
-          "name": "metaFile",
-          "optional": true,
-          "type": "blob",
-          "displayName": "blob文件，测试用",
-          "desc": "blob文件，测试用"
-        }
-      ]
-    },
-
-    {
-      "name": "test2",
-      "params": []
-    },
-    {
-      "name": "test3",
-      "params": []
-    }
-  ]
-}
+[
+  {
+    "name": "ftp",
+    "display_name": "FTP读取",
+    "params": [
+      {
+        "name": "host",
+        "display_name": "主机名",
+        "desc": "FTP主机名",
+        "is_optional": false,
+        "param_type": "string"
+      },
+      {
+        "name": "port",
+        "display_name": "端口号",
+        "desc": "FTP端口号",
+        "is_optional": true,
+        "param_type": "int"
+      }
+    ]
+  }
+]

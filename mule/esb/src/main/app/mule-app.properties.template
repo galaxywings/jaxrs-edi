@@ -17,6 +17,12 @@ mysql.password=wujie
 mysql.database=wujie
 
 # RabbitMQ
+rabbitmq.host=localhost
+rabbitmq.port=5672
+rabbitmq.username=wujie
+rabbitmq.password=wujie
+rabbitmq.virtualHost=wujie
+rabbitmq.fallbackAddresses=
 
 # Redis
 redis.host=localhost
