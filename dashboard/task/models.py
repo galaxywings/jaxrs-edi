@@ -19,8 +19,8 @@ class Process(models.Model):
 class Service(models.Model):
     code = models.CharField(_('code'), max_length=128, help_text=_('Code for communication between different systems'))
     name = models.CharField(_('name'), max_length=128, help_text=_('Display name'))
-    params_meta = JSONField(load_kwargs={'object_pairs_hook': collections.OrderedDict},
-                            help_text=_('JSON object for detailing service params'))
+    params_schema = JSONField(load_kwargs={'object_pairs_hook': collections.OrderedDict},
+                            help_text=_('JSON schema for detailing service params'))
     
     class Meta:
         unique_together = (('code',), )
