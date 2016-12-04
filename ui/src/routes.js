@@ -21,7 +21,6 @@ export default [
   },
   {
     path: '/',
-    name: 'baseView',
     component: require('./pages/base'),
     children: [
       {
@@ -84,6 +83,11 @@ export default [
             path: 'services',
             name: 'taskServiceList',
             component: require('./pages/modules/task/service_list')
+          },
+          {
+            path: 'services/:id/edit',
+            name: 'taskServiceEdit',
+            component: require('./pages/modules/task/service_edit')
           },
           {
             path: 'processes',
