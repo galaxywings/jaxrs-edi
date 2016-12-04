@@ -29,30 +29,25 @@
       :stripe="true"
       v-loading="isLoadingData"
       selection-mode="multiple"
-      style="width: 100%"
       @selection-change="handleSelectionChange">
       <el-table-column
         type="selection"
-        fixed
-        width="50">
+        fixed>
       </el-table-column>
       <el-table-column
         prop="code"
-        label="Code"
-        width="150">
+        label="Code">
       </el-table-column>
       <el-table-column
         prop="name"
-        label="Name"
-        width="120">
+        label="Name">
       </el-table-column>
       <el-table-column
         prop="active"
         label="Active"
         :filters="[{ text: 'Enabled', value: 'Enabled' }, { text: 'Disabled', value: 'Disabled' }]"
         :filter-method="filterActive"
-        inline-template
-        width="120">
+        inline-template>
         <el-tag :type="row.active? 'primary' : 'dark'" close-transition>{{row.active? 'Enabled': 'Disabled'}}</el-tag>
       </el-table-column>
       <el-table-column
