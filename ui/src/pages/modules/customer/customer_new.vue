@@ -89,7 +89,7 @@ export default {
             })
           })
       })
-    })
+    }, 500)
   }
 }
 </script>

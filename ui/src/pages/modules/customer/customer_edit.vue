@@ -103,7 +103,7 @@ export default {
             })
           })
       })
-    })
+    }, 500)
   },
   mounted () {
     this.$http.get(this.apiEndpoint).then((response) => {
