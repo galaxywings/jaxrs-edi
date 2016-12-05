@@ -23,7 +23,7 @@
     <!-- Scheduler Beater -->
     <flow name="scheduleFlow">
         <poll>
-            <fixed-frequency-scheduler frequency="5" timeUnit="SECONDS" startDelay="0"/>
+            <fixed-frequency-scheduler frequency="${scheduler.beat.interval}" timeUnit="SECONDS" startDelay="5"/>
             <redis:get-schedule-jobs config-ref="Redis_Configuration" queueKey="${scheduler.jobs.key}"
                                      frequencyKey="${scheduler.frequency.key}"/>
         </poll>
@@ -34,6 +34,8 @@
 
         <set-property propertyName="MULE_CORRELATION_ID" value="#[message.correlationId + '-'
          + message.correlationSequence]" />
+
+        <logger level="INFO" message="#[message.outboundProperties.MULE_CORRELATION_ID]" />
 
         <amqp:outbound-endpoint connector-ref="defaultAmqpConnector"
                                 queueName="configurator.inbox" queueDurable="true"/>

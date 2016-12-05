@@ -28,11 +28,13 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
     <flow name="configuratorFlow">
         <amqp:inbound-endpoint queueName="configurator.inbox" queueDurable="true" connector-ref="defaultAmqpConnector"/>
 
+        <logger level="INFO" message="#['Enter configurator^^^' + message.outboundProperties.MULE_CORRELATION_ID]" />
+
         <set-variable variableName="originalMessage" value="#[payload]"/>
 
         <byte-array-to-string-transformer/>
-
-        <redis:get key="mule:job:#[payload]:config" config-ref="Redis_Configuration"/>
+        <set-session-variable variableName="WUJIE_JOB_ID" value="#[payload]" />
+        <redis:get key="mule:job:#[payload]" config-ref="Redis_Configuration"/>
         <!-- org.mule.module.json.transformers.JsonToObject.transformMessage
              Can read from bytes array directly.
         -->
@@ -43,7 +45,7 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
         <!--<redis:set key="mule:job:#[message.inboundProperties.'MULE_CORRELATION_ID']" value="#[payload.seq]"-->
                    <!--config-ref="Redis_Configuration" />-->
 
-        <amqp:outbound-endpoint connector-ref="defaultAmqpConnector" queueName="#[ payload.seq.split(',', 2)[0] + '.inbox']"/>
+        <amqp:outbound-endpoint connector-ref="defaultAmqpConnector" queueName="#[ sessionVars.WUJIE_PROCESS_SEQ.split(',', 2)[0].split(':')[0] + '.inbox']"/>
         <exception-strategy ref="SentToQueue_Strategy"/>
     </flow>
 

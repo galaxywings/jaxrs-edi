@@ -5,6 +5,8 @@
       xmlns="http://www.mulesoft.org/schema/mule/core"
       xmlns:amqp="http://www.mulesoft.org/schema/mule/amqp"
       xmlns:ftp="http://www.mulesoft.org/schema/mule/ftp"
+      xmlns:redis="http://www.mulesoft.org/schema/mule/redis"
+      xmlns:json="http://www.mulesoft.org/schema/mule/json"
       xmlns:spring="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xmlns:script="http://www.mulesoft.org/schema/mule/core"
       xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
@@ -14,40 +16,73 @@
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/amqp http://www.mulesoft.org/schema/mule/amqp/current/mule-amqp.xsd
+http://www.mulesoft.org/schema/mule/redis http://www.mulesoft.org/schema/mule/redis/current/mule-redis.xsd
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
 http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
 http://www.mulesoft.org/schema/mule/ftp http://www.mulesoft.org/schema/mule/ftp/current/mule-ftp.xsd
-http://www.mulesoft.org/schema/mule/mulerequester http://www.mulesoft.org/schema/mule/mulerequester/1.0-SNAPSHOT/mule-mulerequester.xsd">
+http://www.mulesoft.org/schema/mule/mulerequester http://www.mulesoft.org/schema/mule/mulerequester/1.0-SNAPSHOT/mule-mulerequester.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd">
 
     <!-- Use Mule Requester to get files from FTP -->
 
-    <mulerequester:config name="Mule_Requester" />
+    <mulerequester:config name="Mule_Requester"/>
     <ftp:connector name="FTPConfig" doc:name="FTP" validateConnections="true"/>
 
     <flow name="service-ftp">
         <amqp:inbound-endpoint queueName="ftp.inbox" queueDurable="true"
                                connector-ref="defaultAmqpConnector"/>
+        <flow-ref name="serviceBeforeFlow"/>
 
-        <flow-ref name="serviceCommonFlow" />
+        <enricher>
+            <processor-chain>
+                <redis:get key="mule:job:#[sessionVars.WUJIE_JOB_ID]" config-ref="Redis_Configuration"/>
+                <json:json-to-object-transformer returnClass="java.util.Map"/>
+            </processor-chain>
 
-        <set-variable variableName="ftpServer" value="#[sessionVars.FTP_SERVER]" />
-        <set-variable variableName="ftpUsername" value="#[sessionVars.FTP_USERNAME]" />
-        <set-variable variableName="ftpPassword" value="#[sessionVars.FTP_PASSWORD]" />
-        <set-variable variableName="ftpPort" value="#[sessionVars.FTP_PASSWORD]" />
-        <set-variable variableName="ftpPath" value="#[sessionVars.FTP_PATH]" />
+            <enrich target="#[flowVars.server]"
+                    source="#[seq = Integer.parseInt(flowVars['WUJIE_CURRENT_SEQ']); payload.config[seq].server;]"/>
+            <enrich target="#[flowVars.port]"
+                    source="#[seq = Integer.parseInt(flowVars['WUJIE_CURRENT_SEQ']); payload.config[seq].port;]"/>
+            <enrich target="#[flowVars.username]"
+                    source="#[seq = Integer.parseInt(flowVars['WUJIE_CURRENT_SEQ']); payload.config[seq].username;]"/>
+            <enrich target="#[flowVars.password]"
+                    source="#[seq = Integer.parseInt(flowVars['WUJIE_CURRENT_SEQ']); payload.config[seq].password;]"/>
+            <enrich target="#[flowVars.path]"
+                    source="#[seq = Integer.parseInt(flowVars['WUJIE_CURRENT_SEQ']); payload.config[seq].path;]"/>
+        </enricher>
+
+        <logger level="INFO" message="#['Enter requseter^^^' + message.outboundProperties.MULE_CORRELATION_ID]" />
+
 
         <mulerequester:request-collection config-ref="Mule_Requester" count="-1"
-            resource="ftp://#[flowVars.ftpUsername]:#[flowVars.ftpPassword]@#[flowVars.ftpServer]
-            :#[flowVars.ftpPort]/#[flowVars.ftpPath]/inbox/?connector=FTPConfig"/>
+                                          resource="ftp://#[flowVars.username]:#[flowVars.password]@#[flowVars.server]:#[flowVars.port]/#[flowVars.path]/?connector=FTPConfig"/>
 
-        <foreach collection="#[payload]">
-            <amqp:outbound-endpoint connector-ref="defaultAmqpConnector" queueName="ftp.outbox"/>
-            <set-property propertyName="MULE_CORRELATION_ID" value="#[message.correlationId + '-'
-         + message.correlationSequence]" />
-            <logger level="INFO" />
-        </foreach>
+        <choice>
+            <when expression="payload != empty">
+                <foreach collection="#[payload]">
+                    <set-property propertyName="MULE_CORRELATION_ID" value="#[message.correlationId + '-'
+         + message.correlationSequence]"/>
+                    <byte-array-to-string-transformer />
 
-        <exception-strategy ref="SentToQueue_Strategy" />
+                    <logger message="#[message.outboundProperties.MULE_CORRELATION_ID + '^^^' + payload]" level="INFO" />
+
+                    <choice>
+                        <when expression="sessionVars.WUJIE_PROCESS_SEQ != empty">
+                            <amqp:outbound-endpoint connector-ref="defaultAmqpConnector"
+                                                    queueName="#[sessionVars.WUJIE_PROCESS_SEQ.split(',', 2)[0] + '.inbox']"/>
+                        </when>
+                        <otherwise>
+                            <logger level="INFO" message="No service to call. This should be the last one."/>
+                        </otherwise>
+                    </choice>
+                </foreach>
+            </when>
+            <otherwise>
+                <logger message="FTP returned no files." level="WARN"/>
+            </otherwise>
+        </choice>
+
+        <exception-strategy ref="SentToQueue_Strategy"/>
     </flow>
 
 </mule>

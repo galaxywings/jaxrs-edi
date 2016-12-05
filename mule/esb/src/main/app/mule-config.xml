@@ -67,11 +67,12 @@
     </catch-exception-strategy>
 
     <!-- https://docs.mulesoft.com/mule-user-guide/v/3.8/sharing-custom-configuration-fragments -->
-    <sub-flow name="serviceCommonFlow">
+    <sub-flow name="serviceBeforeFlow">
         <!-- Set original message in order for exception strategy to recover -->
         <set-variable variableName="originalMessage" value="#[payload]"/>
 
         <!-- Remove current service from processing sequences -->
+        <set-variable variableName="WUJIE_CURRENT_SEQ" value="#[sessionVars.WUJIE_PROCESS_SEQ.split(',')[0].split(':')[1]]" />
         <set-session-variable variableName="WUJIE_PROCESS_SEQ"
                               value="#[sessionVars.WUJIE_PROCESS_SEQ.contains(',') ?
                               sessionVars.WUJIE_PROCESS_SEQ.split(',', 2)[1] : '']"/>

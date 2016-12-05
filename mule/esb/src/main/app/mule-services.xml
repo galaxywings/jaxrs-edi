@@ -49,7 +49,6 @@ http://www.mulesoft.org/schema/mule/mulerequester http://www.mulesoft.org/schema
 
     <flow name="muleServiceFlow">
         <http:listener config-ref="HTTP_Listener_Configuration" path="/mule/manage/{action}" />
-
         <set-variable variableName="method" value="#[message.inboundProperties.'http.uri.params'.action]"/>
         <object-to-string-transformer/>
 
@@ -61,12 +60,7 @@ http://www.mulesoft.org/schema/mule/mulerequester http://www.mulesoft.org/schema
     </flow>
 
     <flow name="schedulerManageFlow">
-        <http:listener config-ref="HTTP_Listener_Configuration" path="/mule/scheduler/{action}">
-            <http:response-builder>
-                <http:header headerName="Content-Type" value="text/plain"/>
-            </http:response-builder>
-        </http:listener>
-
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/mule/scheduler/{action}" />
         <choice>
             <when expression="#[message.inboundProperties.'http.uri.params'.action == 'stop']">
                 <expression-component>app.registry.scheduleFlow.stop();</expression-component>
@@ -80,17 +74,13 @@ http://www.mulesoft.org/schema/mule/mulerequester http://www.mulesoft.org/schema
                 <set-payload value="Schedule flow status: #[app.registry.scheduleFlow.started]" />
             </otherwise>
         </choice>
+        <set-property propertyName="Content-Type" value="text/plain" />
     </flow>
 
     <flow name="serviceDefsFlow">
-        <http:listener config-ref="HTTP_Listener_Configuration" path="/mule/services.json">
-            <http:response-builder>
-                <http:header headerName="Content-Type" value="application/json"/>
-            </http:response-builder>
-        </http:listener>
-
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/mule/services.json" />
         <set-payload value="#[Thread.currentThread().getContextClassLoader().getResourceAsStream('services.json')]"/>
-
+        <set-property propertyName="Content-Type" value="application/json" />
     </flow>
 
 </mule>
