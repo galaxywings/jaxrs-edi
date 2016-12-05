@@ -135,6 +135,11 @@ Vue.component('ace-editor', function (resolve, reject) {
   require(['./components/ace-editor'], resolve)
 })
 
+Vue.component('json-editor', function (resolve, reject) {
+  // please refer to https://vuejs.org/v2/guide/components.html#Async-Components
+  require(['./components/json-editor'], resolve)
+})
+
 new Vue({ // eslint-disable-line
   el: '#app',
   render: h => h(App),

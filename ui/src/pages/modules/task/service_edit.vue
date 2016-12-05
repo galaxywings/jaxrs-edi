@@ -19,7 +19,13 @@
         </ace-editor>
       </el-tab-pane>
       <el-tab-pane label="Preview" name="preview">
-        Preview to be continued...
+        <json-editor
+          v-if="service.params_schema"
+          :schema="service.params_schema"
+          :options="editorOptions"
+          @value-change="valueChange"
+          @invalid="valueInvalid">
+        </json-editor>
       </el-tab-pane>
     </el-tabs>
 
@@ -32,12 +38,29 @@ export default {
     return {
       service: {},
       oldService: {},
-      activeName: 'schema'
+      activeName: 'schema',
+      editorOptions: {
+        disable_properties: false
+      }
     }
   },
   computed: {
     apiEndpoint: function () {
       return `/api/task/services/${this.$route.params.id}/`
+    }
+  },
+  methods: {
+    valueChange (value) {
+      // this.$notify.success({
+      //   title: 'valueChange',
+      //   message: value
+      // })
+    },
+    valueInvalid (errors) {
+      this.$notify.error({
+        title: 'valueInvalid',
+        message: errors
+      })
     }
   },
   mounted () {
