@@ -1,5 +1,5 @@
 
-from django_filters.filterset import FilterSet
+from rest_framework_filters import FilterSet
 
 from customer.models import Customer
 
@@ -10,8 +10,8 @@ class CustomerGenericFilterSet(FilterSet):
         model = Customer
         fields = {
             'id': ['exact', 'in'],
-            'code': ['exact', 'icontains'],
-            'name': ['exact', 'icontains'],
+            'code': ['exact', 'icontains', 'contains', 'in'],
+            'name': ['exact', 'icontains', 'contains', 'in'],
             'active': ['exact'],
         }
         
