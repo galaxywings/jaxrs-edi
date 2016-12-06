@@ -23,6 +23,7 @@
           v-if="service.params_schema"
           :schema="service.params_schema"
           :options="editorOptions"
+          v-model="params_value"
           @value-change="valueChange"
           @invalid="valueInvalid">
         </json-editor>
@@ -41,7 +42,8 @@ export default {
       activeName: 'schema',
       editorOptions: {
         disable_properties: false
-      }
+      },
+      params_value: {}
     }
   },
   computed: {
@@ -55,6 +57,7 @@ export default {
       //   title: 'valueChange',
       //   message: value
       // })
+      console.info('valueChange', this.params_value, value)
     },
     valueInvalid (errors) {
       this.$notify.error({

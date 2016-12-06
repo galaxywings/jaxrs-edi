@@ -32,17 +32,21 @@
         default: function () {
           return {}
         }
-      },
-      value: {
-        type: Object,
-        default: function () {
-          return {}
-        }
       }
+    },
+    data () {
+      return {
+        editor: null
+      }
+    },
+    watch: {
+      value: _.debounce(function (val) {
+        this.editor.setValue(val)
+      }, 500)
     },
     mounted () {
       let opts = _.assignIn({schema: this.schema}, defaultOptions, this.options)
-      let editor = new JSONEditor(this.$el, opts)
+      let editor = this.editor = new JSONEditor(this.$el, opts)
 
       editor.setValue(this.value)
 
@@ -52,7 +56,9 @@
         if (errors.length > 0) {
           this.$emit('invalid', errors)
         } else {
-          this.$emit('value-change', editor.getValue())
+          let value = editor.getValue()
+          this.$emit('input', value)
+          this.$emit('value-change', value)
         }
       }, 500))
     }
