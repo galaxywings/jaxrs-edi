@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db"
+      xmlns:http="http://www.mulesoft.org/schema/mule/http"
+      xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:amqp="http://www.mulesoft.org/schema/mule/amqp"
+      xmlns:ftp="http://www.mulesoft.org/schema/mule/ftp"
+      xmlns:redis="http://www.mulesoft.org/schema/mule/redis"
+      xmlns:json="http://www.mulesoft.org/schema/mule/json"
+      xmlns:spring="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:script="http://www.mulesoft.org/schema/mule/core"
+      xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+      xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
+      xmlns:mulerequester="http://www.mulesoft.org/schema/mule/mulerequester"
+      xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/amqp http://www.mulesoft.org/schema/mule/amqp/current/mule-amqp.xsd
+http://www.mulesoft.org/schema/mule/redis http://www.mulesoft.org/schema/mule/redis/current/mule-redis.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
+http://www.mulesoft.org/schema/mule/ftp http://www.mulesoft.org/schema/mule/ftp/current/mule-ftp.xsd
+http://www.mulesoft.org/schema/mule/mulerequester http://www.mulesoft.org/schema/mule/mulerequester/1.0-SNAPSHOT/mule-mulerequester.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd">
+
+    <flow name="service-ftpOutbound">
+        <amqp:inbound-endpoint queueName="ftpOutbound.inbox" queueDurable="true"
+                               connector-ref="defaultAmqpConnector"/>
+        <flow-ref name="serviceBeforeFlow"/>
+
+        <enricher>
+
+            <!-- enricher can only have one processor, use process-chain to overcome the limitation -->
+            <processor-chain>
+                <redis:get key="mule:job:#[sessionVars.WUJIE_JOB_ID]" config-ref="Redis_Configuration"/>
+                <json:json-to-object-transformer returnClass="java.util.Map"/>
+            </processor-chain>
+
+            <enrich target="#[flowVars.host]"
+                    source="#[seq = Integer.parseInt(flowVars['WUJIE_CURRENT_SEQ']); payload.config[seq].host;]"/>
+            <enrich target="#[flowVars.port]"
+                    source="#[seq = Integer.parseInt(flowVars['WUJIE_CURRENT_SEQ']); payload.config[seq].port;]"/>
+            <enrich target="#[flowVars.user]"
+                    source="#[seq = Integer.parseInt(flowVars['WUJIE_CURRENT_SEQ']); payload.config[seq].user;]"/>
+            <enrich target="#[flowVars.password]"
+                    source="#[seq = Integer.parseInt(flowVars['WUJIE_CURRENT_SEQ']); payload.config[seq].password;]"/>
+            <enrich target="#[flowVars.path]"
+                    source="#[seq = Integer.parseInt(flowVars['WUJIE_CURRENT_SEQ']); payload.config[seq].path;]"/>
+        </enricher>
+
+        <ftp:outbound-endpoint user="#[flowVars.user]" password="#[flowVars.password]" host="#[flowVars.host]"
+                               port="#[flowVars.port]" path="#[flowVars.path]" />
+
+        <exception-strategy ref="SentToQueue_Strategy"/>
+    </flow>
+
+</mule>
