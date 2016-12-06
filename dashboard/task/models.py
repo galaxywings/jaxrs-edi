@@ -8,7 +8,7 @@ class Process(models.Model):
     customer = models.ForeignKey('customer.Customer')
     name = models.CharField(_('name'), max_length=64, help_text=_('Display name'))
     active = models.BooleanField(_('active'), default=False)
-    services = models.ManyToManyField('task.Service', through='task.Step')
+    steps = models.ManyToManyField('task.Service', through='task.Step')
     
     class Meta:
         unique_together = (('customer', 'name',), )

@@ -1,10 +1,14 @@
 
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_bulk.generics import BulkModelViewSet
 
-from api.v1.task.filtersets import TaskServiceGenericFilterSet
-from api.v1.task.serializers import TaskServiceSerializer
-from task.models import Service
+from api.v1.task.filtersets import TaskServiceGenericFilterSet, \
+    TaskProcessGenericFilterSet, TaskStepGenericFilterSet
+from api.v1.task.serializers import TaskServiceSerializer, TaskProcessSerializer, \
+    TaskStepSerializer
+from authx.permissions import IsAdminUser
+from task.models import Service, Process, Step
 
 
 #from rest_framework.permissions import IsAuthenticated
@@ -13,7 +17,7 @@ class ServiceViewSet(BulkModelViewSet):
     serializer_class = TaskServiceSerializer
     filter_class = TaskServiceGenericFilterSet
     search_fields = ('code', 'name')
-    # permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated, )
     
     def create(self, request, *args, **kwargs):
         '''
@@ -38,3 +42,16 @@ class ServiceViewSet(BulkModelViewSet):
             result.append(s)
         serializer = self.get_serializer(result, many=True)
         return Response(serializer.data)
+
+class ProcessViewSet(BulkModelViewSet):
+    queryset = Process.objects.all()
+    serializer_class = TaskProcessSerializer
+    filter_class = TaskProcessGenericFilterSet
+    search_fields = ('name', )
+    permission_classes = (IsAdminUser, )
+
+class StepViewSet(BulkModelViewSet):
+    queryset = Step.objects.all()
+    serializer_class = TaskStepSerializer
+    filter_class = TaskStepGenericFilterSet
+    permission_classes = (IsAdminUser, )

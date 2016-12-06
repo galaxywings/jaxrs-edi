@@ -5,6 +5,8 @@ from . import views
 
 router = BulkRouter()
 router.register('services', views.ServiceViewSet)
+router.register('processes', views.ProcessViewSet)
+router.register('steps', views.StepViewSet)
 
 urlpatterns = [
     url(r'^', include(router.urls)),
