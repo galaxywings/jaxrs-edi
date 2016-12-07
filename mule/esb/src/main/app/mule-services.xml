@@ -31,6 +31,7 @@ http://www.mulesoft.org/schema/mule/mulerequester http://www.mulesoft.org/schema
         </component>
     </flow>
 
+
     <flow name="groovyConsoleFlow">
         <http:listener config-ref="HTTP_Listener_Configuration" path="/mule/console" allowedMethods="POST">
             <http:response-builder>

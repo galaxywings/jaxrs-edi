@@ -31,25 +31,14 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
     <flow name="service-ftpInbound">
         <amqp:inbound-endpoint queueName="ftpInbound.inbox" queueDurable="true"
                                connector-ref="defaultAmqpConnector"/>
-        <flow-ref name="serviceBeforeFlow"/>
 
-        <enricher>
-            <processor-chain>
-                <redis:get key="mule:job:#[sessionVars.WUJIE_JOB_ID]" config-ref="Redis_Configuration"/>
-                <json:json-to-object-transformer returnClass="java.util.Map"/>
-            </processor-chain>
+        <!-- https://docs.mulesoft.com/mule-user-guide/v/3.8/invoke-component-reference
 
-            <enrich target="#[flowVars.host]"
-                    source="#[seq = Integer.parseInt(flowVars['WUJIE_CURRENT_SEQ']); payload.config[seq].host;]"/>
-            <enrich target="#[flowVars.port]"
-                    source="#[seq = Integer.parseInt(flowVars['WUJIE_CURRENT_SEQ']); payload.config[seq].port;]"/>
-            <enrich target="#[flowVars.user]"
-                    source="#[seq = Integer.parseInt(flowVars['WUJIE_CURRENT_SEQ']); payload.config[seq].user;]"/>
-            <enrich target="#[flowVars.password]"
-                    source="#[seq = Integer.parseInt(flowVars['WUJIE_CURRENT_SEQ']); payload.config[seq].password;]"/>
-            <enrich target="#[flowVars.path]"
-                    source="#[seq = Integer.parseInt(flowVars['WUJIE_CURRENT_SEQ']); payload.config[seq].path;]"/>
-        </enricher>
+        <invoke method="beforeService" methodArguments="#[payload],#[message]" methodArgumentTypes="byte[], org.mule.api.MuleMessage"
+                object-ref="messageHelper"/>
+        -->
+
+        <component class="com.wjelogistics.edi.esb.component.BeforeService" />
 
         <mulerequester:request-collection config-ref="Mule_Requester" count="-1"
                                           resource="ftp://#[flowVars.user]:#[flowVars.password]@#[flowVars.host]:#[flowVars.port]/#[flowVars.path]/?connector=FTPConfig"/>
@@ -59,14 +48,11 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
                 <foreach collection="#[payload]">
                     <set-property propertyName="MULE_CORRELATION_ID" value="#[message.correlationId + '-'
          + message.correlationSequence]"/>
-                    <byte-array-to-string-transformer />
-
-                    <logger level="INFO" />
-
                     <choice>
                         <when expression="sessionVars.WUJIE_PROCESS_SEQ != empty">
+                            <component class="com.wjelogistics.edi.esb.component.AfterService" />
                             <amqp:outbound-endpoint connector-ref="defaultAmqpConnector" queueDurable="true"
-                                                    queueName="#[sessionVars.WUJIE_PROCESS_SEQ.split(',', 2)[0].split(':')[0] + '.inbox']"/>
+                                                    queueName="#[flowVars.nextQueue]"/>
                         </when>
                         <otherwise>
                             <logger level="INFO" message="No service to call. This should be the last one."/>
