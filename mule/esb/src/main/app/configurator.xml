@@ -29,28 +29,19 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
         <amqp:inbound-endpoint queueName="configurator.inbox" queueDurable="true" connector-ref="defaultAmqpConnector"/>
 
         <set-variable variableName="originalPayload" value="#[payload]"/>
-
-        <byte-array-to-string-transformer/>
-
-        <redis:get key="mule:job:#[payload]" config-ref="Redis_Configuration"/>
         <byte-array-to-string-transformer />
-        <set-variable variableName="wujie.config" value="#[payload]" />
 
-        <!-- org.mule.module.json.transformers.JsonToObject.transformMessage
-            Can read from bytes array directly.
-        -->
-        <json:json-to-object-transformer returnClass="java.util.Map"/>
-        <set-session-variable variableName="WUJIE_PROCESS_SEQ" value="#[payload.seq]"/>
+        <enricher>
+            <processor-chain>
+                <redis:get key="mule:job:#[payload]" config-ref="Redis_Configuration"/>
+                <byte-array-to-string-transformer />
+            </processor-chain>
+            <enrich source="#[payload]" target="#[flowVars['wujie.config']]"/>
+        </enricher>
 
-        <!--<redis:set key="mule:job:#[message.inboundProperties.'MULE_CORRELATION_ID']" value="#[payload.seq]"-->
-                   <!--config-ref="Redis_Configuration" />-->
+        <component class="com.wjelogistics.edi.esb.component.AfterService"/>
 
-        <set-payload value="N/A. As this is a configurator service." />
-
-        <component class="com.wjelogistics.edi.esb.component.AfterService" />
-
-        <amqp:outbound-endpoint connector-ref="defaultAmqpConnector"
-            queueName="#[ sessionVars.WUJIE_PROCESS_SEQ.split(',', 2)[0].split(':')[0] + '.inbox']"/>
+        <amqp:outbound-endpoint connector-ref="defaultAmqpConnector" queueName="#[flowVars.nextQueue]"/>
         <exception-strategy ref="SentToQueue_Strategy"/>
     </flow>
 

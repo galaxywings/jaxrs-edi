@@ -18,37 +18,29 @@ public class BeforeService implements Callable {
     @Override
     public Object onCall(MuleEventContext eventContext) throws Exception {
         MuleMessage message = eventContext.getMessage();
+
         String seq = message.getProperty("WUJIE_PROCESS_SEQ", PropertyScope.SESSION);
-
-        int currentSeq = Integer.parseInt(seq.split(",")[0].split(":")[1]);
-
-        /* 设置余下须执行的服务seq */
-        String remainingSeq = seq.contains(",") ? seq.split(",", 2)[1] : "";
-        message.setProperty("WUJIE_PROCESS_SEQ", remainingSeq, PropertyScope.SESSION);
-
-        /* 设置下一个服务的队列名 */
-        if (!remainingSeq.isEmpty()) {
-            message.setProperty("nextQueue", remainingSeq.split(",", 2)[0].split(":")[0] + ".inbox", PropertyScope.INVOCATION);
-        }
 
         /* 保存原始payload, 发生异常时读取 */
         message.setProperty("originalPayload", message.getPayload(), PropertyScope.INVOCATION);
 
         Map<String, Object> payloadMap = ObjectMapperFactory.get().readValue(message.getPayloadAsBytes(),
-                new TypeReference<Map<String, Object>>() {
-                });
+                new TypeReference<Map<String, Object>>() {});
 
         String configJson = (String) payloadMap.get("wujie.config");
         Map<String, Object> configMap = ObjectMapperFactory.get()
-                .readValue(configJson, new TypeReference<Map<String, Object>>() {
-                });
+                .readValue(configJson, new TypeReference<Map<String, Object>>() {});
 
+        int currentSeq = Integer.parseInt(seq.split(",")[0].split(":")[1]);
         Map<String, Object> propsMap = (Map<String, Object>) ((List) configMap.get("params")).get(currentSeq);
 
         propsMap.forEach((k, v) -> message.setProperty(k, v, PropertyScope.INVOCATION));
 
+        /* 暂存wujie.config, 恢复原始payload, 最后在AfterService里取出重新封装 */
         message.setProperty("wujie.config", configJson, PropertyScope.INVOCATION);
 
+        /* 如果payload是byte[], Jackson在序列化时会base64编码
+           由于Map<String, Object>里value是Object类型，反序列化时Jackson不会自动解码，需要手工convertValue */
         return Base64.isBase64((String) payloadMap.get("wujie.payload")) ?
                 ObjectMapperFactory.get().convertValue(payloadMap.get("wujie.payload"), byte[].class)
                 : payloadMap.get("wujie.payload");

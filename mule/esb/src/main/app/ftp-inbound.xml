@@ -38,32 +38,25 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
                 object-ref="messageHelper"/>
         -->
 
-        <component class="com.wjelogistics.edi.esb.component.BeforeService" />
+        <component class="com.wjelogistics.edi.esb.component.BeforeService"/>
 
         <mulerequester:request-collection config-ref="Mule_Requester" count="-1"
                                           resource="ftp://#[flowVars.user]:#[flowVars.password]@#[flowVars.host]:#[flowVars.port]/#[flowVars.path]/?connector=FTPConfig"/>
 
-        <choice>
-            <when expression="payload != empty">
-                <foreach collection="#[payload]">
-                    <set-property propertyName="MULE_CORRELATION_ID" value="#[message.correlationId + '-'
+        <expression-filter expression="#[payload != empty]"/>
+        <!-- https://docs.mulesoft.com/mule-user-guide/v/3.8/splitter-flow-control-reference -->
+        <collection-splitter/>
+
+        <set-property propertyName="MULE_CORRELATION_ID" value="#[message.correlationId + '-'
          + message.correlationSequence]"/>
-                    <choice>
-                        <when expression="sessionVars.WUJIE_PROCESS_SEQ != empty">
-                            <component class="com.wjelogistics.edi.esb.component.AfterService" />
-                            <amqp:outbound-endpoint connector-ref="defaultAmqpConnector" queueDurable="true"
-                                                    queueName="#[flowVars.nextQueue]"/>
-                        </when>
-                        <otherwise>
-                            <logger level="INFO" message="No service to call. This should be the last one."/>
-                        </otherwise>
-                    </choice>
-                </foreach>
-            </when>
-            <otherwise>
-                <logger message="FTP returned no files." level="WARN"/>
-            </otherwise>
-        </choice>
+
+        <set-session-variable variableName="originalFilename" value="#[message.inboundProperties.originalFilename]" />
+
+        <expression-filter expression="#[sessionVars.WUJIE_PROCESS_SEQ != empty]"/>
+
+        <component class="com.wjelogistics.edi.esb.component.AfterService"/>
+        <amqp:outbound-endpoint connector-ref="defaultAmqpConnector" queueDurable="true"
+                                queueName="#[flowVars.nextQueue]"/>
 
         <exception-strategy ref="SentToQueue_Strategy"/>
     </flow>

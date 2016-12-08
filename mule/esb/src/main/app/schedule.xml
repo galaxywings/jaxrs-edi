@@ -32,11 +32,6 @@
         <!-- https://docs.mulesoft.com/mule-user-guide/v/3.8/splitter-flow-control-reference -->
         <collection-splitter />
 
-        <set-property propertyName="MULE_CORRELATION_ID" value="#[message.correlationId + '-'
-         + message.correlationSequence]" />
-
-        <logger level="INFO" message="#[message.outboundProperties.MULE_CORRELATION_ID]" />
-
         <amqp:outbound-endpoint connector-ref="defaultAmqpConnector"
                                 queueName="configurator.inbox" queueDurable="true"/>
 

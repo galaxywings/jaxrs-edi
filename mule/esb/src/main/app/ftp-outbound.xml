@@ -29,8 +29,9 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
 
         <component class="com.wjelogistics.edi.esb.component.BeforeService" />
 
+        <!-- https://docs.mulesoft.com/mule-user-guide/v/3.8/ftp-transport-reference -->
         <ftp:outbound-endpoint user="#[flowVars.user]" password="#[flowVars.password]" host="#[flowVars.host]"
-                               port="#[flowVars.port]" path="#[flowVars.path]" />
+                               port="#[flowVars.port]" path="#[flowVars.path]" outputPattern="#[sessionVars.originalFilename]"/>
 
         <exception-strategy ref="SentToQueue_Strategy"/>
     </flow>
