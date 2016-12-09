@@ -83,13 +83,13 @@ export default {
     height: 50px
     width: 50px
     padding: 15px
+    box-sizing: content-box
   .fa-icon
     color: #fff
   .panel
     box-shadow: 0 0 3px rgba(0,0,0,0.1)
     background-color: #fff
     border: 1px solid transparent
-    border-radius: 2px
     box-shadow: 0 1px 1px rgba(0,0,0,0.05)
   .mini-box
     min-height: 120px

@@ -1,5 +1,6 @@
 <template>
-  <el-row :gutter="20">
+  <div class="login-wrapper">
+    <el-row :gutter="20">
     <el-col :span="10" :offset="7">
       <el-card class="login-form">
         <el-row type="flex" class="row-bg" justify="center">
@@ -22,34 +23,12 @@
             <el-button type="primary" @click="login">登陆</el-button>
             <el-button >忘记密码</el-button>
           </el-form-item>
-
-          <!--<table>-->
-            <!--<tr>-->
-              <!--<td></td>-->
-              <!--<td><label><input v-model="data.rememberMe" type="checkbox" /> Remember Me</label></td>-->
-            <!--</tr>-->
-            <!--<tr>-->
-              <!--<td></td>-->
-              <!--<td><button type="submit">Login</button></td>-->
-            <!--</tr>-->
-          <!--</table>-->
         </el-form>
       </el-card>
     </el-col>
   </el-row>
+  </div>
 </template>
-
-<style lang="sass" >
-
-body
-  background: #7474BF /* fallback for old browsers */
-  background: -webkit-linear-gradient(to left, #7474BF , #348AC7) /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(to left, #7474BF , #348AC7) /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-
-.login-form
-  margin-top: 30%
-
-</style>
 
 <script>
 export default {
@@ -93,3 +72,17 @@ export default {
   }
 }
 </script>
+
+
+<style lang="sass" >
+
+  .login-wrapper
+    height: 100%
+    background: #7474BF /* fallback for old browsers */
+    background: -webkit-linear-gradient(to left, #7474BF , #348AC7) /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to left, #7474BF , #348AC7) /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+  .login-form
+    margin-top: 30%
+
+</style>

@@ -1,14 +1,17 @@
 <template>
   <footer class="footer">
-    <p class="footer-main-title">{{ $t('global.title') }}</p>
+    <div class="footer-content container">{{ $t('global.title') }}</div>
   </footer>
 </template>
 
-<style>
-  .footer {
-    background-color: #324057;
-    color: #a4aebd;
-    width: 100%;
-    padding: 1em;
-  }
+<style lang="sass">
+  .footer
+    background-color: #324057
+    color: #a4aebd
+    width: 100%
+    padding: 10px
+    height: 60px
+
+  .footer-content
+    line-height: 40px
 </style>

@@ -4,9 +4,12 @@
 </template>
 
 <script>
-import Base from './pages/base'
 export default {
-  name: 'app',
-  component: Base
+  name: 'app'
 }
 </script>
+
+<style lang="sass">
+  $icon-font-path: "../node_modules/bootstrap-sass/assets/fonts/bootstrap/"
+  @import '../node_modules/bootstrap-sass/assets/stylesheets/_bootstrap'
+</style>

@@ -49,17 +49,17 @@ export default [
           {
             path: 'customers',
             name: 'customerCustomerList',
-            component: require('./pages/modules/customer/customer_list')
+            component: require('./pages/modules/customer/customer-list')
           },
           {
             path: 'customers/:id/edit',
             name: 'customerCustomerEdit',
-            component: require('./pages/modules/customer/customer_edit')
+            component: require('./pages/modules/customer/customer-edit')
           },
           {
             path: 'customers/new',
             name: 'customerCustomerNew',
-            component: require('./pages/modules/customer/customer_new')
+            component: require('./pages/modules/customer/customer-new')
           }
         ]
       },
@@ -82,53 +82,29 @@ export default [
           {
             path: 'services',
             name: 'taskServiceList',
-            component: require('./pages/modules/task/service_list')
+            component: require('./pages/modules/task/service-list')
           },
           {
             path: 'services/:id/edit',
             name: 'taskServiceEdit',
-            component: require('./pages/modules/task/service_edit')
+            component: require('./pages/modules/task/service-edit')
           },
           {
             path: 'processes',
             name: 'taskProcessList',
-            component: require('./pages/modules/task/process_list')
+            component: require('./pages/modules/task/process-list')
           },
           {
             path: 'processes/:id/edit',
             name: 'taskProcessEdit',
-            component: require('./pages/modules/task/process_edit')
+            component: require('./pages/modules/task/process-edit')
           },
           {
             path: 'processes/new',
             name: 'taskProcessNew',
-            component: require('./pages/modules/task/process_new')
+            component: require('./pages/modules/task/process-new')
           }
         ]
-      },
-      {
-        path: 'nested',
-        name: 'nested',
-        component: require('./pages/modules/nested/index'),
-        children: [
-          {
-            path: 'test1',
-            name: 'test1',
-            // here default is the default component within nested not root
-            component: require('./pages/modules/nested/test1')
-          },
-          {
-            path: 'test2',
-            name: 'test2',
-            meta: {
-              auth: true
-            },
-            components: {
-              test: require('./pages/modules/nested/test2')
-            }
-          }
-        ]
-
       }
     ]
   },
