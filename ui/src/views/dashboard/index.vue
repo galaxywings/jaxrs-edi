@@ -2,59 +2,37 @@
   <div>
   <el-row :gutter="10">
     <el-col :span="6">
-      <div class="panel mini-box">
-        <!-- with options -->
+      <div class="panel mini-box" @click="$router.push('/customers')">
         <span class="btn-icon-round" style="background:#20A0FF">
-          <icon name="rocket" scale="3"></icon>
+          <icon name="address-card" scale="3"></icon>
         </span>
-        <span>Growth</span>
+        <span>Customers</span>
       </div>
     </el-col>
     <el-col :span="6">
-      <div class="panel mini-box">
+      <div class="panel mini-box"  @click="$router.push('/task/services')">
+        <span class="btn-icon-round" style="background:#F7BA2A">
+          <icon name="cogs" scale="3"></icon>
+        </span>
+        <span>Services</span>
+      </div>
+    </el-col>
+    <el-col :span="6">
+      <div class="panel mini-box"  @click="$router.push('/users')">
         <span class="btn-icon-round" style="background:#13CE66">
           <icon name="group" scale="3"></icon>
         </span>
         <span>Users</span>
       </div>
     </el-col>
-    <el-col :span="6">
-      <div class="panel mini-box">
-        <span class="btn-icon-round" style="background:#F7BA2A">
-          <icon name="dollar" scale="3"></icon>
-        </span>
-        <span>Profit</span>
-      </div>
-    </el-col>
+
     <el-col :span="6">
       <div class="panel mini-box">
         <span class="btn-icon-round" style="background:#FF4949">
           <icon name="bar-chart" scale="3"></icon>
         </span>
-        <span>Sales</span>
+        <span>Reports</span>
       </div>
-    </el-col>
-  </el-row>
-  <el-row :gutter="10">
-    <el-col :span="14">
-      <el-card>
-        <div>
-          <span class="btn-icon-round">
-            <icon name="dollar" scale="3"></icon>
-          </span>
-          <span>Sales</span>
-        </div>
-      </el-card>
-    </el-col>
-    <el-col :span="10">
-      <el-card>
-        <div>
-          <span class="btn-icon-round">
-            <icon name="dollar" scale="3"></icon>
-          </span>
-          <span>Sales</span>
-        </div>
-      </el-card>
     </el-col>
   </el-row>
   </div>

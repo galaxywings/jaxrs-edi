@@ -2,20 +2,25 @@
   <div class="app">
     <main-header></main-header>
     <div class="main clearfix">
-      <el-col :span="24" class="content">
+      <el-col :span="4" class="side-nav-menu">
+        <side-nav></side-nav>
+      </el-col>
+      <el-col :span="20" class="content">
         <router-view></router-view>
       </el-col>
     </div>
     <main-footer></main-footer>
   </div>
 </template>
+
 <script>
 import MainFooter from './partials/footer.vue'
 import MainHeader from './partials//header.vue'
+import SideNav from './partials//side-nav'
 export default {
-  name: 'base',
   components: {
     MainHeader,
+    SideNav,
     MainFooter
   }
 }

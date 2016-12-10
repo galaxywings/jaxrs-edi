@@ -4,6 +4,10 @@ export default [
     component: require('./views/misc/template'),
     children: [
       {
+        path: '',
+        redirect: 'dashboard'
+      },
+      {
         path: '/login',
         name: 'login',
         component: require('./views/auth/login')
@@ -28,8 +32,7 @@ export default [
     component: require('./views/templates/base'),
     children: [
       {
-        path: '',
-        alias: 'dashboard',
+        path: 'dashboard',
         name: 'dashboard',
         component: require('./views/dashboard/index')
       },

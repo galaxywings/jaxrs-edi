@@ -1,14 +1,27 @@
 <template>
-  <el-menu theme="dark" default-active="1" class="el-menu-demo" mode="horizontal">
-    <el-menu-item index="0">{{$t('global.title')}}</el-menu-item>
-    <el-menu-item index="1">处理中心</el-menu-item>
-    <el-submenu index="2">
-      <template slot="title">我的工作台</template>
-      <el-menu-item index="2-1">选项1</el-menu-item>
-      <el-menu-item index="2-2">选项2</el-menu-item>
-      <el-menu-item index="2-3">选项3</el-menu-item>
+  <el-menu theme="dark" default-active="1" mode="horizontal" :router="true">
+    <el-menu-item index="/">{{$t('global.title')}}</el-menu-item>
+    <el-submenu index="/customers">
+      <template slot="title"><i class="el-icon-setting"></i>客户管理</template>
+      <el-menu-item index="/customers/create">新建客户</el-menu-item>
+      <el-menu-item index="/customers">客户列表</el-menu-item>
     </el-submenu>
-    <el-menu-item index="3">管理</el-menu-item>
+    <el-submenu index="/task">
+      <template slot="title"><i class="el-icon-setting"></i>任务管理</template>
+      <el-menu-item-group title="Service">
+        <el-menu-item index="/task/services">Service列表</el-menu-item>
+      </el-menu-item-group>
+      <el-menu-item-group title="Process">
+        <el-menu-item index="/task/processes/new">新建Process</el-menu-item>
+        <el-menu-item index="/task/processes">Process列表</el-menu-item>
+      </el-menu-item-group>
+    </el-submenu>
+    <el-menu-item index="/misc">
+      <i class="el-icon-setting"></i>杂项
+    </el-menu-item>
+    <el-menu-item index="/auth">
+      <i class="el-icon-setting"></i>Auth
+    </el-menu-item>
   </el-menu>
 </template>
 
