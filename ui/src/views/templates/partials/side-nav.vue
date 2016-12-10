@@ -4,10 +4,10 @@
     <el-menu-item index="/auth">
       <i class="el-icon-setting"></i>Auth
     </el-menu-item>
-    <el-submenu index="/customer">
+    <el-submenu index="/customers">
       <template slot="title"><i class="el-icon-setting"></i>客户管理</template>
-      <el-menu-item index="/customer/customers/new">新建客户</el-menu-item>
-      <el-menu-item index="/customer/customers">客户列表</el-menu-item>
+      <el-menu-item index="/customers/create">新建客户</el-menu-item>
+      <el-menu-item index="/customers">客户列表</el-menu-item>
     </el-submenu>
     <el-submenu index="/task">
       <template slot="title"><i class="el-icon-setting"></i>任务管理</template>

@@ -1,6 +1,6 @@
 <template>
   <el-menu theme="dark" default-active="1" class="el-menu-demo" mode="horizontal">
-    <el-menu-item index="0">无界EDI</el-menu-item>
+    <el-menu-item index="0">{{$t('global.title')}}</el-menu-item>
     <el-menu-item index="1">处理中心</el-menu-item>
     <el-submenu index="2">
       <template slot="title">我的工作台</template>

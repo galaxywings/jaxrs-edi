@@ -1,10 +1,10 @@
 <template>
   <div>
-    <el-breadcrumb separator="/" class="breadcrumb-bar">
-      <el-breadcrumb-item :to="{ path: '/' }">Home</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path: '/customer'}">客户管理</el-breadcrumb-item>
-      <el-breadcrumb-item>客户编辑</el-breadcrumb-item>
-    </el-breadcrumb>
+    <!--<el-breadcrumb separator="/" class="breadcrumb-bar">-->
+      <!--<el-breadcrumb-item :to="{ path: '/' }">Home</el-breadcrumb-item>-->
+      <!--<el-breadcrumb-item :to="{ path: '/customer'}">客户管理</el-breadcrumb-item>-->
+      <!--<el-breadcrumb-item>创建客户</el-breadcrumb-item>-->
+    <!--</el-breadcrumb>-->
     <el-form :model="customerForm" :rules="rules" ref="customerForm" label-width="120px" >
       <el-form-item label="Code" prop="code">
         <el-input v-model="customerForm.code"></el-input>
@@ -28,11 +28,6 @@ import _ from 'lodash'
 export default {
   data () {
     let validateCode = _.debounce((rule, value, callback) => {
-      if (value === this.oldCustomer.code) {
-        // the same customer is allowed
-        callback()
-        return
-      }
       this.$http.get('/api/v1/customer/customers/validate-code/', {
         params: {q: value}
       }).then((response) => {
@@ -53,12 +48,10 @@ export default {
     })
     return {
       customerForm: {
-        id: 0,
         code: '',
         name: '',
         active: false
       },
-      oldCustomer: {},
       rules: {
         code: [
           { required: true, message: 'Code is required', trigger: 'blur' },
@@ -70,11 +63,6 @@ export default {
           { min: 3, max: 128, message: 'Length should be 3 to 128', trigger: 'blur' }
         ]
       }
-    }
-  },
-  computed: {
-    apiEndpoint: function () {
-      return `/api/customer/customers/${this.$route.params.id}/`
     }
   },
   methods: {
@@ -90,12 +78,10 @@ export default {
           })
           return false
         }
-        this.$http.put(this.apiEndpoint,
+        this.$http.post('/api/v1/customer/customers/',
           this.customerForm).then((response) => {
-            this.$notify.success({
-              title: response.statusText,
-              message: 'Update success'
-            })
+            let data = response.body
+            this.$router.push({name: 'customerCustomerEdit', params: { id: data.id }})
           }, (response) => {
             this.$notify.error({
               title: response.statusText,
@@ -104,20 +90,6 @@ export default {
           })
       })
     }, 500)
-  },
-  mounted () {
-    this.$http.get(this.apiEndpoint).then((response) => {
-      this.$set(this, 'customerForm', response.body)
-      this.oldCustomer = response.body
-    }, (response) => {
-      if (response.status === 404) {
-        this.$notify.warning({
-          title: response.statusText,
-          message: 'The customer cannot be found'
-        })
-        this.$router.push({name: 'customerCustomerList'})
-      }
-    })
   }
 }
 </script>

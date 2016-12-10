@@ -14,9 +14,9 @@
 </template>
 
 <script>
-import MainFooter from '../components/footer.vue'
-import MainHeader from '../components/header.vue'
-import SideNav from '../components/side-nav'
+import MainFooter from './partials/footer.vue'
+import MainHeader from './partials//header.vue'
+import SideNav from './partials//side-nav'
 export default {
   name: 'base',
   components: {

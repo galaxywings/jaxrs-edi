@@ -2,10 +2,8 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import VueI18n from 'vue-i18n'
 import Resource from 'vue-resource'
-
 import Element from 'element-ui'
 import 'element-ui/lib/theme-default/index.css'
-
 import Auth from './components/x/vue-auth'
 
 import routerConfig from './routes'
