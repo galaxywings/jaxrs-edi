@@ -8,7 +8,7 @@ class Process(models.Model):
     customer = models.ForeignKey('customer.Customer')
     name = models.CharField(_('name'), max_length=64, help_text=_('Display name'))
     active = models.BooleanField(_('active'), default=False)
-    steps = models.ManyToManyField('task.Service', through='task.Step')
+    services = models.ManyToManyField('task.Service', through='task.Step')
     
     class Meta:
         unique_together = (('customer', 'name',), )
@@ -29,15 +29,15 @@ class Service(models.Model):
         return self.code
     
 class Step(models.Model):
-    process = models.ForeignKey('task.Process')
-    service = models.ForeignKey('task.Service')
+    process = models.ForeignKey('task.Process', on_delete=models.CASCADE)
+    service = models.ForeignKey('task.Service', on_delete=models.CASCADE)
     seq = models.SmallIntegerField(_('seq'),help_text=_('Step seq for a detail process'))
     params_value = JSONCharField(load_kwargs={'object_pairs_hook': collections.OrderedDict},
                             max_length=4*1024,
                             help_text=_('JSON object for storing service params value'))
     
     class Meta:
-        unique_together = (('process','service', 'seq'), )
+        unique_together = (('process', 'seq'), )
     
     def __str__(self):
-        return 'process_id: {}, service_id: {}, seq: {}'.format(self.process_id, self.service_id, self.seq)
+        return 'process_id: {}, seq: {}'.format(self.process_id, self.seq)
