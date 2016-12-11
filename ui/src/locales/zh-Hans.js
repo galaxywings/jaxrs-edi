@@ -1,6 +1,10 @@
 export default {
   global: {
-    title: '无界EDI'
+    title: '无界EDI',
+    message: {
+      pageNotFound: '没找到页面',
+      noPermission: '对不起,你没有权限访问这个页面'
+    }
   },
   customers: {
     list: '客户列表',
