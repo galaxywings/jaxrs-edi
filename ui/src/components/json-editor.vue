@@ -7,7 +7,7 @@
   import JSONEditor from 'json-editor'
   import _ from 'lodash'
   // default is html
-  JSONEditor.defaults.options.theme = 'html'
+  JSONEditor.defaults.options.theme = 'bootstrap3'
   // JSONEditor.plugins.ace.theme = 'twilight'
 
   let defaultOptions = {
@@ -17,7 +17,7 @@
   }
   /*
   * output event:
-  *   v-on:value-change(jsonValue) (may need a Currying function for index)
+  *   v-on:value-change(jsonValue) (plz do watch in the parent component)
   *   v-on:invalid(errors)
   */
   export default {
@@ -32,6 +32,10 @@
         default: function () {
           return {}
         }
+      },
+      value: {
+        type: Object,
+        required: true
       }
     },
     data () {
@@ -41,6 +45,7 @@
     },
     watch: {
       value: _.debounce(function (val) {
+        console.info('watch, this.value: ', this.value, ' val: ', val)
         this.editor.setValue(val)
       }, 500)
     },
@@ -58,9 +63,12 @@
         } else {
           let value = editor.getValue()
           this.$emit('input', value)
-          this.$emit('value-change', value)
         }
       }, 500))
+    },
+    beforeDestroy () {
+      // let's try beforeDestroy first if anything goes wrong then destroyed
+      this.editor.destroy()
     }
   }
 </script>
