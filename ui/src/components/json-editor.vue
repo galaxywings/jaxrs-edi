@@ -13,7 +13,10 @@
   let defaultOptions = {
     // Disable additional properties
     no_additional_properties: true,
-    display_required_only: true
+    display_required_only: false,
+    required_by_default: true,
+    disable_properties: true,
+    disable_edit_json: true
   }
   /*
   * output event:
@@ -45,7 +48,6 @@
     },
     watch: {
       value: _.debounce(function (val) {
-        console.info('watch, this.value: ', this.value, ' val: ', val)
         this.editor.setValue(val)
       }, 500)
     },

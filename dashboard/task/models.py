@@ -7,6 +7,7 @@ from jsonfield import JSONField, JSONCharField
 class Process(models.Model):
     customer = models.ForeignKey('customer.Customer')
     name = models.CharField(_('name'), max_length=64, help_text=_('Display name'))
+    interval = models.PositiveIntegerField(_('interval'), default=300)
     active = models.BooleanField(_('active'), default=False)
     services = models.ManyToManyField('task.Service', through='task.Step')
     

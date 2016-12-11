@@ -26,6 +26,9 @@
       <el-form-item label="Name" prop="name">
         <el-input v-model="processForm.name"></el-input>
       </el-form-item>
+      <el-form-item label="Interval" prop="interval">
+        <el-input v-model="processForm.interval"></el-input>
+      </el-form-item>
       <el-form-item label="Active" prop="active">
          <el-switch on-text="Yes" off-text="No" v-model="processForm.active"></el-switch>
       </el-form-item>
@@ -78,6 +81,7 @@ export default {
       processForm: {
         customer: null,
         name: '',
+        interval: 0,
         active: false,
         steps: []
       },
@@ -95,14 +99,10 @@ export default {
         name: [
           { required: true, message: 'Name is required', trigger: 'blur' },
           { min: 3, max: 128, message: 'Length should be 3 to 128', trigger: 'blur' }
+        ],
+        interval: [
+          { type: 'integer', min: 60, message: 'Interval better greater than 60 secs', trigger: 'input' }
         ]
-        // ],
-        // steps: {
-        // need to come up with a way to test it this violation
-        //   0: [
-        //     {type: 'object', required: true, message: 'At least one step is required'}
-        //   ]
-        // }
       }
     }
   },

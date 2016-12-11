@@ -40,13 +40,15 @@
         label="Name">
       </el-table-column>
       <el-table-column
+        prop="interval"
+        label="Interval">
+      </el-table-column>
+      <el-table-column
         :context="_self"
         inline-template
         label="Customer"
         >
-        <div>
-            <router-link :to="{ name: 'customerCustomerEdit', params: {id: row.id}}">{{row.customer_code}}</router-link>
-        </div>
+          <router-link :to="{ name: 'customers.edit', params: {id: row.customer}}">{{row.customer_code}}</router-link>
       </el-table-column>
       <el-table-column
         prop="active"
@@ -145,7 +147,8 @@ export default {
           params: {
             q: this.processListForm.q,
             page: this.pagination.page,
-            page_size: this.pagination.pageSize
+            page_size: this.pagination.pageSize,
+            fields: 'id,name,interval,customer,customer_code,active'
           }
         }).then((response) => {
           // use response.body to avoid nested hell
