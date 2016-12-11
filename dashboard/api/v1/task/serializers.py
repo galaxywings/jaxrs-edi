@@ -1,5 +1,5 @@
-from rest_framework.fields import CharField, JSONField
-from rest_framework.relations import StringRelatedField
+from rest_framework.fields import CharField, JSONField, SerializerMethodField
+from rest_framework.relations import StringRelatedField, PrimaryKeyRelatedField
 from rest_framework.serializers import ModelSerializer
 from rest_framework_bulk.serializers import BulkSerializerMixin, BulkListSerializer
 
@@ -19,25 +19,33 @@ class TaskServiceSerializer(BulkSerializerMixin, DynamicFieldsModelSerializer):
         validators = []
 
 class TaskStepSerializer(BulkSerializerMixin, DynamicFieldsModelSerializer):
+    service = PrimaryKeyRelatedField(queryset=Service.objects.all())
+    service_code = StringRelatedField(source='service')
     params_value = JSONField()
-    
     class Meta:
         model = Step
         list_serializer_class = BulkListSerializer
         fields = '__all__'
     
+    def validate_params_value(self, value):
+        return value
+    
 class ProcessStepSerializer(ModelSerializer):
-    service = StringRelatedField()
+    service_code = StringRelatedField(source='service')
     params_value = JSONField()
     class Meta:
         model = Step
-        excludes = ('process', )
+        exclude = ('id', 'process', )
 
 class TaskProcessSerializer(BulkSerializerMixin, DynamicFieldsModelSerializer):
     customer_code = StringRelatedField(source='customer')
-    steps = ProcessStepSerializer(many=True, read_only=True)
+    steps = SerializerMethodField()
     class Meta:
         model = Process
         list_serializer_class = BulkListSerializer
-        fields = '__all__'
-
+        exclude = ('services', )
+    
+    def get_steps(self, instance):
+        steps = instance.step_set.order_by('seq')
+        serializer = ProcessStepSerializer(steps, many=True)
+        return serializer.data
