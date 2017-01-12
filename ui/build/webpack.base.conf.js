@@ -56,7 +56,8 @@ module.exports = {
         test: /\.js$/,
         loader: 'babel',
         include: projectRoot,
-        exclude: /node_modules/
+        // refer to https://github.com/Justineo/vue-awesome, Heads up info
+        exclude: /node_modules(?![\\/]vue-awesome[\\/])/
       },
       {
         test: /\.json$/,
