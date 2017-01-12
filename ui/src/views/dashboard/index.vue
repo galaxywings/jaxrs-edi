@@ -4,7 +4,7 @@
     <el-col :span="6">
       <div class="panel mini-box" @click="$router.push('/customers')">
         <span class="btn-icon-round" style="background:#20A0FF">
-          <icon name="address-card" scale="3"></icon>
+          <icon name="users" scale="3"></icon>
         </span>
         <span>Customers</span>
       </div>
@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import Icon from 'vue-awesome'
+import Icon from '../../components/icon.vue'
 export default {
   components: {
     Icon

@@ -13,3 +13,4 @@ pytz==2016.7
 requests==2.11.1
 rest-condition==1.0.3
 six==1.10.0
+jsonschema==2.5.1

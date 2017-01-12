@@ -18,7 +18,7 @@
         }
       },
       scale: {
-        type: Number,
+        type: [Number, String],
         default: 1,
         coerce: function (val) {
           val = Number(val)
