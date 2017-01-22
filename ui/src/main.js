@@ -132,12 +132,14 @@ Vue.use(Element)
 // custom component activation here, using async component loading
 Vue.component('ace-editor', function (resolve, reject) {
   // please refer to https://vuejs.org/v2/guide/components.html#Async-Components
-  require(['./components/ace-editor'], resolve)
+  // since `components` has been alias in webpack.base.conf.js
+  require(['components/ace-editor'], resolve)
 })
 
 Vue.component('json-editor', function (resolve, reject) {
   // please refer to https://vuejs.org/v2/guide/components.html#Async-Components
-  require(['./components/json-editor'], resolve)
+  // since `components` has been alias in webpack.base.conf.js
+  require(['components/json-editor'], resolve)
 })
 
 new Vue({ // eslint-disable-line
