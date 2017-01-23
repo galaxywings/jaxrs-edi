@@ -98,9 +98,9 @@ DATABASES = {
         'PASSWORD': 'wujie',                  # Not used with sqlite3.
         'HOST': 'localhost',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '3306',
-#         'OPTIONS': {
-#             'init_command': 'SET foreign_key_checks = 0;',
-#          },
+        'OPTIONS': {
+            'init_command': 'SET foreign_key_checks = 0;',
+         },
     }
 }
 
