@@ -1,0 +1,5 @@
+- src: geerlingguy.nginx
+- src: geerlingguy.mysql
+- src: geerlingguy.java
+- src: Stouts.rabbitmq
+- src: geerlingguy.jenkins
