@@ -2,6 +2,8 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import VueI18n from 'vue-i18n'
 import Resource from 'vue-resource'
+// we just need to import once in this app
+import 'vue-awesome/icons'
 import Element from 'element-ui'
 import 'element-ui/lib/theme-default/index.css'
 import Auth from './components/x/vue-auth'
@@ -130,12 +132,14 @@ Vue.use(Element)
 // custom component activation here, using async component loading
 Vue.component('ace-editor', function (resolve, reject) {
   // please refer to https://vuejs.org/v2/guide/components.html#Async-Components
-  require(['./components/ace-editor'], resolve)
+  // since `components` has been alias in webpack.base.conf.js
+  require(['components/ace-editor'], resolve)
 })
 
 Vue.component('json-editor', function (resolve, reject) {
   // please refer to https://vuejs.org/v2/guide/components.html#Async-Components
-  require(['./components/json-editor'], resolve)
+  // since `components` has been alias in webpack.base.conf.js
+  require(['components/json-editor'], resolve)
 })
 
 new Vue({ // eslint-disable-line

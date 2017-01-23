@@ -4,8 +4,18 @@
 
 <script>
   // import 'brace'
+
+  // Since we make this `json-editor` as a CommonJS Module, we can do it like below now
   import JSONEditor from 'json-editor'
   import _ from 'lodash'
+
+  // let JSONEditor = require('exports?JSONEditor!json-editor')
+  // import 'json-editor'
+  // let JSONEditor = window.JSONEditor
+
+  // import JSONEditor from 'json-editor'
+  // console.info('JSONEditor', JSONEditor)
+
   // default is html
   JSONEditor.defaults.options.theme = 'bootstrap3'
   // JSONEditor.plugins.ace.theme = 'twilight'

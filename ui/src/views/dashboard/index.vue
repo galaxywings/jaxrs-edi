@@ -39,7 +39,8 @@
 </template>
 
 <script>
-import Icon from '../../components/icon.vue'
+// import Icon from '../../components/icon.vue'
+import Icon from 'vue-awesome/components/Icon'
 export default {
   components: {
     Icon
@@ -73,4 +74,3 @@ export default {
     min-height: 120px
     padding: 25px
 </style>
-
