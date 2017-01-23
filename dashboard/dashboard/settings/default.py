@@ -42,11 +42,14 @@ INSTALLED_APPS = [
     
     'pytz',
     'rest_framework',
+    #'django.contrib.admin', # just to keep reversion cli working
+    #'reversion',
 
     'common',
     'authx',
     'customer',
     'task',
+    'service',
     
     'api',
 ]
@@ -59,6 +62,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    #'reversion.middleware.RevisionMiddleware'
     'api.middleware.VersionSwitch',
 ]
 
@@ -94,6 +98,9 @@ DATABASES = {
         'PASSWORD': 'wujie',                  # Not used with sqlite3.
         'HOST': 'localhost',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '3306',
+#         'OPTIONS': {
+#             'init_command': 'SET foreign_key_checks = 0;',
+#          },
     }
 }
 
