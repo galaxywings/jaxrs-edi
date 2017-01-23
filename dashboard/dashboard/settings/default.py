@@ -42,8 +42,8 @@ INSTALLED_APPS = [
     
     'pytz',
     'rest_framework',
-    #'django.contrib.admin', # just to keep reversion cli working
-    #'reversion',
+    'django.contrib.admin', # just to keep reversion cli working
+    'reversion',
 
     'common',
     'authx',
@@ -62,7 +62,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    #'reversion.middleware.RevisionMiddleware'
+    'reversion.middleware.RevisionMiddleware'
     'api.middleware.VersionSwitch',
 ]
 

@@ -6,7 +6,9 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from jsonfield.fields import JSONField, JSONCharField
+import reversion
 
+@reversion.register()
 class Process(models.Model):
     customer = models.ForeignKey('customer.Customer')
     name = models.CharField(_('name'), max_length=64, help_text=_('Display name'))
@@ -33,6 +35,7 @@ class Service(models.Model):
     def __str__(self):
         return self.code
 
+@reversion.register()
 class Step(models.Model):
     process = models.ForeignKey('task.Process', on_delete=models.CASCADE)
     seq = models.SmallIntegerField(_('seq'),help_text=_('Step seq for a detail process'))
