@@ -1,14 +1,15 @@
 from django.contrib.auth import get_user_model
-from rest_framework import serializers
 from rest_framework.fields import SerializerMethodField
 
+from common.serializers import DynamicFieldsModelSerializer
 
-class UserSerializer(serializers.ModelSerializer):
+
+class UserSerializer(DynamicFieldsModelSerializer):
     class Meta:
         model = get_user_model()
         exclude = ('password', )
 
-class UserGroupSerializer(serializers.ModelSerializer):
+class UserGroupSerializer(DynamicFieldsModelSerializer):
     groups = SerializerMethodField()
     
     class Meta:

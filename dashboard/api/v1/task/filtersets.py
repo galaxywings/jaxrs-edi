@@ -2,22 +2,11 @@
 from rest_framework_filters import FilterSet, RelatedFilter
 
 from customer.models import Customer
-from task.models import Service, Step, Process
+from task.models import Step, Process
 
 
-class TaskServiceGenericFilterSet(FilterSet):
-
-    class Meta:
-        model = Service
-        fields = {
-            'id': ['exact', 'in'],
-            'code': ['exact', 'icontains', 'contains', 'in'],
-            'name': ['exact', 'icontains', 'contains', 'in'],
-        }
-
-class TaskProcessGenericFilterSet(FilterSet):
+class ProcessGenericFilterSet(FilterSet):
     customer = RelatedFilter('api.v1.customer.filtersets.CustomerGenericFilterSet', queryset=Customer.objects.all())
-    steps = RelatedFilter('api.v1.task.filtersets.TaskStepGenericFilterSet', queryset=Step.objects.all())
     
     class Meta:
         model = Process
@@ -27,9 +16,8 @@ class TaskProcessGenericFilterSet(FilterSet):
             'active': ['exact'],
         }
 
-class TaskStepGenericFilterSet(FilterSet):
+class StepGenericFilterSet(FilterSet):
     process = RelatedFilter('api.v1.task.filtersets.TaskProcessGenericFilterSet', queryset=Process.objects.all())
-    service = RelatedFilter('api.v1.task.filtersets.TaskServiceGenericFilterSet', queryset=Service.objects.all())
     
     class Meta:
         model = Step
