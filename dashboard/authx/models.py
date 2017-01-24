@@ -5,6 +5,7 @@ from django.core import validators
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+import reversion
 
 
 class UserManager(BaseAuthUserManager):
@@ -75,7 +76,7 @@ class AbstractUser(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.username
     
-    
+@reversion.register()
 class User(AbstractUser):
     """
     Users within the Django authentication system are represented by this
