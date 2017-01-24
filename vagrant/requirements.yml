@@ -3,3 +3,5 @@
 - src: geerlingguy.java
 - src: Stouts.rabbitmq
 - src: geerlingguy.jenkins
+- src: shelleg.gradle
+- src: DavidWittman.redis

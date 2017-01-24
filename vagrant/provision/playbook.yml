@@ -1,17 +1,8 @@
 ---
-- name: Setup development environment for Wujie EDI platform
-  hosts: all
+- hosts: all
   remote_user: vagrant
-  sudo: yes
-
-  roles:
-    - role: geerlingguy.java
-      java_packages:
-        - java-1.8.0-openjdk
-    - role: geerlingguy.mysql
-    - role: geerlingguy.nginx
-    - role: Stouts.rabbitmq
-    - role: geerlingguy.jenkins
+  become: yes
+  become_method: sudo
 
   vars:
     mysql_databases:
@@ -21,6 +12,54 @@
         host: "%"
         password: wujie
         priv: "wujie.*:ALL"
+    rabbitmq_users:
+      - user: wujie
+        password: wujie
+        vhost: wujie
+        configure_priv: .*
+        read_priv: .*
+        write_priv: .*
+        tags: administrator
+    rabbitmq_vhosts:
+      - wujie
+
+  roles:
+    - role: geerlingguy.java
+      java_packages:
+        - java-1.8.0-openjdk
+    - role: geerlingguy.mysql
+    # - role: geerlingguy.nginx
+    - role: Stouts.rabbitmq
+    # - role: geerlingguy.jenkins
+    - role: DavidWittman.redis
+
+  tasks:
+    - yum: name=maven state=present
+    - get_url:
+        url: https://repository-master.mulesoft.org/nexus/content/repositories/releases/org/mule/distributions/mule-standalone/3.8.1/mule-standalone-3.8.1.zip
+        # url: http://kmac/mule-standalone-3.8.1.zip
+        dest: /home/vagrant
+        checksum: "sha256:9ebad7b405ca689576f155820d1a9bf186d290a7e5f3e6a06339fddead0f7768"
+      become: no
+    - unarchive:
+        src: /home/vagrant/mule-standalone-3.8.1.zip
+        dest: /home/vagrant
+      become: no
+    - easy_install:
+        name: requests
+        state: present
+    - rabbitmq_queue:
+        name: dead.letter
+        login_user: wujie
+        login_password: wujie
+        vhost: wujie
+
+  post_tasks:
+    - shell: /vagrant/vagrant/provision/wujie.sh
+      become: no
+      environment:
+        MULE_HOME: /home/vagrant/mule-standalone-3.8.1
+
 
 
 
