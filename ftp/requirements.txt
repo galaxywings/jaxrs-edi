@@ -2,3 +2,4 @@ ipython==5.1.0
 pika==0.10.0
 pyftpdlib==1.5.1
 pyreadline==2.1
+pysendfile
