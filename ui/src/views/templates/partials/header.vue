@@ -19,8 +19,8 @@
         <el-menu-item index="/service/generics-schemas">通用Schema列表</el-menu-item>
       </el-menu-item-group>
       <el-menu-item-group title="FTP">
-        <el-menu-item index="/service/ftp/new">新建FTP</el-menu-item>
-        <el-menu-item index="/service/ftp">FTP列表</el-menu-item>
+        <el-menu-item index="/settings/ftps/create">新建FTP</el-menu-item>
+        <el-menu-item index="/settings/ftps">FTP列表</el-menu-item>
       </el-menu-item-group>
       <el-menu-item-group title="协议">
         <el-menu-item index="/service/protocols/new">新建协议</el-menu-item>

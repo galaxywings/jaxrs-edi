@@ -81,7 +81,7 @@ export default {
         this.$http.post('/api/v1/customer/customers/',
           this.customerForm).then((response) => {
             let data = response.body
-            this.$router.push({name: 'customerCustomerEdit', params: { id: data.id }})
+            this.$router.push({name: 'customers.edit', params: { id: data.id }})
           }, (response) => {
             this.$notify.error({
               title: response.statusText,
