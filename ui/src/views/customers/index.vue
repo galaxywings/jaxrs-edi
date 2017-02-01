@@ -79,7 +79,7 @@
       layout="total, sizes, prev, pager, next, jumper"
       :total="pagination.itemTotal">
     </el-pagination>
-    <el-dialog title="Sure to delete" v-model="removeDialogVisible">
+    <el-dialog title="请确认是否删除如下数据！" v-model="removeDialogVisible">
       <el-table :data="toBeRemoved" :stripe="true">
         <el-table-column property="code" label="Code" width="150"></el-table-column>
         <el-table-column property="name" label="Name" width="200"></el-table-column>

@@ -95,6 +95,47 @@ export default [
             component: require('./views/modules/task/process-new')
           }
         ]
+      },
+      // settings / FTP
+      {
+        path: 'settings',
+        component: require('./views/templates/blank'),
+        children: [
+          {
+            path: 'ftps',
+            meta: {
+              name: 'FTP设置'
+            },
+            component: require('./views/settings/ftps/template'),
+            children: [
+              {
+                path: '',
+                name: 'settings.ftps.list',
+                meta: {
+                  name: 'FTP列表'
+                },
+                component: require('./views/settings/ftps/index')
+              },
+              {
+                path: 'create',
+                name: 'settings.ftps.create',
+                meta: {
+                  name: '新建FTP配置'
+                },
+                component: require('./views/settings/ftps/create')
+              },
+              {
+                path: ':id/edit',
+                name: 'settings.ftps.edit',
+                props: true,
+                meta: {
+                  name: '修改FTP配置'
+                },
+                component: require('./views/settings/ftps/edit')
+              }
+            ]
+          }
+        ]
       }
     ]
   },
