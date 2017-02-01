@@ -1,10 +1,12 @@
 
+from rest_framework.decorators import list_route
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_bulk.generics import BulkModelViewSet
 
 from api.v1.task.filtersets import ProcessGenericFilterSet, \
     StepGenericFilterSet
-from api.v1.task.serializers import ProcessSerializer, StepSerializer
+from api.v1.task.serializers import ProcessSerializer, StepSerializer, \
+    StepServiceSerializer
 from authx.permissions import IsAdminUser
 from task.models import Process, Step
 
@@ -23,3 +25,15 @@ class StepViewSet(BulkModelViewSet):
     serializer_class = StepSerializer
     filter_class = StepGenericFilterSet
     #permission_classes = (IsAdminUser, )
+    
+    @list_route(
+        methods=('get', )
+    )
+    def full(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+    
+    def get_serializer_class(self):
+        if self.action == 'full':
+            return StepServiceSerializer
+        return super().get_serializer_class()
+        

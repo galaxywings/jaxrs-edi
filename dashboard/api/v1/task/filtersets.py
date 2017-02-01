@@ -17,7 +17,7 @@ class ProcessGenericFilterSet(FilterSet):
         }
 
 class StepGenericFilterSet(FilterSet):
-    process = RelatedFilter('api.v1.task.filtersets.TaskProcessGenericFilterSet', queryset=Process.objects.all())
+    process = RelatedFilter('api.v1.task.filtersets.ProcessGenericFilterSet', queryset=Process.objects.all())
     
     class Meta:
         model = Step
