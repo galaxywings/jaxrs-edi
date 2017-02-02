@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'django.contrib.admin', # just to keep reversion cli working
     'reversion',
+    'memoize',
+    'generic_relations',
 
     'common',
     'authx',
@@ -110,6 +112,17 @@ try:
     pymysql.install_as_MySQLdb()
 except ImportError:
     pass 
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+        'TIMEOUT': 60*1,
+        'OPTIONS': {
+            'MAX_ENTRIES': 1000,
+        }
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
