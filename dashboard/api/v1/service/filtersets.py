@@ -14,9 +14,9 @@ class ServiceSchemaGenericFilterSet(filters.FilterSet):
     class Meta:
         model = ServiceSchema
         fields = {
-            'id': ['exact', 'in'],
-            'code': ['exact', 'icontains', 'contains', 'in'],
-            'name': ['exact', 'icontains', 'contains', 'in'],
+            'id': ('exact', 'in',),
+            'code': ('exact', 'icontains', 'contains', 'in',),
+            'name': ('exact', 'icontains', 'contains', 'in',),
         }
 
 class GenericServiceFilterSet(filters.FilterSet):
@@ -25,8 +25,8 @@ class GenericServiceFilterSet(filters.FilterSet):
     class Meta:
         model = GenericService
         fields = {
-            'id': ['exact', 'in'],
-            'name': ['exact', 'icontains', 'contains', 'in'],
+            'id': ('exact', 'in',),
+            'name': ('exact', 'icontains', 'contains', 'in',),
         }
 
 class FtpServiceFilterSet(filters.FilterSet):
@@ -35,11 +35,11 @@ class FtpServiceFilterSet(filters.FilterSet):
     class Meta:
         model = Ftp
         fields = {
-            'id': ['exact', 'in'],
-            'name': ['exact', 'icontains', 'contains', 'in'],
-            'username': ['exact', 'icontains', 'contains', 'in', 'startswith'],
-            'password': ['exact', 'icontains', 'contains', 'in', 'startswith'],
-            'host': ['exact', 'icontains', 'contains', 'in', 'startswith'],
-            'port': ['exact', 'in',],
-            'path': ['exact', 'icontains', 'contains', 'in', 'startswith'],
+            'id': ('exact', 'in',),
+            'name': ('exact', 'icontains', 'contains', 'in',),
+            'username': ('exact', 'icontains', 'contains', 'in', 'startswith',),
+            'password': ('exact', 'icontains', 'contains', 'in', 'startswith',),
+            'host': ('exact', 'icontains', 'contains', 'in', 'startswith',),
+            'port': ('exact', 'in',),
+            'path': ('exact', 'icontains', 'contains', 'in', 'startswith',),
         }

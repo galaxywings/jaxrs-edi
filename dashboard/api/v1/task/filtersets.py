@@ -11,9 +11,9 @@ class ProcessGenericFilterSet(FilterSet):
     class Meta:
         model = Process
         fields = {
-            'id': ['exact', 'in'],
-            'name': ['exact', 'icontains', 'contains', 'in'],
-            'active': ['exact'],
+            'id': ('exact', 'in',),
+            'name': ('exact', 'icontains', 'contains', 'in',),
+            'active': ('exact', ),
         }
 
 class StepGenericFilterSet(FilterSet):
@@ -22,7 +22,7 @@ class StepGenericFilterSet(FilterSet):
     class Meta:
         model = Step
         fields = {
-            'id': ['exact', 'in'],
+            'id': ('exact', 'in',),
             'seq': '__all__', #['exact', 'in', 'lt', 'lte', 'gte', 'gte']
         }
         

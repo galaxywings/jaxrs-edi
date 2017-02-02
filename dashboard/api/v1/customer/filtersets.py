@@ -9,9 +9,9 @@ class CustomerGenericFilterSet(FilterSet):
     class Meta:
         model = Customer
         fields = {
-            'id': ['exact', 'in'],
-            'code': ['exact', 'icontains', 'contains', 'in'],
-            'name': ['exact', 'icontains', 'contains', 'in'],
-            'active': ['exact'],
+            'id': ('exact', 'in',),
+            'code': ('exact', 'icontains', 'contains', 'in',),
+            'name': ('exact', 'icontains', 'contains', 'in',),
+            'active': ('exact',),
         }
         
