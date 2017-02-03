@@ -1,4 +1,4 @@
-cd /vagrant/mule/redis-connector
+cd /vagrant/redis-connector
 mvn install
 
 cd /vagrant/mule

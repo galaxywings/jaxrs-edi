@@ -1,0 +1,9 @@
+dependencies {
+    // Smooks for EDI transforming
+    compile group: 'org.milyn', name: 'milyn-smooks-edi', version: '1.7.0'
+    compile group: 'org.milyn.edi.unedifact', name: 'd99b-mapping', version: '1.4'
+    compile group: 'org.milyn.edi.unedifact', name: 'd99b-binding', version: '1.4'
+    compile group: 'org.milyn', name: 'milyn-smooks-templating', version: '1.7.0'
+    compile group: 'org.milyn', name: 'milyn-smooks-javabean', version: '1.7.0'
+    compile group: 'org.milyn', name: 'milyn-smooks-csv', version: '1.7.0'
+}

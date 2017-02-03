@@ -1,2 +1,4 @@
 rootProject.name = 'wujie-edi'
 include 'esb'
+include 'smooks'
+

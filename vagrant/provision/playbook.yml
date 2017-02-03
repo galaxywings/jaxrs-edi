@@ -36,8 +36,8 @@
   tasks:
     - yum: name=maven state=present
     - get_url:
-        url: https://repository-master.mulesoft.org/nexus/content/repositories/releases/org/mule/distributions/mule-standalone/3.8.1/mule-standalone-3.8.1.zip
-        # url: http://kmac/mule-standalone-3.8.1.zip
+        # url: https://repository-master.mulesoft.org/nexus/content/repositories/releases/org/mule/distributions/mule-standalone/3.8.1/mule-standalone-3.8.1.zip
+        url: http://kmac/mule-standalone-3.8.1.zip
         dest: /home/vagrant
         checksum: "sha256:9ebad7b405ca689576f155820d1a9bf186d290a7e5f3e6a06339fddead0f7768"
       become: no

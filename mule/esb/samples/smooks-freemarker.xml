@@ -1,0 +1,5 @@
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" xmlns:ftl="http://www.milyn.org/xsd/smooks/freemarker-1.1.xsd">
+    <ftl:freemarker applyOnElement="order">
+        <ftl:template><!--<orderId>${order.id}</orderId>--></ftl:template>
+    </ftl:freemarker>
+</smooks-resource-list>
