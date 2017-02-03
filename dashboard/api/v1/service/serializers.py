@@ -1,3 +1,6 @@
+from jsonschema.exceptions import ValidationError as JsonValidationError
+from jsonschema.validators import validate
+from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, JSONField, BooleanField
 from rest_framework_bulk.serializers import BulkSerializerMixin, \
     BulkListSerializer
@@ -28,13 +31,23 @@ class GenericServiceSerializer(BulkSerializerMixin, DynamicFieldsModelSerializer
         model = GenericService
         list_serializer_class = BulkListSerializer
         fields = '__all__'
-
-class FtpServiceSerializer(BulkSerializerMixin, DynamicFieldsModelSerializer):
-    name = CharField(required=True)
-    # drf's JSONField only auto bound with postgres
-    # please refer to rest_framework.compat.py
-    extra_params = JSONField(required=False)
     
+    def validate(self, data):
+        if 'extra_params' in data:
+            assert (self.instance is not None or 'extra_schema' in data), \
+                '`extra_schema` is required when validating `extra_params`'
+            if 'extra_schema' in data:
+                service_schema = data['extra_schema'] 
+            else:
+                service_schema = self.instance.extra_schema
+            try:
+                validate(data['extra_params'], service_schema.extra_schema)
+            except JsonValidationError as e:
+                raise ValidationError(detail='invalid extra_params, %s ' % e.message)
+        
+        return data
+
+class FtpServiceSerializer(GenericServiceSerializer):
     folder_creation = BooleanField(write_only=True, required=False)
     
     class Meta:
