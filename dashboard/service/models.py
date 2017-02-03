@@ -39,8 +39,18 @@ class GenericService(AbstractBaseService):
         
 @reversion.register()
 class Ftp(AbstractBaseService):
+    FTP_MODE_CHOICES = (
+        (0, 'Passive'),
+        (1, 'Active'),
+    )
+    
     username = models.CharField(_('username'), max_length=32)
     password = models.CharField(_('password'), max_length=128)
     host = models.CharField(_('host'), max_length=32)
     port = models.PositiveIntegerField(_('port'))
-    path = models.CharField(_('file'), max_length=255)   
+    path = models.CharField(_('file'), max_length=255)
+    
+    customer = models.ForeignKey('customer.Customer', on_delete=models.CASCADE)
+    # http://slacksite.com/other/ftp.html
+    mode = models.SmallIntegerField(_('mode'), choices=FTP_MODE_CHOICES, default=0)
+    ssl = models.BooleanField(_('ssl'), default=False)
