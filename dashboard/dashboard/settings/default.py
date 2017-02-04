@@ -315,3 +315,7 @@ JWT_AUTH = {
                                                     # This is how much time after the original token that future tokens can be refreshed from.
     'JWT_AUTH_HEADER_PREFIX': 'JWT', # that HTTP Header Authorization: Bearer xxx, Bearer part
 }
+
+# Redis
+REDIS_PORT = 6379
+REDIS_HOST = '127.0.0.1'
