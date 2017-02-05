@@ -113,6 +113,12 @@ try:
 except ImportError:
     pass 
 
+# Redis
+REDIS_PORT = 6379
+REDIS_HOST = '127.0.0.1'
+REDIS_PASSWORD = None
+REDIS_MULE_DB = 0
+
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
@@ -315,7 +321,3 @@ JWT_AUTH = {
                                                     # This is how much time after the original token that future tokens can be refreshed from.
     'JWT_AUTH_HEADER_PREFIX': 'JWT', # that HTTP Header Authorization: Bearer xxx, Bearer part
 }
-
-# Redis
-REDIS_PORT = 6379
-REDIS_HOST = '127.0.0.1'
