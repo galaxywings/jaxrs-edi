@@ -9,7 +9,7 @@
     <el-submenu index="/task">
       <template slot="title"><i class="el-icon-setting"></i>任务管理</template>
       <el-menu-item-group title="Process">
-        <el-menu-item index="/task/processes/new">新建Process</el-menu-item>
+        <el-menu-item index="/task/processes/create">新建Process</el-menu-item>
         <el-menu-item index="/task/processes">Process列表</el-menu-item>
       </el-menu-item-group>
     </el-submenu>

@@ -81,18 +81,18 @@ export default [
           },
           {
             path: 'processes',
-            name: 'taskProcessList',
-            component: require('./views/modules/task/process-list')
+            name: 'process.index',
+            component: require('./views/process/index')
           },
           {
             path: 'processes/:id/edit',
-            name: 'taskProcessEdit',
-            component: require('./views/modules/task/process-edit')
+            name: 'process.edit',
+            component: require('./views/process/edit')
           },
           {
-            path: 'processes/new',
-            name: 'taskProcessNew',
-            component: require('./views/modules/task/process-new')
+            path: 'processes/create',
+            name: 'process.create',
+            component: require('./views/process/create')
           }
         ]
       },

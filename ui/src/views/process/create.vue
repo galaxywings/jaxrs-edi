@@ -27,7 +27,7 @@
         <el-input v-model="processForm.name"></el-input>
       </el-form-item>
       <el-form-item label="Interval" prop="interval">
-        <el-input v-model="processForm.interval"></el-input>
+        <el-input v-model.number="processForm.interval"></el-input>
       </el-form-item>
       <el-form-item label="Active" prop="active">
          <el-switch on-text="Yes" off-text="No" v-model="processForm.active"></el-switch>
@@ -62,7 +62,7 @@ export default {
           { min: 3, max: 128, message: 'Length should be 3 to 128', trigger: 'blur' }
         ],
         interval: [
-          { type: 'integer', min: 60, message: 'Interval better greater than 60 secs', trigger: 'input' }
+          { type: 'integer', min: 60, message: 'Interval better greater than 60 secs', trigger: 'change' }
         ]
       }
     }
@@ -105,7 +105,7 @@ export default {
         this.$http.post('/api/v1/task/processes/', this.processForm)
           .then((response) => {
             let data = response.body
-            this.$router.push({name: 'taskProcessEdit', params: { id: data.id }})
+            this.$router.push({name: 'process.edit', params: { id: data.id }})
           }, (response) => {
             this.$notify.error({
               title: response.statusText,

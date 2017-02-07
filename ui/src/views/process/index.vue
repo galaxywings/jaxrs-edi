@@ -14,7 +14,7 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" size="small">
-          <router-link :to="{ name: 'taskProcessNew' }">
+          <router-link :to="{ name: 'process.create' }">
             <i class="el-icon-plus"></i>
           </router-link>
         </el-button>
@@ -126,7 +126,7 @@ export default {
   },
   methods: {
     handleEdit ($index, row) {
-      this.$router.push({name: 'taskProcessEdit', params: {id: row.id}})
+      this.$router.push({name: 'process.edit', params: {id: row.id}})
     },
     handleSelectionChange (val) {
       this.multipleSelection = val

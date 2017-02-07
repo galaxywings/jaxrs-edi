@@ -46,6 +46,7 @@
             :schema="step.params_schema"
             :options="editorOptions"
             v-model="step.params_value"
+            @input="handleJsonEditorChange"
             @invalid="onStepInvalid(step, $event)">
           </json-editor>
       </el-form-item>
@@ -112,9 +113,6 @@ export default {
     }
   },
   methods: {
-    handleReset () {
-      this.$refs.processForm.resetFields()
-    },
     querySearchCustomer: _.debounce(function (queryString) {
       this.searchCustomers(queryString)
     }, 500),
@@ -146,7 +144,7 @@ export default {
     }, 500),
     searchServices (q = '') {
       this.isServiceLoading = true
-      let url = '/api/v1/task/services/'
+      let url = '/api/v1/service/schemas/'
       return this.$http.get(url, {
         params: {q: q}
       }).then((response) => {
@@ -196,7 +194,7 @@ export default {
     removeStep (index) {
       this.processForm.steps.splice(index, 1)
     },
-    addStep (index) {
+    addStep () {
       if (this.selectedService === null) {
         this.$notify.warning({
           title: 'Invalid Service',
@@ -204,6 +202,7 @@ export default {
         })
         return
       }
+      console.log(this.selectedService)
       let step = {
         service: this.selectedService,
         params_value: {},
@@ -270,23 +269,74 @@ export default {
           })
       })
     }, 500),
+    getProcess () {
+      this.$http.get(this.apiEndpoint).then((response) => {
+        let data = response.body
+        for (let property in data) {
+          this.processForm[property] = data[property]
+        }
+        this.searchCustomers('', this.processForm.cutomer)
+        this.assignStepsSchema(this.processForm, this.serviceOptions)
+        this.assignStepsKey(this.processForm)
+        this.oldProcess = _.cloneDeep(this.processForm)
+      }, (response) => {
+        if (response.status === 404) {
+          this.$notify.warning({
+            title: response.statusText,
+            message: 'The process cannot be found'
+          })
+          this.$router.push({name: 'process.index'})
+        }
+      })
+    },
+    getServiceSchema () {
+      this.$http.get('/api/v1/service/ftps/').then(({data}) => {
+        let ftps = data.results
+        this.serviceOptions.map((item) => {
+          // if(item.content_type=='FTP'){
+
+          // }
+          let schema = {
+            title: `${item.name} 步骤详情`,
+            type: 'object',
+            properties: {
+              ftp: {
+                enumSource: [
+                  {
+                    source: ftps,
+                    title: '{{item.name}}',
+                    value: '{{item.id}}'
+                  }
+                ],
+                type: 'string',
+                title: 'FTP 列表 {{item.username}} '
+              }
+            }
+          }
+          if (item.extra_schema) {
+            Object.assign(schema.properties, item.extra_schema.properties)
+          }
+          item.params_schema = schema
+        })
+      }, (response) => {
+        if (response.status === 404) {
+          this.$notify.warning({
+            title: response.statusText,
+            message: 'The FTP list cannot be found'
+          })
+        }
+      })
+    },
+    handleJsonEditorChange ({value, editor}) {
+      if (value.hasOwnProperty('ftp')) {
+        console.log(editor)
+      }
+    },
     initFetchData () {
       this.searchServices().then((serviceOptions) => {
-        this.$http.get(this.apiEndpoint).then((response) => {
-          this.processForm = response.body
-          this.searchCustomers('', this.processForm.cutomer)
-          this.assignStepsSchema(this.processForm, serviceOptions)
-          this.assignStepsKey(this.processForm)
-          this.oldProcess = _.cloneDeep(this.processForm)
-        }, (response) => {
-          if (response.status === 404) {
-            this.$notify.warning({
-              title: response.statusText,
-              message: 'The process cannot be found'
-            })
-            this.$router.push({name: 'taskProcessList'})
-          }
-        })
+        this.serviceOptions = serviceOptions
+        this.getServiceSchema()
+        this.getProcess()
       })
     }
   },
