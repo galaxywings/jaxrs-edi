@@ -29,7 +29,7 @@ def test_ftp_connection(ftp, path):
 def create_ftp_transfer_folders(ftp, path):
     chdir(ftp, path)
     existing_folders = set(ftp.nlst())
-    target_folders = set(('IN', 'OUT', 'PRE'))
+    target_folders = {'IN', 'OUT', 'PRE'}
     for folder in (target_folders - existing_folders):
         ftp.mkd(folder)
 
