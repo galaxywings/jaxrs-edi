@@ -21,7 +21,8 @@
       </el-form-item>
       <el-form-item label="端口" prop="port"
        :show-message="!!form.errors.get('port')" :error="form.errors.get('port')">
-         <el-input v-model="form.port" name="port"></el-input>
+         <el-input-number v-model="form.port" name="port"
+          :controls="false" :max="65535"></el-input>
       </el-form-item>
       <el-form-item label="路径" prop="path"
        :show-message="!!form.errors.get('path')" :error="form.errors.get('path')">

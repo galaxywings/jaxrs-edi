@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ftp-form :init-form-data="initFormData" v-if="initFormData"></ftp-form> 
+    <ftp-form :init-form-data="initFormData" v-if="initFormData"></ftp-form>
   </div>
 </template>
 
@@ -21,8 +21,17 @@ export default {
     this.$http.get(`/api/v1/service/ftps/${this.id}`)
       .then(({data}) => {
         this.initFormData = data
-        this.$loading().close()
       }, (response) => {
+        let msg = 'Empty Response'
+        if (response) {
+          msg = response.body.detail
+        }
+        this.$notify.error({
+          title: response.statusText,
+          message: msg
+        })
+      }).finally(() => {
+        this.$loading().close()
       })
   }
 }
