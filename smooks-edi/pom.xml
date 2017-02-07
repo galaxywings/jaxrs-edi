@@ -11,6 +11,7 @@
 
   <modules>
     <module>focus</module>
+    <module>iftmbf</module>
   </modules>
 
   <dependencies>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<medi:edimap xmlns:medi="http://www.milyn.org/schema/edi-message-mapping-1.5.xsd">
+
+    <medi:description name="Focus Booking" version="1.0"/>
+
+    <medi:delimiters segment="'" field=":" component="" sub-component="" escape="?"/>
+
+    <!--
+
+    00:IFTMBF:BOOKING:9:132276869:63148792-7h:200706071710'
+    02:WSYOK07644101:PASU53088760:CY-CY::COSCO::::::::::SHA13553083V1::'
+    03:ORI:CNSHA:SHANGHAI:20070612:3::'
+    11::COSCO KIKU:272E:::COSCO::20070612:::::'
+    12:CNSHA:SHANGHAI:CNSHA:SHANGHAI:JPYOK:YOKOHAMA:JPYOK:YOKOHAMA:JPYOK:YOKOHAMA:JPYOK:YOKOHAMA'
+    14:37:OFTP BAFC YASC EBSC HDSC'20::HANGSU GUUTM INTERNAIOTNAL,GROUP GU:O MAO CO.,LTD.,14-17/F,GUOTAI BLDG,:REN MIN RD.(M),ZHANG JIAGANG CITY,,:JIANGSU PROVINCE,CHINA'
+    21::KOKAIJI CO.,LTD.'
+    22::SAME AS CONSIGNEE'
+    41:1::S:106:CT:CARTONS:1190.00:16.710::::::1190.00:::'
+    44:KOKAJI:C/NO:MADE IN CHINA'47:CAPS:WAY BILL:FAF YAS EBS CC:HDS CC:SHA13553083V1'
+    48:22G1:1:F:::::N'
+    99:14'
+
+    -->
+
+    <medi:segments xmltag="FocusBooking">
+
+        <medi:segment segcode="00" xmltag="head-record">
+            <medi:field xmltag="message-type" dataType="String"/>
+            <medi:field xmltag="file-description" dataType="String" required="false"/>
+            <medi:field xmltag="file-function" dataType="String"/>
+            <medi:field xmltag="sender-code" dataType="String"/>
+            <medi:field xmltag="receiver-code" dataType="String"/>
+            <!-- 9(12) 用Integer表示不下 CCYYMMDDHHMM -->
+            <medi:field xmltag="file-create-time" dataType="Date" dataTypeParameters="format=yyyyMMddHHmm"/>
+            <medi:field xmltag="message-id" dataType="String"/>
+        </medi:segment>
+
+        <medi:segment segcode="99" xmltag="trailer-record">
+            <medi:field xmltag="record-total-of-file" dataType="Integer"/>
+        </medi:segment>
+
+    </medi:segments>
+
+</medi:edimap>
