@@ -14,7 +14,7 @@ class CustomerViewSet(BulkModelViewSet):
     serializer_class = CustomerSerializer
     filter_class = CustomerGenericFilterSet
     search_fields = ('code', 'name')
-    permission_classes = (IsAdminUser, )
+    # permission_classes = (IsAdminUser, )
     
     @list_route(
         methods=['get'],

@@ -33,9 +33,9 @@ class GenericServiceSerializer(BulkSerializerMixin, DynamicFieldsModelSerializer
         fields = '__all__'
     
     def validate(self, data):
-        if 'extra_params' in data:
-            assert (self.instance is not None or 'extra_schema' in data), \
-                '`extra_schema` is required when validating `extra_params`'
+        if 'extra_params' in data and data['extra_params']:
+            if not self.instance and 'extra_schema' not in data:
+                raise ValidationError(detail='`extra_schema` is required when validating `extra_params`')
             if 'extra_schema' in data:
                 service_schema = data['extra_schema'] 
             else:

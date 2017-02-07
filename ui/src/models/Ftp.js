@@ -1,5 +1,8 @@
 export default {
   rules: {
+    customer: [
+      { type: 'number', required: true, message: '请选择客户', trigger: 'blur' }
+    ],
     name: [
       { required: true, message: '请输入FTP名称', trigger: 'blur' },
       { min: 3, message: '长度至少3个字符', trigger: 'blur' }
@@ -20,6 +23,9 @@ export default {
     ],
     path: [
       { required: true, message: '请输入FTP路径', trigger: 'blur' }
+    ],
+    extra_schema: [
+      { type: 'number', required: true, message: '请选择配置', trigger: 'blur' }
     ]
   }
 }

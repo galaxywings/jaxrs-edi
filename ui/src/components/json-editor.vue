@@ -74,7 +74,7 @@
           this.$emit('invalid', errors)
         } else {
           let value = editor.getValue()
-          this.$emit('input', {value, editor})
+          this.$emit('input', value)
         }
       }, 500))
     },

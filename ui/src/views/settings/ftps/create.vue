@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ftp-form :init-form-data="initFormData"></ftp-form> 
+    <ftp-form :init-form-data="initFormData"></ftp-form>
   </div>
 </template>
 
@@ -10,14 +10,15 @@ export default {
   data () {
     return {
       initFormData: {
+        customer: '',
         name: '',
-        extra_params: '{}',
+        extra_params: '',
         username: '',
         password: '',
         host: '',
         port: 21,
         path: '',
-        extra_schema: 1
+        extra_schema: ''
       }
     }
   },

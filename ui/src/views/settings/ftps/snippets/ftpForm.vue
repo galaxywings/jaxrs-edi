@@ -3,6 +3,12 @@
     <el-form :model="form" :rules="rules" ref="form" label-width="120px"
       @keydown.native="form.errors.clear($event.target.name)"
       >
+      <el-form-item label="客户" prop="customer"
+       :show-message="!!form.errors.get('customer')" :error="form.errors.get('customer')">
+       <el-select v-model="form.customer" name="extra_schema">
+         <el-option v-for="item in customers" :label="item.name" :value="item.id"></el-option>
+       </el-select>
+      </el-form-item>
       <el-form-item label="名称" prop="name"
        :show-message="!!form.errors.get('name')" :error="form.errors.get('name')">
         <el-input v-model="form.name" name="name"></el-input>
@@ -28,11 +34,18 @@
        :show-message="!!form.errors.get('path')" :error="form.errors.get('path')">
          <el-input v-model="form.path" name="path"></el-input>
       </el-form-item>
-      <el-form-item label="配置" prop="extra_schema"
+      <el-form-item label="配置类型" prop="extra_schema"
        :show-message="!!form.errors.get('extra_schema')" :error="form.errors.get('extra_schema')">
-        <el-select v-model="form.extra_schema" name="extra_schema">
+        <el-select v-model="form.extra_schema" name="extra_schema" @change="handleSchemaChange">
           <el-option v-for="item in schemas" :label="item.name" :value="item.id"></el-option>
         </el-select>
+      </el-form-item>
+      <el-form-item label="额外配置" prop="extra_params">
+        <json-editor
+          v-if="isExtraSchemaVisible"
+          :schema="extra_schema"
+          v-model="form.extra_params">
+        </json-editor>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="handleSubmit" :disabled="form.errors.any()">提交</el-button>
@@ -45,21 +58,29 @@
 <script>
 import Form from 'src/models/Form'
 import Ftp from 'src/models/Ftp'
+import _ from 'lodash'
 export default {
   props: ['initFormData'],
   data () {
-    console.log(this.initFormData)
+    // console.log(this.initFormData)
     return {
       form: new Form(this.initFormData),
       rules: Ftp.rules,
-      schemas: ''
+      schemas: [],
+      customers: [],
+      extra_schema: {}
+    }
+  },
+  computed: {
+    isExtraSchemaVisible: function () {
+      return !_.isEmpty(this.extra_schema)
     }
   },
   methods: {
     handleReset () {
       this.$refs.form.resetFields()
     },
-    handleSubmit (ev) {
+    handleSubmit: _.debounce(function () {
       let method = this.form.id ? 'put' : 'post'
       let url = this.form.id ? `/api/v1/service/ftps/${this.form.id}/` : `/api/v1/service/ftps/`
       let mode = this.form.id ? '修改' : '添加'
@@ -71,22 +92,59 @@ export default {
           })
           this.$router.push({name: 'settings.ftps.edit', params: { id: response.id }})
         },
-        ({ body, data }) => {
+        (response) => {
           this.$notify.error({
             title: '错误',
             message: `FTP${mode}失败!`
           })
+          this.form.errors.clear()
+        })
+    }, 500),
+    loadServiceSchemas () {
+      return this.$http.get('/api/v1/service/schemas/',
+        {params: {
+          content_type__app_label: 'service',
+          content_type__model: 'ftp'
+        }})
+        .then(({data}) => {
+          this.schemas = data.results
+        }, (response) => {
+          this.$notify.error({
+            title: response.statusText,
+            message: response.body
+          })
         })
     },
-    loadServiceSchema () {
-      this.$http.get('/api/v1/service/schemas/')
-        .then(
-          ({data}) => { this.schemas = data.results },
-          (error) => console.log(error))
+    loadCustomers () {
+      this.$http.get('/api/v1/customer/customers/',
+        {params: {
+          active: true
+        }})
+        .then(({data}) => {
+          this.customers = data.results
+        }, (response) => {
+          this.$notify.error({
+            title: response.statusText,
+            message: response.body
+          })
+        })
+    },
+    handleSchemaChange () {
+      for (let schema of this.schemas) {
+        if (schema.id === this.form.extra_schema) {
+          this.extra_schema = schema.extra_schema
+          this.form.extra_params = {}
+          break
+        }
+      }
     }
   },
   mounted () {
-    this.loadServiceSchema()
+    this.loadServiceSchemas()
+      .then(() => {
+        this.handleSchemaChange()
+      })
+    this.loadCustomers()
   }
 }
 </script>
