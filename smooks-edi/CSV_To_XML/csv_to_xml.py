@@ -1,7 +1,14 @@
+#!/usr/bin/env python
 
 import csv
-
 import re
+import sys
+
+if len(sys.argv) == 1:
+    print("Usage: " + sys.argv[0] + " path_to_csv_file")
+    exit(0)
+
+FILE_PATH = sys.argv[1]
 
 chinese_word = r'[\u4e00-\u9fff]+'
 char_to_be_removed = r'[,&()\./]'
@@ -39,14 +46,14 @@ def is_seg_header(col):
 
 def m_or_c(flag):
     if flag == 'm':
-        return 'true'
+        return '"true"'
     else:
-        return 'false'
+        return '"false"'
 
 def get_length(col):
     match = re.search(max_length,col)
     if match:
-        return match.group(1)
+        return '"' + match.group(1) + '"'
 
 def is_date_format(col):
     return re.search(date_format, col)
@@ -61,7 +68,7 @@ first_seg_code = True
 
 result_xml = []
 
-with open('edi_iftmbf.csv', newline='') as f:
+with open(FILE_PATH, newline='') as f:
     reader = csv.reader(f)
     for row in reader:
         if row[0] not in ('','序号'):
