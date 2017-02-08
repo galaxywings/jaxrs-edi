@@ -7,12 +7,12 @@
       <el-breadcrumb-item>编辑Process</el-breadcrumb-item>
     </el-breadcrumb>
     <el-form :model="processForm" :rules="rules" ref="processForm" label-width="120px" >
-      <el-form-item label="Customer" prop="customer">
+      <el-form-item label="客户" prop="customer">
         <el-select
           v-model="processForm.customer"
           filterable
           :remote="true"
-          placeholder="Customer Code / Name"
+          placeholder="客户代码或名称"
           :remote-method="querySearchCustomer"
           :loading="isCustomerLoading">
           <el-option
@@ -23,50 +23,16 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="Name" prop="name">
+      <el-form-item label="工作流程名称" prop="name">
         <el-input v-model="processForm.name"></el-input>
       </el-form-item>
-      <el-form-item label="Interval" prop="interval">
+      <el-form-item label="间隔" prop="interval">
         <el-input v-model="processForm.interval"></el-input>
       </el-form-item>
-      <el-form-item label="Active" prop="active">
+      <el-form-item label="已激活" prop="active">
          <el-switch on-text="Yes" off-text="No" v-model="processForm.active"></el-switch>
       </el-form-item>
-      <el-form-item
-        v-for="(step, index) in processForm.steps"
-        :key="step.key"
-        :label="'Step ' + index"
-        :prop="'steps.' + index"
-        :rules="{
-          validator: stepValidator, trigger: 'input'
-        }"
-        >
-          <el-button @click.prevent="removeStep(index)" type="danger">Delete</el-button>
-          <json-editor
-            :schema="step.params_schema"
-            :options="editorOptions"
-            v-model="step.params_value"
-            @input="handleJsonEditorChange"
-            @invalid="onStepInvalid(step, $event)">
-          </json-editor>
-      </el-form-item>
-      <el-form-item
-        label="Service Options">
-        <el-select
-          v-model="selectedService"
-          :remote="true"
-          placeholder="Service"
-          :remote-method="querySearchService"
-          :loading="isServiceLoading">
-          <el-option
-            v-for="item in serviceOptions"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id">
-          </el-option>
-        </el-select>
-        <el-button @click.prevent="addStep()">Add</el-button>
-      </el-form-item>
+      <steps :process.sync="processForm"></steps>
       <el-form-item>
         <el-button type="primary" @click.native="handleSubmit">Submit</el-button>
       </el-form-item>
@@ -76,6 +42,7 @@
 
 <script>
 import _ from 'lodash'
+import Steps from './snippets/steps.vue'
 export default {
   data () {
     return {
@@ -89,10 +56,6 @@ export default {
       oldProcess: {},
       isCustomerLoading: false,
       customerOptions: [],
-      isServiceLoading: false,
-      serviceOptions: [],
-      selectedService: null,
-      editorOptions: {},
       rules: {
         customer: [
           { type: 'integer', min: 1, required: true, message: 'Customer is required', trigger: 'change' }
@@ -108,9 +71,12 @@ export default {
     }
   },
   computed: {
-    apiEndpoint: function () {
+    apiEndpoint () {
       return `/api/task/processes/${this.$route.params.id}/`
     }
+  },
+  components: {
+    Steps
   },
   methods: {
     querySearchCustomer: _.debounce(function (queryString) {
@@ -127,9 +93,7 @@ export default {
       }).then((response) => {
         // use response.body to avoid nested hell
         let result = response.body.results
-        // this.$set(this, 'customerOptions', result)
         this.customerOptions = result
-        // console.info('customerOptions', this.customerOptions)
       }, (response) => {
         this.$notify.error({
           title: response.statusText,
@@ -139,145 +103,67 @@ export default {
         this.isCustomerLoading = false
       })
     },
-    querySearchService: _.debounce(function (queryString) {
-      this.searchServices(queryString)
-    }, 500),
-    searchServices (q = '') {
-      this.isServiceLoading = true
-      let url = '/api/v1/service/schemas/'
-      return this.$http.get(url, {
-        params: {q: q}
-      }).then((response) => {
-        // use response.body to avoid nested hell
-        let result = response.body.results
-        this.serviceOptions = result
-        return result
-      }, (response) => {
+    handleSubmit (ev) {
+//      this.$refs.processForm.validate((valid) => {
+//        console.log('validate', arguments)
+//        if (!valid) {
+//          this.$notify.error({
+//            title: 'Error',
+//            message: 'Please correct the outstanding error(s)'
+//          })
+//          return false
+//        }
+      if (this.processForm.steps.length === 0) {
         this.$notify.error({
-          title: response.statusText,
-          message: response.body
+          title: 'Error',
+          message: 'At least one step is required'
         })
-      }).finally(() => {
-        this.isServiceLoading = false
-      })
-    },
-    assignStepKey (step, force) {
-      if (step.key && !force) {
-        return
+        return false
       }
-      // refer to http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
-      step.key = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        let r = Math.random() * 16 | 0
-        let v = c === 'x' ? r : (r & 0x3 | 0x8)
-        return v.toString(16)
-      })
-    },
-    assignStepsKey (process) {
-      let steps = process.steps || []
-      for (let step of steps) {
-        this.assignStepKey(step)
+
+//      let params = this.processForm
+      let processRequest = this.$http.put(
+          this.apiEndpoint,
+          this.processForm
+      )
+//      params = this.processForm.steps
+      let stepsRequest = []
+      for (let index of this.processForm.steps.keys()) {
+        console.log(index)
+        console.log(this.processForm.steps[index])
+        let step = this.processForm.steps[index]
+        stepsRequest[index] = this.$http.post(
+          '/api/task/steps/',
+          {
+            process: this.$route.params.id,
+            content_type: step.content_type_id,
+            seq: index + 1,
+            object_id: step.object_id
+          }
+        )
       }
-    },
-    assignStepSchema (step, serviceMap) {
-      step.params_schema = serviceMap[ step.service ].params_schema
-    },
-    assignStepsSchema (process, services) {
-      let steps = process.steps || []
-      let serviceMap = {}
-      for (let service of services) {
-        serviceMap[ service.id ] = service
-      }
-      for (let step of steps) {
-        this.assignStepSchema(step, serviceMap)
-      }
-    },
-    removeStep (index) {
-      this.processForm.steps.splice(index, 1)
-    },
-    addStep () {
-      if (this.selectedService === null) {
-        this.$notify.warning({
-          title: 'Invalid Service',
-          message: 'Please select a valid service'
+//      let stepsRequest = this.$http.post(
+//          `${this.apiEndpoint}save-steps/`,
+//          this.processForm.steps
+//      )
+      Promise.all([processRequest, ...stepsRequest])
+        .then((response) => {
+          this.fetchProcess()
+        }, (response) => {
+          this.$notify.error({
+            title: response.statusText,
+            message: response.body.detail
+          })
         })
-        return
-      }
-      console.log(this.selectedService)
-      let step = {
-        service: this.selectedService,
-        params_value: {},
-        errors: [],
-        seq: this.processForm.steps.length
-      }
-      let serviceMap = {}
-      for (let service of this.serviceOptions) {
-        serviceMap[ service.id ] = service
-      }
-      this.assignStepSchema(step, serviceMap)
-      this.assignStepKey(step)
-      this.processForm.steps.push(step)
+//      })
     },
-    onStepInvalid (step, errors) {
-      // although we name it `$event` in the template,
-      // it seems needs to be `$event` that the value could be passed through
-      step.errors = errors
-    },
-    stepValidator (rule, value, callback) {
-      if (value.errors && value.errors.length > 0) {
-        callback(new Error(''))
-      } else {
-        callback()
-      }
-    },
-    saveProcessPromise () {
-      let params = _.clone(this.processForm)
-      delete params.steps
-      // if (true) { console.info('to be done') }
-      let httpMethod = params.id ? this.$http.post : this.$http.put
-      return httpMethod('/api/v1/task/processes/', params)
-    },
-    handleSubmit: _.debounce(function (ev) {
-      this.$refs.processForm.validate((valid) => {
-        console.info('validate', arguments)
-        if (!valid) {
-          this.$notify.error({
-            title: 'Error',
-            message: 'Please correct the outstanding error(s)'
-          })
-          return false
-        }
-        if (this.processForm.steps.length === 0) {
-          this.$notify.error({
-            title: 'Error',
-            message: 'At least one step is required'
-          })
-          return false
-        }
-        let params = _.cloneDeep(this.processForm)
-        delete params.steps
-        let processRequest = this.$http.put(this.apiEndpoint, params)
-        params = this.processForm.steps
-        let stepsRequest = this.$http.post(`${this.apiEndpoint}save-steps/`, params)
-        Promise.all([processRequest, stepsRequest])
-          .then((response) => {
-            this.initFetchData()
-          }, (response) => {
-            this.$notify.error({
-              title: response.statusText,
-              message: response.body.detail
-            })
-          })
-      })
-    }, 500),
-    getProcess () {
+    fetchProcess () {
       this.$http.get(this.apiEndpoint).then((response) => {
         let data = response.body
         for (let property in data) {
           this.processForm[property] = data[property]
         }
         this.searchCustomers('', this.processForm.cutomer)
-        this.assignStepsSchema(this.processForm, this.serviceOptions)
-        this.assignStepsKey(this.processForm)
         this.oldProcess = _.cloneDeep(this.processForm)
       }, (response) => {
         if (response.status === 404) {
@@ -288,60 +174,11 @@ export default {
           this.$router.push({name: 'process.index'})
         }
       })
-    },
-    getServiceSchema () {
-      this.$http.get('/api/v1/service/ftps/').then(({data}) => {
-        let ftps = data.results
-        this.serviceOptions.map((item) => {
-          // if(item.content_type=='FTP'){
-
-          // }
-          let schema = {
-            title: `${item.name} 步骤详情`,
-            type: 'object',
-            properties: {
-              ftp: {
-                enumSource: [
-                  {
-                    source: ftps,
-                    title: '{{item.name}}',
-                    value: '{{item.id}}'
-                  }
-                ],
-                type: 'string',
-                title: 'FTP 列表 {{item.username}} '
-              }
-            }
-          }
-          if (item.extra_schema) {
-            Object.assign(schema.properties, item.extra_schema.properties)
-          }
-          item.params_schema = schema
-        })
-      }, (response) => {
-        if (response.status === 404) {
-          this.$notify.warning({
-            title: response.statusText,
-            message: 'The FTP list cannot be found'
-          })
-        }
-      })
-    },
-    handleJsonEditorChange ({value, editor}) {
-      if (value.hasOwnProperty('ftp')) {
-        console.log(editor)
-      }
-    },
-    initFetchData () {
-      this.searchServices().then((serviceOptions) => {
-        this.serviceOptions = serviceOptions
-        this.getServiceSchema()
-        this.getProcess()
-      })
     }
   },
   mounted () {
-    this.initFetchData()
+    this.fetchProcess()
   }
 }
 </script>
+
