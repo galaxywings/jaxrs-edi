@@ -82,7 +82,7 @@ export default {
     },
     handleSubmit: _.debounce(function () {
       let method = this.form.id ? 'put' : 'post'
-      let url = this.form.id ? `/api/v1/service/ftps/${this.form.id}/` : `/api/v1/service/ftps/`
+      let url = this.form.id ? `/api/service/ftps/${this.form.id}/` : `/api/service/ftps/`
       let mode = this.form.id ? '修改' : '添加'
       this.form[method](url)
         .then((response) => {
@@ -90,7 +90,7 @@ export default {
             title: '成功',
             message: `FTP${mode}成功!`
           })
-          this.$router.push({name: 'settings.ftps.edit', params: { id: response.id }})
+          this.$router.push({name: 'service.ftps.edit', params: { id: response.id }})
         },
         (response) => {
           this.$notify.error({
@@ -101,7 +101,7 @@ export default {
         })
     }, 500),
     loadServiceSchemas () {
-      return this.$http.get('/api/v1/service/schemas/',
+      return this.$http.get('/api/service/schemas/',
         {params: {
           content_type__app_label: 'service',
           content_type__model: 'ftp'
@@ -116,7 +116,7 @@ export default {
         })
     },
     loadCustomers () {
-      this.$http.get('/api/v1/customer/customers/',
+      this.$http.get('/api/customer/customers/',
         {params: {
           active: true
         }})

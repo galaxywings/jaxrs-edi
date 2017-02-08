@@ -97,9 +97,9 @@ export default [
           }
         ]
       },
-      // settings / FTP
+      // service
       {
-        path: 'settings',
+        path: 'service',
         component: require('./views/templates/blank'),
         children: [
           {
@@ -107,32 +107,32 @@ export default [
             meta: {
               name: 'FTP设置'
             },
-            component: require('./views/settings/ftps/template'),
+            component: require('./views/service/ftps/template'),
             children: [
               {
                 path: '',
-                name: 'settings.ftps.list',
+                name: 'service.ftps.list',
                 meta: {
                   name: 'FTP列表'
                 },
-                component: require('./views/settings/ftps/index')
+                component: require('./views/service/ftps/index')
               },
               {
                 path: 'create',
-                name: 'settings.ftps.create',
+                name: 'service.ftps.create',
                 meta: {
                   name: '新建FTP配置'
                 },
-                component: require('./views/settings/ftps/create')
+                component: require('./views/service/ftps/create')
               },
               {
                 path: ':id/edit',
-                name: 'settings.ftps.edit',
+                name: 'service.ftps.edit',
                 props: true,
                 meta: {
                   name: '修改FTP配置'
                 },
-                component: require('./views/settings/ftps/edit')
+                component: require('./views/service/ftps/edit')
               }
             ]
           }

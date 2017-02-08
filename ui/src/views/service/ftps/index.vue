@@ -8,7 +8,7 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" size="small">
-          <router-link :to="{ name: 'settings.ftps.create' }">
+          <router-link :to="{ name: 'service.ftps.create' }">
             <i class="el-icon-plus"></i>
           </router-link>
         </el-button>
@@ -111,7 +111,7 @@ export default {
         })
     },
     handleEdit ($index, row) {
-      this.$router.push({name: 'settings.ftps.edit', params: {id: row.id}})
+      this.$router.push({name: 'service.ftps.edit', params: {id: row.id}})
     },
     removeItem ($index, row) {
       this.toBeRemoved = [row]
@@ -125,7 +125,7 @@ export default {
     doRemoveItems () {
       // Delete items
       let ids = this.toBeRemoved.map(item => item.id).join(',')
-      this.$http.delete('/api/v1/service/ftps/', {
+      this.$http.delete('/api/service/ftps/', {
         params: {
           id__in: ids
         }

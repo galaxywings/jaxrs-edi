@@ -18,7 +18,7 @@ export default {
   },
   mounted () {
     this.$loading()
-    this.$http.get(`/api/v1/service/ftps/${this.id}`)
+    this.$http.get(`/api/service/ftps/${this.id}`)
       .then(({data}) => {
         this.initFormData = data
       }, (response) => {
