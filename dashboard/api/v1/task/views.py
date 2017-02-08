@@ -41,7 +41,7 @@ class StepViewSet(BulkModelViewSet):
         return self.retrieve(request, *args, **kwargs)
     
     def get_serializer_class(self):
-        if self.action in ('list_detail', 'object_detail', ):
+        if self.action in {'list_detail', 'object_detail', }:
             return StepServiceSerializer
         return super().get_serializer_class()
         

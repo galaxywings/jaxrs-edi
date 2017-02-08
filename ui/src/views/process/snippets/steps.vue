@@ -65,7 +65,7 @@
         let step = {
           extra_schema: schema,
           content_object: {},
-          content_type: schema.content_type.id,
+          content_type: schema.content_type,
           object_id: 0,
           errors: []
         }

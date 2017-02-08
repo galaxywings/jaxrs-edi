@@ -21,7 +21,6 @@ class ServiceSchemaViewSet(BulkModelViewSet):
     filter_class = ServiceSchemaGenericFilterSet
     search_fields = ('code', 'name')
     #permission_classes = (IsAuthenticated, )
-    
 
 class GenericServiceViewSet(BulkModelViewSet):
     queryset = GenericService.objects.all()

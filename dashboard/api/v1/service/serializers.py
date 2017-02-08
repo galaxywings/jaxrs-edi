@@ -4,18 +4,15 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, JSONField, BooleanField
 from rest_framework_bulk.serializers import BulkSerializerMixin, \
     BulkListSerializer
-from api.v1.misc.serializers import ContentTypeSerializer
 from common.serializers import DynamicFieldsModelSerializer
 from service.models import ServiceSchema, GenericService, Ftp
 from service.utils.ftp import exec_ftp_cmds, create_ftp_transfer_folders
-
 
 class ServiceSchemaSerializer(BulkSerializerMixin, DynamicFieldsModelSerializer):
     code = CharField(required=True)
     # drf's JSONField only auto bound with postgres
     # please refer to rest_framework.compat.py
     extra_schema = JSONField(required=False)
-    content_type = ContentTypeSerializer()
 
     class Meta:
         model = ServiceSchema
