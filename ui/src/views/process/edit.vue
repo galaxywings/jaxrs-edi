@@ -44,6 +44,7 @@
 import _ from 'lodash'
 import Steps from './snippets/steps.vue'
 export default {
+  props: ['id'],
   data () {
     return {
       processForm: {
@@ -72,7 +73,7 @@ export default {
   },
   computed: {
     apiEndpoint () {
-      return `/api/task/processes/${this.$route.params.id}/`
+      return `/api/task/processes/${this.id}/`
     }
   },
   components: {
@@ -132,11 +133,21 @@ export default {
         console.log(index)
         console.log(this.processForm.steps[index])
         let step = this.processForm.steps[index]
-        stepsRequest[index] = this.$http.post(
-          '/api/task/steps/',
+        let method = ''
+        let url = ''
+
+        if (step.id) {
+          method = 'put'
+          url = `/api/task/steps/${step.id}/`
+        } else {
+          method = 'post'
+          url = '/api/task/steps/'
+        }
+        stepsRequest[index] = this.$http[method](
+          url,
           {
             process: this.$route.params.id,
-            content_type: step.content_type_id,
+            content_type: step.content_type,
             seq: index + 1,
             object_id: step.object_id
           }
@@ -181,4 +192,3 @@ export default {
   }
 }
 </script>
-

@@ -10,22 +10,22 @@
         }"
     >
       <span></span>
-      <el-form-item :label="step.service.name">
+      <el-form-item :label="step.content_object.name">
         <el-button @click.prevent="removeStep(index)" type="danger" size="small">Delete</el-button>
       </el-form-item>
 
-      <step :step="step" ></step>
+      <step :step="step" :idContentTypeMap="idContentTypeMap"></step>
     </el-form-item>
 
     <el-form-item
         label="服务类型">
       <el-select
-          v-model="selectedService"
+          v-model="selectedSchema"
           :remote="true"
           :remote-method="querySearchService"
-          :loading="isServiceLoading">
+          :loading="isSchemaLoading">
         <el-option
-            v-for="(item,index) in serviceOptions"
+            v-for="(item,index) in schemaOptions"
             :key="item.id"
             :label="item.name"
             :value="index">
@@ -41,15 +41,16 @@
     props: {
       process: {
         type: Object,
-        serviceOptions: [],
+        schemaOptions: [],
         required: true,
-        selectedService: 0
+        selectedSchema: 0
       }
     },
     data () {
       return {
-        selectedService: null,
-        isServiceLoading: false
+        selectedSchema: null,
+        isSchemaLoading: false,
+        idContentTypeMap: {}
       }
     },
     components: {
@@ -60,38 +61,48 @@
         this.process.steps.splice(index, 1)
       },
       addStep () {
-        let service = this.serviceOptions[this.selectedService]
+        let schema = this.schemaOptions[this.selectedSchema]
         let step = {
-          service: service,
-          service_id: service.id,
-          content_type_id: service.content_type.id,
-          params_value: {},
+          extra_schema: schema,
+          content_object: {},
+          content_type: schema.content_type.id,
+          object_id: 0,
           errors: []
-        }
-        let serviceMap = {}
-        for (let service of this.serviceOptions) {
-          serviceMap[ service.id ] = service
         }
         this.assignStepKey(step)
         this.process.steps.push(step)
       },
-      fetchServices (q = '') {
-        this.isServiceLoading = true
+      fetchSchemas (q = '') {
+        this.isSchemaLoading = true
         let url = '/api/v1/service/schemas/'
         return this.$http.get(url, {
           params: {q: q}
-        }).then((response) => {
-          // use response.body to avoid nested hell
-          let result = response.body.results
-          this.serviceOptions = result
-          return result
+        }).then(({data}) => {
+          this.schemaOptions = data.results
+          return data.results
         }, (response) => {
           this.$notify.error({
             title: response.statusText,
             message: response.body
           })
         }).finally(() => {
-          this.isServiceLoading = false
+          this.isSchemaLoading = false
+        })
+      },
+      fetchContentTypes () {
+        let url = '/api/misc/contenttypes/'
+        return this.$http.get(url, {
+          params: {app_label: 'service'}
+        }).then(({data}) => {
+          for (let contentType of data.results) {
+            this.idContentTypeMap[contentType.id] = contentType
+          }
+          return data.results
+        }, (response) => {
+          this.$notify.error({
+            title: response.statusText,
+            message: response.body
+          })
         })
       },
       assignStepKey (step, force) {
@@ -128,16 +139,17 @@
         delete params.steps
         // if (true) { console.info('to be done') }
         let httpMethod = params.id ? this.$http.post : this.$http.put
-        return httpMethod('/api/v1/task/processes/', params)
+        return httpMethod('/api/task/processes/', params)
       },
       fetchSteps () {
-        let url = `/api/task/steps/`
+        let url = `/api/task/steps/detail/`
         this.$http.get(url, {
           params: { process: this.$route.params.id }
-        }).then((response) => {
-          // use response.body to avoid nested hell
-          let result = response.body.results
-          this.process.steps = result
+        }).then(({data}) => {
+          for (let step of data.results) {
+            this.assignStepKey(step)
+          }
+          this.process.steps = data.results
         }, (response) => {
           this.$notify.error({
             title: response.statusText,
@@ -147,9 +159,10 @@
       }
     },
     mounted () {
-//      this.fetchSteps()
-      this.fetchServices()
-      this.assignStepsKey(this.process)
+      Promise.all([this.fetchSchemas(), this.fetchContentTypes()])
+        .then(() => {
+          this.fetchSteps()
+        })
     }
   }
 </script>

@@ -87,6 +87,7 @@ export default [
           {
             path: 'processes/:id/edit',
             name: 'process.edit',
+            props: true,
             component: require('./views/process/edit')
           },
           {

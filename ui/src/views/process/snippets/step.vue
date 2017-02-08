@@ -1,7 +1,7 @@
 <template>
   <div>
-    <compoment :is="getServiceTemplate(step)"
-               v-if="getServiceTemplate(step)"
+    <compoment :is="getContentTypeTemplate(step)"
+               v-if="getContentTypeTemplate(step)"
                :step="step"
     ></compoment>
     <!--<json-editor-->
@@ -19,14 +19,19 @@
       step: {
         type: Object,
         required: true
+      },
+      idContentTypeMap: {
+        type: Object,
+        required: true
       }
     },
     components: {
       Ftp
     },
     methods: {
-      getServiceTemplate (step) {
-        switch (step.service.content_type.model) {
+      getContentTypeTemplate (step) {
+        let contentType = this.idContentTypeMap[step.content_type]
+        switch (contentType.model) {
           case 'ftp':
             return 'ftp'
           default:
