@@ -12,7 +12,7 @@
           icon="setting"
           :disabled="isLoadingData"
           @click="syncSchemas">
-          <icon name="refresh"></icon>同步Schema列表
+          同步Schema列表
         </el-button>
       </el-form-item>
     </el-form>

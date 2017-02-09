@@ -1,3 +1,6 @@
+import customerRoutes from './views/customer/routes'
+import serviceRoutes from './views/service/routes'
+
 export default [
   {
     path: '/',
@@ -36,28 +39,7 @@ export default [
         name: 'dashboard',
         component: require('./views/dashboard/index')
       },
-      // Customer
-      {
-        path: 'customers',
-        component: require('./views/customers/template'),
-        children: [
-          {
-            path: '/',
-            name: 'customers.list',
-            component: require('./views/customers/index')
-          },
-          {
-            path: ':id/edit',
-            name: 'customers.edit',
-            component: require('./views/customers/edit')
-          },
-          {
-            path: 'create',
-            name: 'customers.create',
-            component: require('./views/customers/create')
-          }
-        ]
-      },
+      customerRoutes,
       {
         path: 'task',
         component: {
@@ -87,73 +69,7 @@ export default [
           }
         ]
       },
-      // service
-      {
-        path: 'service',
-        component: require('./views/templates/blank'),
-        children: [
-          {
-            path: 'schemas',
-            meta: {
-              name: 'Schemas设置'
-            },
-            component: require('./views/service/schemas/template'),
-            children: [
-              {
-                path: '',
-                name: 'service.schemas.list',
-                meta: {
-                  name: 'Schemas列表'
-                },
-                component: require('./views/service/schemas/index')
-              },
-              {
-                path: 'schemas/:id/edit',
-                name: 'service.schemas.edit',
-                props: true,
-                meta: {
-                  name: 'Schemas配置'
-                },
-                component: require('./views/service/schemas/edit')
-              }
-            ]
-          },
-          {
-            path: 'ftps',
-            meta: {
-              name: 'FTP设置'
-            },
-            component: require('./views/service/ftps/template'),
-            children: [
-              {
-                path: '',
-                name: 'service.ftps.list',
-                meta: {
-                  name: 'FTP列表'
-                },
-                component: require('./views/service/ftps/index')
-              },
-              {
-                path: 'create',
-                name: 'service.ftps.create',
-                meta: {
-                  name: '新建FTP配置'
-                },
-                component: require('./views/service/ftps/create')
-              },
-              {
-                path: ':id/edit',
-                name: 'service.ftps.edit',
-                props: true,
-                meta: {
-                  name: '修改FTP配置'
-                },
-                component: require('./views/service/ftps/edit')
-              }
-            ]
-          }
-        ]
-      }
+      serviceRoutes
     ]
   },
   {
