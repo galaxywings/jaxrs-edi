@@ -70,16 +70,6 @@ export default [
             redirect: {name: 'taskProcessList'}
           },
           {
-            path: 'services',
-            name: 'taskServiceList',
-            component: require('./views/modules/task/service-list')
-          },
-          {
-            path: 'services/:id/edit',
-            name: 'taskServiceEdit',
-            component: require('./views/modules/task/service-edit')
-          },
-          {
             path: 'processes',
             name: 'process.index',
             component: require('./views/process/index')
@@ -102,6 +92,32 @@ export default [
         path: 'service',
         component: require('./views/templates/blank'),
         children: [
+          {
+            path: 'schemas',
+            meta: {
+              name: 'Schemas设置'
+            },
+            component: require('./views/service/schemas/template'),
+            children: [
+              {
+                path: '',
+                name: 'service.schemas.list',
+                meta: {
+                  name: 'Schemas列表'
+                },
+                component: require('./views/service/schemas/index')
+              },
+              {
+                path: 'schemas/:id/edit',
+                name: 'service.schemas.edit',
+                props: true,
+                meta: {
+                  name: 'Schemas配置'
+                },
+                component: require('./views/service/schemas/edit')
+              }
+            ]
+          },
           {
             path: 'ftps',
             meta: {

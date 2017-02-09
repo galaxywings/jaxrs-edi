@@ -1,9 +1,6 @@
 <template>
   <el-menu default-active="1"
     :router="true">
-    <el-menu-item index="/auth">
-      <i class="el-icon-setting"></i>Auth
-    </el-menu-item>
     <el-submenu index="/customers">
       <template slot="title"><i class="el-icon-setting"></i>客户管理</template>
       <el-menu-item index="/customers/create">新建客户</el-menu-item>
@@ -21,19 +18,26 @@
       <el-menu-item-group title="Schema">
         <el-menu-item index="/service/schemas">Schema列表</el-menu-item>
       </el-menu-item-group>
+      <el-menu-item-group title="协议">
+        <el-menu-item index="/service/protocols/create">新建协议</el-menu-item>
+        <el-menu-item index="/service/protocols">协议列表</el-menu-item>
+      </el-menu-item-group>
       <el-menu-item-group title="FTP">
         <el-menu-item index="/service/ftps/create">新建FTP</el-menu-item>
         <el-menu-item index="/service/ftps">FTP列表</el-menu-item>
       </el-menu-item-group>
-      <el-menu-item-group title="协议">
-        <el-menu-item index="/service/protocols/new">新建协议</el-menu-item>
-        <el-menu-item index="/service/protocols">协议列表</el-menu-item>
+      <el-menu-item-group title="模板">
+        <el-menu-item index="/service/templates/create">新建模板</el-menu-item>
+        <el-menu-item index="/service/templates">模板列表</el-menu-item>
       </el-menu-item-group>
     </el-submenu>
     <el-submenu  index="/misc">
       <template slot="title"><i class="el-icon-setting"></i>杂项</template>
       <el-menu-item index="/misc/files">文件列表</el-menu-item>
     </el-submenu>
+    <el-menu-item index="/auth">
+      <i class="el-icon-setting"></i>权限
+    </el-menu-item>
   </el-menu>
 </template>
 
