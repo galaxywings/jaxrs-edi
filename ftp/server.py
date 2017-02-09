@@ -9,5 +9,5 @@ authorizer.add_user("alice", "123456", "./alice", perm="elradfmw")
 handler = FTPHandler
 handler.authorizer = authorizer
 
-server = FTPServer(("127.0.0.1", 10021), handler)
+server = FTPServer(("0.0.0.0", 10021), handler)
 server.serve_forever()
