@@ -25,19 +25,212 @@
     <medi:segments xmltag="FocusBooking">
 
         <medi:segment segcode="00" xmltag="head-record">
-            <medi:field xmltag="message-type" dataType="String"/>
-            <medi:field xmltag="file-description" dataType="String"/>
-            <medi:field xmltag="file-function" dataType="String"/>
-            <medi:field xmltag="sender-code" dataType="String"/>
-            <medi:field xmltag="receiver-code" dataType="String"/>
-            <!-- 9(12) 用Integer表示不下 CCYYMMDDHHMM -->
-            <medi:field xmltag="file-create-time" dataType="String"/>
-            <medi:field xmltag="message-id" dataType="String"/>
+            <medi:field xmltag="record-id" dataType="Integer" required="true" maxLength="2"  />
+            <medi:field xmltag="message-type" dataType="String" required="true" maxLength="6"  />
+            <medi:field xmltag="file-description" dataType="String" required="false" maxLength="35"  />
+            <medi:field xmltag="file-function" dataType="String" required="true" maxLength="2"  />
+            <medi:field xmltag="sender-code" dataType="String" required="true" maxLength="13"  />
+            <medi:field xmltag="receiv" dataType="String" required="true" maxLength="13"  />
+            <medi:field xmltag="file-create-time" dataType="Date" required="true" maxLength="12" dataTypeParameters="format=None" />
+            <medi:field xmltag="message_id" dataType="String" required="true" maxLength="35"  />
+        </medi:segment>
+        <medi:segment segcode="02" xmltag="booking">
+            <medi:field xmltag="record-id" dataType="Integer" required="true" maxLength="2"  />
+            <medi:field xmltag="booking-no-id" dataType="String" required="true" maxLength="20"  />
+            <medi:field xmltag="b\l-no" dataType="String" required="false" maxLength="20"  />
+            <medi:field xmltag="delivery-term" dataType="String" required="true" maxLength="9"  />
+            <medi:field xmltag="booking-party" dataType="String" required="false" maxLength="70"  />
+            <medi:field xmltag="issue-party-code" dataType="String" required="true" maxLength="13"  />
+            <medi:field xmltag="issue-party" dataType="String" required="false" maxLength="35"  />
+            <medi:field xmltag="applicant" dataType="String" required="false" maxLength="13"  />
+            <medi:field xmltag="fob-bk-party" dataType="String" required="false" maxLength="13"  />
+            <medi:field xmltag="bl-tranship-id" dataType="String" required="false" maxLength="1"  />
+            <medi:field xmltag="batch-id" dataType="String" required="false" maxLength="1"  />
+            <medi:field xmltag="shipment-date" dataType="Date" required="false" maxLength="8" dataTypeParameters="format=None" />
+            <medi:field xmltag="expiry-date" dataType="Date" required="false" maxLength="8" dataTypeParameters="format=None" />
+            <medi:field xmltag="quotation-no" dataType="String" required="false" maxLength="30"  />
+            <medi:field xmltag="charge-type" dataType="String" required="false" maxLength="1"  />
+            <medi:field xmltag="sc-no" dataType="String" required="false" maxLength="15"  />
+            <medi:field xmltag="bond-no" dataType="String" required="false" maxLength="15"  />
+            <medi:field xmltag="slot-charter-id" dataType="String" required="false" maxLength="1"  />
+            <medi:field xmltag="sales-code" dataType="String" required="true" maxLength="17"  />
+            <medi:field xmltag="sales-name" dataType="String" required="false" maxLength="35"  />
+            <medi:field xmltag="sales-type" dataType="String" required="true" maxLength="1"  />
+            <medi:field xmltag="line-code" dataType="String" required="false" maxLength="17"  />
+            <medi:field xmltag="line-code" dataType="String" required="false" maxLength="35"  />
+            <medi:field xmltag="operator-code" dataType="String" required="false" maxLength="17"  />
+            <medi:field xmltag="operator-name" dataType="String" required="false" maxLength="35"  />
+        </medi:segment>
+        <medi:segment segcode="03" xmltag="bl">
+            <medi:field xmltag="record-id" dataType="Integer" required="true" maxLength="2"  />
+            <medi:field xmltag="type-of-bl-form" dataType="String" required="true" maxLength="4"  />
+            <medi:field xmltag="place-of-bl-issue-code" dataType="String" required="false" maxLength="5"  />
+            <medi:field xmltag="place-of-bl-issue" dataType="String" required="false" maxLength="35"  />
+            <medi:field xmltag="date-of-issue" dataType="Date" required="false" maxLength="8" dataTypeParameters="format=None" />
+            <medi:field xmltag="numbers-of-original-bl" dataType="Integer" required="true" maxLength="2"  />
+            <medi:field xmltag="prepaid-at" dataType="String" required="false" maxLength="35"  />
+            <medi:field xmltag="payable-at" dataType="String" required="false" maxLength="35"  />
+        </medi:segment>
+        <medi:segment segcode="11" xmltag="vessel">
+            <medi:field xmltag="record-id" dataType="Integer" required="true" maxLength="2"  />
+            <medi:field xmltag="vessel-code" dataType="String" required="false" maxLength="9"  />
+            <medi:field xmltag="vessel" dataType="String" required="false" maxLength="35"  />
+            <medi:field xmltag="voyage" dataType="String" required="false" maxLength="10"  />
+            <medi:field xmltag="shipping-line-code" dataType="String" required="false" maxLength="13"  />
+            <medi:field xmltag="shipping-line" dataType="String" required="false" maxLength="35"  />
+            <medi:field xmltag="bl-carry-code" dataType="String" required="false" maxLength="13"  />
+            <medi:field xmltag="bl-carry" dataType="String" required="false" maxLength="35"  />
+            <medi:field xmltag="requested-shipment-date" dataType="Date" required="false" maxLength="8" dataTypeParameters="format=None" />
+            <medi:field xmltag="trade-code" dataType="String" required="false" maxLength="10"  />
+            <medi:field xmltag="trade" dataType="String" required="false" maxLength="35"  />
+            <medi:field xmltag="pre-vessel-code" dataType="String" required="false" maxLength="9"  />
+            <medi:field xmltag="pre-vessel" dataType="String" required="false" maxLength="35"  />
+            <medi:field xmltag="pre-voyage" dataType="String" required="false" maxLength="6"  />
+        </medi:segment>
+        <medi:segment segcode="12" xmltag="ports">
+            <medi:field xmltag="record-id" dataType="Integer" required="true" maxLength="2"  />
+            <medi:field xmltag="place-code-of-receipt" dataType="String" required="false" maxLength="5"  />
+            <medi:field xmltag="place-of-receipt" dataType="String" required="false" maxLength="35"  />
+            <medi:field xmltag="load-port-code" dataType="String" required="false" maxLength="5"  />
+            <medi:field xmltag="load-port" dataType="String" required="false" maxLength="35"  />
+            <medi:field xmltag="discharge-port-code" dataType="String" required="true" maxLength="5"  />
+            <medi:field xmltag="discharge-port" dataType="String" required="false" maxLength="35"  />
+            <medi:field xmltag="transfer-port-code" dataType="String" required="false" maxLength="5"  />
+            <medi:field xmltag="transfer-port" dataType="String" required="false" maxLength="35"  />
+            <medi:field xmltag="place-of-delivery-code" dataType="String" required="false" maxLength="5"  />
+            <medi:field xmltag="place-of-delivery" dataType="String" required="false" maxLength="35"  />
+            <medi:field xmltag="final-destination-code" dataType="String" required="false" maxLength="5"  />
+            <medi:field xmltag="final-destination-code" dataType="String" required="false" maxLength="35"  />
+        </medi:segment>
+        <medi:segment segcode="13" xmltag="option-ports">
+            <medi:field xmltag="record-id" dataType="Integer" required="true" maxLength="2"  />
+            <medi:field xmltag="opt-disch-port-code" dataType="String" required="false" maxLength="5"  />
+            <medi:field xmltag="opt-disch-port" dataType="String" required="false" maxLength="35"  />
+            <medi:field xmltag="opt-place-of-delivery-code" dataType="String" required="false" maxLength="5"  />
+            <medi:field xmltag="opt-place-of-delivery" dataType="String" required="false" maxLength="70"  />
+        </medi:segment>
+        <medi:segment segcode="14" xmltag="freight-clause">
+            <medi:field xmltag="record-id" dataType="Integer" required="true" maxLength="2"  />
+            <medi:field xmltag="fr-clause-code" dataType="String" required="false" maxLength="3"  />
+            <medi:field xmltag="freight-clause-i-1-2" dataType="String" required="true" maxLength="40"  />
+        </medi:segment>
+        <medi:segment segcode="15" xmltag="freight-charges-details">
+            <medi:field xmltag="record-id" dataType="Integer" required="true" maxLength="2"  />
+            <medi:field xmltag="fr-ch-code" dataType="String" required="false" maxLength="3"  />
+            <medi:field xmltag="fr-ch-remark" dataType="String" required="false" maxLength="35"  />
+            <medi:field xmltag="prepaid-or-collect" dataType="String" required="true" maxLength="1"  />
+            <medi:field xmltag="payable-at-e" dataType="String" required="false" maxLength="5"  />
+            <medi:field xmltag="payee-code" dataType="String" required="false" maxLength="13"  />
+            <medi:field xmltag="quantity" dataType="Integer" required="false" maxLength="6"  />
+            <medi:field xmltag="currency" dataType="String" required="false" maxLength="3"  />
+            <medi:field xmltag="rate-of-fr-ch" dataType="Integer" required="false" maxLength="10"  />
+            <medi:field xmltag="unit-of-quantity" dataType="String" required="false" maxLength="3"  />
+            <medi:field xmltag="amount" dataType="Integer" required="false" maxLength="10"  />
+        </medi:segment>
+        <medi:segment segcode="17" xmltag="remarks">
+            <medi:field xmltag="record-id" dataType="Integer" required="true" maxLength="2"  />
+            <medi:field xmltag="remarks-1-5" dataType="String" required="true" maxLength="35"  />
+            <medi:field xmltag="currency" dataType="String" required="false" maxLength="3"  />
+            <medi:field xmltag="cargo-amount" dataType="Integer" required="false" maxLength="10"  />
+            <medi:field xmltag="mode-of-stuffing" dataType="String" required="false" maxLength="35"  />
+        </medi:segment>
+        <medi:segment segcode="20" xmltag="shipper">
+            <medi:field xmltag="record-id" dataType="Integer" required="true" maxLength="2"  />
+            <medi:field xmltag="shipper-code" dataType="String" required="false" maxLength="13"  />
+            <medi:field xmltag="shipper-1-9" dataType="String" required="false" maxLength="35"  />
+        </medi:segment>
+        <medi:segment segcode="21" xmltag="consignee">
+            <medi:field xmltag="record-id" dataType="Integer" required="true" maxLength="2"  />
+            <medi:field xmltag="consignee-code" dataType="String" required="false" maxLength="13"  />
+            <medi:field xmltag="consignee-1-9" dataType="String" required="false" maxLength="35"  />
+        </medi:segment>
+        <medi:segment segcode="22" xmltag="notify-party">
+            <medi:field xmltag="record-id" dataType="Integer" required="true" maxLength="2"  />
+            <medi:field xmltag="notify-code" dataType="String" required="false" maxLength="13"  />
+            <medi:field xmltag="notify-1-9" dataType="String" required="false" maxLength="35"  />
+        </medi:segment>
+        <medi:segment segcode="23" xmltag="also-notify-party-apl">
+            <medi:field xmltag="record-id" dataType="Integer" required="true" maxLength="2"  />
+            <medi:field xmltag="notify-code" dataType="String" required="false" maxLength="13"  />
+            <medi:field xmltag="alsonotify1-6" dataType="String" required="false" maxLength="35"  />
+        </medi:segment>
+        <medi:segment segcode="41" xmltag="cargo-of-booking">
+            <medi:field xmltag="record-id" dataType="Integer" required="true" maxLength="2"  />
+            <medi:field xmltag="cargo-sequence-no" dataType="Integer" required="true" maxLength="3"  />
+            <medi:field xmltag="cargo-code" dataType="String" required="false" maxLength="8"  />
+            <medi:field xmltag="cargo-id" dataType="String" required="true" maxLength="1"  />
+            <medi:field xmltag="numbers-of-pkgs-1" dataType="Integer" required="true" maxLength="6"  />
+            <medi:field xmltag="code-of-pkgs-1" dataType="String" required="true" maxLength="2"  />
+            <medi:field xmltag="packages-des-1" dataType="String" required="true" maxLength="35"  />
+            <medi:field xmltag="cargo-gross-wt-1" dataType="Integer" required="true" maxLength="9"  />
+            <medi:field xmltag="cargo-measurement-1" dataType="Integer" required="true" maxLength="5"  />
+            <medi:field xmltag="numbers-of-packages-2" dataType="Integer" required="false" maxLength="6"  />
+            <medi:field xmltag="code-of-pkgs-2" dataType="String" required="false" maxLength="2"  />
+            <medi:field xmltag="packages-des-2" dataType="String" required="false" maxLength="35"  />
+            <medi:field xmltag="cargo-gross-wt-2" dataType="Integer" required="false" maxLength="9"  />
+            <medi:field xmltag="cargo-measurement-2" dataType="Integer" required="false" maxLength="5"  />
+            <medi:field xmltag="cargo-gross-weight" dataType="Integer" required="true" maxLength="10"  />
+            <medi:field xmltag="cargo-net-weight" dataType="Integer" required="false" maxLength="10"  />
+            <medi:field xmltag="quarantine-coding" dataType="String" required="false" maxLength="1"  />
+            <medi:field xmltag="quarantine-coding" dataType="String" required="false" maxLength="35"  />
+        </medi:segment>
+        <medi:segment segcode="43" xmltag="dangerous-reefer-oog">
+            <medi:field xmltag="record-id" dataType="Integer" required="true" maxLength="2"  />
+            <medi:field xmltag="class" dataType="String" required="false" maxLength="5"  />
+            <medi:field xmltag="page" dataType="String" required="false" maxLength="7"  />
+            <medi:field xmltag="undg-no" dataType="Integer" required="false" maxLength="4"  />
+            <medi:field xmltag="label" dataType="String" required="false" maxLength="32"  />
+            <medi:field xmltag="flash-point" dataType="String" required="false" maxLength="5"  />
+            <medi:field xmltag="ems-no" dataType="String" required="false" maxLength="6"  />
+            <medi:field xmltag="mfag-no" dataType="String" required="false" maxLength="4"  />
+            <medi:field xmltag="mptmarine-pollutant" dataType="String" required="false" maxLength="1"  />
+            <medi:field xmltag="emergency-contact" dataType="String" required="false" maxLength="35"  />
+            <medi:field xmltag="reefer-ventilation-flux" dataType="String" required="false" maxLength="3"  />
+            <medi:field xmltag="temperature-id" dataType="String" required="false" maxLength="1"  />
+            <medi:field xmltag="temperature-setting" dataType="String" required="false" maxLength="5"  />
+            <medi:field xmltag="min-temperature" dataType="String" required="false" maxLength="5"  />
+            <medi:field xmltag="max-temperature" dataType="String" required="false" maxLength="5"  />
+            <medi:field xmltag="over-length-front" dataType="Integer" required="false" maxLength="4"  />
+            <medi:field xmltag="over-length-back" dataType="Integer" required="false" maxLength="4"  />
+            <medi:field xmltag="over-width-left" dataType="Integer" required="false" maxLength="4"  />
+            <medi:field xmltag="over-width-right" dataType="Integer" required="false" maxLength="4"  />
+            <medi:field xmltag="over-height" dataType="Integer" required="false" maxLength="4"  />
+        </medi:segment>
+        <medi:segment segcode="44" xmltag="marks-nos">
+            <medi:field xmltag="record-id" dataType="Integer" required="true" maxLength="2"  />
+            <medi:field xmltag="marks-1-10" dataType="String" required="true" maxLength="35"  />
+        </medi:segment>
+        <medi:segment segcode="47" xmltag="cargo-description">
+            <medi:field xmltag="record-id" dataType="Integer" required="true" maxLength="2"  />
+            <medi:field xmltag="cargo-description-1-5" dataType="String" required="true" maxLength="70"  />
+        </medi:segment>
+        <medi:segment segcode="48" xmltag="container-of-booking">
+            <medi:field xmltag="record-id" dataType="Integer" required="true" maxLength="2"  />
+            <medi:field xmltag="ctn-size-type" dataType="String" required="true" maxLength="4"  />
+            <medi:field xmltag="ctn-numbers" dataType="Integer" required="true" maxLength="6"  />
+            <medi:field xmltag="ctn-status" dataType="String" required="true" maxLength="1"  />
+            <medi:field xmltag="master-lcl-no" dataType="String" required="false" maxLength="20"  />
+            <medi:field xmltag="mode-of-stuffing" dataType="String" required="false" maxLength="35"  />
+            <medi:field xmltag="vanning-depot" dataType="String" required="false" maxLength="13"  />
+            <medi:field xmltag="vanning-depot" dataType="String" required="false" maxLength="35"  />
+            <medi:field xmltag="container-soc" dataType="String" required="true" maxLength="1"  />
+        </medi:segment>
+        <medi:segment segcode="51" xmltag="container-detail">
+            <medi:field xmltag="record-id" dataType="Integer" required="true" maxLength="2"  />
+            <medi:field xmltag="ctn-no" dataType="String" required="true" maxLength="20"  />
+            <medi:field xmltag="ctn-type-size" dataType="String" required="true" maxLength="4"  />
+            <medi:field xmltag="seal-no" dataType="String" required="true" maxLength="10"  />
+            <medi:field xmltag="ctn-numbers-of-packages" dataType="Integer" required="true" maxLength="6"  />
+            <medi:field xmltag="cargo-net-weight" dataType="Integer" required="true" maxLength="9"  />
+            <medi:field xmltag="cargo-tare-weight" dataType="Integer" required="false" maxLength="9"  />
+            <medi:field xmltag="cargo-measurement" dataType="Integer" required="false" maxLength="5"  />
+            <medi:field xmltag="cargo-description（1-5）" dataType="String" required="false" maxLength="70"  />
+        </medi:segment>
+        <medi:segment segcode="99" xmltag="trailer-record">
+            <medi:field xmltag="record-id" dataType="Integer" required="true" maxLength="2"  />
+            <medi:field xmltag="record-total-of-file" dataType="Integer" required="true" maxLength="6"  />
         </medi:segment>
 
-        <medi:segment segcode="99" xmltag="trailer-record">
-            <medi:field xmltag="record-total-of-file" dataType="Integer"/>
-        </medi:segment>
 
     </medi:segments>
 

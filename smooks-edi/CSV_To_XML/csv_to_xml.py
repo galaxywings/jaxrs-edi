@@ -10,6 +10,8 @@ if len(sys.argv) == 1:
 
 FILE_PATH = sys.argv[1]
 
+IDX_HEAD_NAME = 2
+
 chinese_word = r'[\u4e00-\u9fff]+'
 char_to_be_removed = r'[,&()\./]'
 header = r'记录(\d+)'
@@ -38,14 +40,14 @@ def process_name(col):
     return  new_col.strip().lower().replace(' ', '-')
 
 def is_seg_header(col):
-    match = re.match(header,col)
+    match = re.search(header,col)
     if match:
         return match.group(1)
     else:
         return None
 
 def m_or_c(flag):
-    if flag == 'm':
+    if flag in ('M','m'):
         return '"true"'
     else:
         return '"false"'
@@ -76,13 +78,13 @@ with open(FILE_PATH, newline='') as f:
             if seg_code:
                 if not first_seg_code:
                     result_xml.append(seg_trailing)
-                result_xml.append(seg_format.format(seg_code,process_name( row[2] )))
+                result_xml.append(seg_format.format(seg_code,process_name( row[IDX_HEAD_NAME] )))
                 if first_seg_code:
                     first_seg_code = False
 
             else:
                 # if it's date format
-                print(row[3])
+                # print(row[3])
                 l = get_length(row[3])
                 name = process_name(row[1])
                 if is_date_format(row[4]):
