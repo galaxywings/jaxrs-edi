@@ -1,10 +1,5 @@
 <template>
   <div>
-    <!--<el-breadcrumb separator="/" class="breadcrumb-bar">-->
-      <!--<el-breadcrumb-item :to="{ path: '/' }">Home</el-breadcrumb-item>-->
-      <!--<el-breadcrumb-item :to="{ path: '/customers'}">客户管理</el-breadcrumb-item>-->
-      <!--<el-breadcrumb-item>客户列表</el-breadcrumb-item>-->
-    <!--</el-breadcrumb>-->
     <el-form :inline="true" :model="customerListForm" >
       <el-form-item>
         <el-input placeholder="Code / Name" v-model="customerListForm.q">
@@ -13,7 +8,7 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" size="small">
-          <router-link :to="{ name: 'customers.create' }">
+          <router-link :to="{ name: 'customer.customers.create' }">
             <i class="el-icon-plus"></i>
           </router-link>
         </el-button>
@@ -118,7 +113,7 @@ export default {
   },
   methods: {
     handleEdit ($index, row) {
-      this.$router.push({name: 'customers.edit', params: {id: row.id}})
+      this.$router.push({name: 'customer.customers.edit', params: {id: row.id}})
     },
     handleSelectionChange (val) {
       this.multipleSelection = val
@@ -134,7 +129,7 @@ export default {
     search: _.debounce(function () {
       // should go with format _.debounce( function () {...} )
       this.isLoadingData = true
-      this.$http.get('/api/v1/customer/customers/',
+      this.$http.get('/api/customer/customers/',
         {
           params: {
             q: this.customerListForm.q,
@@ -175,7 +170,7 @@ export default {
     },
     doRemoveItems () {
       let toBeRemovedIds = this.toBeRemoved.map(x => x.id).join(',')
-      this.$http.delete('/api/v1/customer/customers/', {
+      this.$http.delete('/api/customer/customers/', {
         params: {
           id__in: toBeRemovedIds
         }

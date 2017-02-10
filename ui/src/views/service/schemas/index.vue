@@ -1,17 +1,19 @@
 <template>
   <div>
-    <el-breadcrumb separator="/" class="breadcrumb-bar">
-      <el-breadcrumb-item :to="{ path: '/' }">Home</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path: '/task'}">任务管理</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path: '/task/services'}">Service管理</el-breadcrumb-item>
-      <el-breadcrumb-item>Service列表</el-breadcrumb-item>
-    </el-breadcrumb>
-
-    <el-form :inline="true" :model="serviceListForm" >
+    <el-form :inline="true" :model="form" >
       <el-form-item>
-        <el-input placeholder="Code / Name" v-model="serviceListForm.q">
+        <el-input placeholder="Code / Name" v-model="form.q">
           <el-button slot="append" icon="search" @click.native="search"></el-button>
         </el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="danger"
+          size="small"
+          icon="setting"
+          :disabled="isLoadingData"
+          @click="syncSchemas">
+          同步Schema列表
+        </el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -67,7 +69,7 @@
       return {
         tableData: [],
         isLoadingData: false,
-        serviceListForm: {
+        form: {
           q: ''
         },
         pagination: {
@@ -79,7 +81,7 @@
     },
     methods: {
       handleEdit ($index, row) {
-        this.$router.push({name: 'taskServiceEdit', params: {id: row.id}})
+        this.$router.push({name: 'service.schemas.edit', params: {id: row.id}})
       },
       handleSizeChange (val) {
         this.pagination.pageSize = val
@@ -89,25 +91,22 @@
         this.pagination.page = val
         this.search()
       },
+      syncSchemas () {
+        console.info('abc')
+      },
       search: _.debounce(function () {
         this.isLoadingData = true
-        this.$http.get('/api/v1/task/services/',
+        this.$http.get('/api/service/schemas/',
           {
             params: {
-              q: this.serviceListForm.q,
+              q: this.form.q,
               fields: 'id,code,name',
               page: this.pagination.page,
               page_size: this.pagination.pageSize
             }
-          }).then((response) => {
-            // use response.body to avoid nested hell
-            let data = response.body
+          }).then(({data}) => {
             this.pagination.itemTotal = data.count
             this.$set(this, 'tableData', data.results)
-            // response.json().then((res) => {
-            //   this.pagination.itemTotal = res.count
-            //   this.$set(this, 'tableData', res.results)
-            // })
           }, (response) => {
             let msg = 'Empty Response'
             if (response) {
@@ -123,7 +122,7 @@
       }, 500)
     },
     watch: {
-      'serviceListForm.q': function () {
+      'form.q': function () {
         this.search()
       }
     },
