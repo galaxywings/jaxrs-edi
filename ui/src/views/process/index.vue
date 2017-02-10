@@ -48,7 +48,7 @@
         inline-template
         label="Customer"
         >
-          <router-link :to="{ name: 'customers.edit', params: {id: row.customer}}">{{row.customer_code}}</router-link>
+          <router-link :to="{ name: 'customer.customers.edit', params: {id: row.customer}}">{{row.customer_code}}</router-link>
       </el-table-column>
       <el-table-column
         prop="active"
