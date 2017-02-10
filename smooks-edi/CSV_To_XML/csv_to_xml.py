@@ -1,5 +1,20 @@
 #!/usr/bin/env python
+"""
+对于 csv 格式的要求
+    1. 列名必须包含英文, 作为变量名字
+    2. RECORD ID 行会被忽略
+    3. 格式要求
+        3.1 seg code, , seg mame
+        3.2 number, field name, , date type (lengh), , M/C, ,,
+    4. 以记录00/01/../99开头的会作为 segment
+    5. 以1/2/3/4开头的行作为列名
+    6. 以空列开头的行会被忽略
 
+需要手工处理的情况:
+    1. 格式不对, 导致 xmltag=""为空
+        1.1 seg name/列名/数据类型的位置不对
+        1.2 列名只包含中文
+"""
 import csv
 import re
 import sys
@@ -9,6 +24,7 @@ if len(sys.argv) == 1:
     exit(0)
 
 FILE_PATH = sys.argv[1]
+# FILE_PATH = 'edi_iftmbf.csv'
 
 IDX_HEAD_NAME = 2
 
@@ -55,7 +71,7 @@ def m_or_c(flag):
 def get_length(col):
     match = re.search(max_length,col)
     if match:
-        return '"' + match.group(1) + '"'
+        return match.group(1)
 
 def is_date_format(col):
     return re.search(date_format, col)
@@ -73,7 +89,7 @@ result_xml = []
 with open(FILE_PATH, newline='') as f:
     reader = csv.reader(f)
     for row in reader:
-        if row[0] not in ('','序号'):
+        if row[0] not in ('','序号') and not re.match('RECORD ID', row[1]):
             seg_code = is_seg_header(row[0])
             if seg_code:
                 if not first_seg_code:
