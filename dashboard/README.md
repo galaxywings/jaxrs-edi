@@ -21,6 +21,9 @@ python manage.py migrate
 # run it
 python manage.py runserver 0.0.0.0:8090
 
+# create login user
+python manage.py createsuperuser
+
 # open browser to test
 open http://0.0.0.0:8090/
 
