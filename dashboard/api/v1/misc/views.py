@@ -27,12 +27,23 @@ class ContentTypeViewSet(BulkModelViewSet):
     #permission_classes = (IsAuthenticated, )
 
 class DbFileViewSet(ViewSet):
+    
+    @staticmethod
+    def get_available_filename(filename, overwrite):
+        if overwrite:
+            result = filename
+        else:
+            result = dbfile_storage.get_available_name(filename, 
+                                                         max_length=128)
+        return result
+
     def save_file(self, request):
         file = request.data.get('file', None)
         if file is None:
             raise ValidationError('`file` is required')
-        
-        filename = dbfile_storage.save(file.name, file)
+        overwrite = request.data.get('overwrite', False)
+        a_filename = self.get_available_filename(file, overwrite)
+        filename = dbfile_storage.save(a_filename, file)
         result = {
             'filename': filename, 
             'download_url': reverse_lazy('api:v1:misc:dbfile_dowload', 
@@ -50,10 +61,11 @@ class DbFileViewSet(ViewSet):
         
         # tested we need to unquote it to make json call, form-data or x-www-form-urlencode to work
         txt_content = parse.unquote(txt_content)
-        
+        overwrite = request.data.get('overwrite', False)
+        a_filename = self.get_available_filename(filename, overwrite)
         # force_bytes in order to make it compatible with those via posting file
         # always saving bytes
-        file = ContentFile(force_bytes(txt_content), name=filename)
+        file = ContentFile(force_bytes(txt_content), name=a_filename)
         filename = dbfile_storage.save(file.name, file)
         result = {
             'filename': filename, 
