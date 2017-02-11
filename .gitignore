@@ -1,5 +1,5 @@
 .gradle
-/build/
+build/
 !/ui/build/
 !gradle/wrapper/gradle-wrapper.jar
 
@@ -15,13 +15,6 @@
 *.iws
 *.iml
 *.ipr
-
-### NetBeans ###
-nbproject/private/
-nbbuild/
-dist/
-nbdist/
-.nb-gradle/
 
 # --------------- #
 # Studio-specific #
