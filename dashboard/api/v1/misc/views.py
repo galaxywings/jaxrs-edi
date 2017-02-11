@@ -9,11 +9,13 @@ from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.viewsets import ViewSet
+from rest_framework.viewsets import ViewSet, ReadOnlyModelViewSet
 from rest_framework_bulk.generics import BulkModelViewSet
 
-from api.v1.misc.filtersers import ContentTypeFilterSet
-from api.v1.misc.serializers import ContentTypeSerializer
+from api.v1.misc.filtersets import ContentTypeFilterSet
+from api.v1.misc.filtersets import DbBasedFileGenericFilterSet
+from api.v1.misc.serializers import ContentTypeSerializer, DbBasedFileSerializer
+from misc.models import DbBasedFile
 from misc.storages import dbfile_storage
 
 
@@ -75,4 +77,8 @@ class DbFileViewSet(ViewSet):
         content = file_obj.read()
         return Response(content)
         
-        
+class ReadOnlyDbBasedFileViewSet(ReadOnlyModelViewSet):
+    queryset = DbBasedFile.objects.all()
+    serializer_class = DbBasedFileSerializer
+    filter_class = DbBasedFileGenericFilterSet
+    search_fields = ('filename', )

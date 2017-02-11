@@ -1,12 +1,14 @@
 from django.conf.urls import url, include
 from rest_framework_bulk.routes import BulkRouter
 
-from . import views
 
-DbFileViewSet = views.DbFileViewSet
+from .views import ContentTypeViewSet, DbFileViewSet, \
+    ReadOnlyDbBasedFileViewSet
+
 
 router = BulkRouter()
-router.register('contenttypes', views.ContentTypeViewSet)
+router.register('contenttypes', ContentTypeViewSet)
+router.register('dbfiles', ReadOnlyDbBasedFileViewSet)
 
 urlpatterns = [
     url(r'^', include(router.urls)),

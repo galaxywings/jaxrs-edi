@@ -1,7 +1,7 @@
 
 from django.contrib.contenttypes.models import ContentType
 
-from api.v1.misc.filtersers import ContentTypeFilterSet
+from api.v1.misc.filtersets import ContentTypeFilterSet
 import rest_framework_filters as filters
 from service.models import ServiceSchema, GenericService, Ftp
 
