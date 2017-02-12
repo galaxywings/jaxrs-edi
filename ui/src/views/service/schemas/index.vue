@@ -91,9 +91,6 @@
         this.pagination.page = val
         this.search()
       },
-      syncSchemas () {
-        console.info('abc')
-      },
       search: _.debounce(function () {
         this.isLoadingData = true
         this.$http.get('/api/service/schemas/',
@@ -118,6 +115,37 @@
             })
           }).finally(() => {
             this.isLoadingData = false
+          })
+      }, 500),
+      syncSchemas: _.debounce(function () {
+        this.isLoadingData = true
+        this.$http.post('/api/service/schemas/sync/')
+          .then(({data}) => {
+            let msgs = [
+              `created: ${data.created}`,
+              `updated: ${data.updated}`
+            ]
+            if (!_.isEmpty(data.errors)) {
+              msgs.push(data.errors.join(', '))
+            }
+            this.$notify({
+              title: 'Success',
+              message: msgs.join(', '),
+              type: 'success'
+            })
+            this.search()
+          }, (response) => {
+            let msg = 'Empty Response'
+            if (response) {
+              msg = response.body.detail
+            }
+            this.$notify.error({
+              title: response.statusText,
+              message: msg
+            })
+            this.isLoadingData = false
+          }).finally(() => {
+            // this.isLoadingData = false
           })
       }, 500)
     },
