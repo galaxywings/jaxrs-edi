@@ -21,5 +21,11 @@
 		"name": "FTP Outbound",
 		"category": "ftp",
 		"extra_schema": null
+	},	
+	{
+		"code": "ace_to_bob",
+		"name": "Ace 2 Bob",
+		"category": "protocol",
+		"extra_schema": null
 	}
 ]

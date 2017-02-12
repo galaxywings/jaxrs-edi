@@ -26,7 +26,7 @@ class Migration(migrations.Migration):
                 ('password', models.CharField(max_length=128, verbose_name='password')),
                 ('host', models.CharField(max_length=32, verbose_name='host')),
                 ('port', models.PositiveIntegerField(verbose_name='port')),
-                ('path', models.CharField(max_length=255, verbose_name='file')),
+                ('path', models.CharField(max_length=255, verbose_name='path')),
             ],
             options={
                 'abstract': False,

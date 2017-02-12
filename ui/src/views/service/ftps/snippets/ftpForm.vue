@@ -83,19 +83,19 @@ export default {
     handleSubmit: _.debounce(function () {
       let method = this.form.id ? 'put' : 'post'
       let url = this.form.id ? `/api/service/ftps/${this.form.id}/` : `/api/service/ftps/`
-      let mode = this.form.id ? '修改' : '添加'
+      let action = this.form.id ? '修改' : '添加'
       this.form[method](url)
         .then((response) => {
           this.$notify.success({
             title: '成功',
-            message: `FTP${mode}成功!`
+            message: `FTP${action}成功!`
           })
           this.$router.push({name: 'service.ftps.edit', params: { id: response.id }})
         },
         (response) => {
           this.$notify.error({
             title: '错误',
-            message: `FTP${mode}失败!`
+            message: `FTP${action}失败!`
           })
           this.form.errors.clear()
         })

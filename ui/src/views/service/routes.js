@@ -61,6 +61,40 @@ export default {
           component: require('./ftps/edit')
         }
       ]
+    },
+    {
+      path: 'protocols',
+      meta: {
+        name: '协议设置'
+      },
+      component: require('./protocols/template'),
+      children: [
+        {
+          path: '',
+          name: 'service.protocols.list',
+          meta: {
+            name: '协议列表'
+          },
+          component: require('./protocols/index')
+        },
+        {
+          path: 'create',
+          name: 'service.protocols.create',
+          meta: {
+            name: '协议创建'
+          },
+          component: require('./protocols/create')
+        },
+        {
+          path: ':id/edit',
+          name: 'service.protocols.edit',
+          props: true,
+          meta: {
+            name: '协议编辑'
+          },
+          component: require('./protocols/edit')
+        }
+      ]
     }
   ]
 }

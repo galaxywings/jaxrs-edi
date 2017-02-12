@@ -9,11 +9,14 @@ from rest_framework.response import Response
 from rest_framework_bulk.generics import BulkModelViewSet
 
 from api.v1.service.filtersets import ServiceSchemaGenericFilterSet, \
-    GenericServiceFilterSet, FtpServiceFilterSet
+    GenericServiceFilterSet, FtpServiceFilterSet, ProtocolServiceFilterSet, \
+    TemplateServiceFilterSet
 from api.v1.service.serializers import ServiceSchemaSerializer, \
-    GenericServiceSerializer, FtpServiceSerializer
+    GenericServiceSerializer, FtpServiceSerializer, ProtocolServiceSerializer, \
+    TemplateServiceSerializer
 from authx.permissions import IsAdminUser
-from service.models import ServiceSchema, GenericService, Ftp
+from service.models import ServiceSchema, GenericService, Ftp, Protocol, \
+    Template
 from service.utils.ftp import exec_ftp_cmds, test_ftp_connection
 
 
@@ -89,3 +92,15 @@ class FtpServiceViewSet(BulkModelViewSet):
         ftp_service = Ftp(**params)
         exec_ftp_cmds(test_ftp_connection, ftp_service)
         return Response('OK')
+
+class ProtocolServiceViewSet(BulkModelViewSet):
+    queryset = Protocol.objects.all()
+    serializer_class = ProtocolServiceSerializer
+    filter_class = ProtocolServiceFilterSet
+    search_fields = ('name', 'filename', 'sender__code', 'receiver__code', )
+    
+class TemplateServiceViewSet(BulkModelViewSet):
+    queryset = Template.objects.all()
+    serializer_class = TemplateServiceSerializer
+    filter_class = TemplateServiceFilterSet
+    search_fields = ('name', 'filename')
