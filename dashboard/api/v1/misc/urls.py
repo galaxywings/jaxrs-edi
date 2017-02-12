@@ -11,7 +11,6 @@ router.register('contenttypes', ContentTypeViewSet)
 router.register('dbfiles', ReadOnlyDbBasedFileViewSet)
 
 urlpatterns = [
-    url(r'^', include(router.urls)),
     url(r'^dbfiles/file/$', 
         DbFileViewSet.as_view({'post': 'save_file'})
     ),
@@ -26,4 +25,5 @@ urlpatterns = [
         DbFileViewSet.as_view({'get': 'view_text'}),
         name='dbfile_view_text'
     ),
+    url(r'^', include(router.urls)),
 ]

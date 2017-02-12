@@ -6,10 +6,11 @@ from django.core.files.base import ContentFile
 from django.urls.base import reverse_lazy
 from django.utils.encoding import force_bytes
 from rest_framework import status
+from rest_framework.decorators import list_route
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.viewsets import ViewSet, ReadOnlyModelViewSet
+from rest_framework.viewsets import ReadOnlyModelViewSet, ViewSet
 from rest_framework_bulk.generics import BulkModelViewSet
 
 from api.v1.misc.filtersets import ContentTypeFilterSet
@@ -27,7 +28,6 @@ class ContentTypeViewSet(BulkModelViewSet):
     #permission_classes = (IsAuthenticated, )
 
 class DbFileViewSet(ViewSet):
-    
     @staticmethod
     def get_available_filename(filename, overwrite):
         if overwrite:
@@ -36,13 +36,13 @@ class DbFileViewSet(ViewSet):
             result = dbfile_storage.get_available_name(filename, 
                                                          max_length=128)
         return result
-
+    
     def save_file(self, request):
         file = request.data.get('file', None)
         if file is None:
             raise ValidationError('`file` is required')
         overwrite = request.data.get('overwrite', False)
-        a_filename = self.get_available_filename(file, overwrite)
+        a_filename = self.get_available_filename(file.name, overwrite)
         filename = dbfile_storage.save(a_filename, file)
         result = {
             'filename': filename, 
@@ -88,9 +88,11 @@ class DbFileViewSet(ViewSet):
         
         content = file_obj.read()
         return Response(content)
-        
+
 class ReadOnlyDbBasedFileViewSet(ReadOnlyModelViewSet):
     queryset = DbBasedFile.objects.all()
     serializer_class = DbBasedFileSerializer
     filter_class = DbBasedFileGenericFilterSet
     search_fields = ('filename', )
+    
+    
