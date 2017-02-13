@@ -1,5 +1,6 @@
 import customerRoutes from './views/customer/routes'
 import serviceRoutes from './views/service/routes'
+import fileRoutes from './views/file/routes'
 
 export default [
   {
@@ -69,7 +70,8 @@ export default [
           }
         ]
       },
-      serviceRoutes
+      serviceRoutes,
+      fileRoutes
     ]
   },
   {
