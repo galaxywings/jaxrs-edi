@@ -11,9 +11,11 @@ import Auth from './components/x/vue-auth'
 import routerConfig from './routes'
 // import authService from './services/auth'
 
-import localeConfig from './locales/index'
+import localeConfig from './locales'
 
 import App from './App'
+
+import store from './store'
 
 Vue.use(VueI18n)
 Object.keys(localeConfig).forEach(langCode => Vue.locale(langCode, localeConfig[langCode]))
@@ -145,5 +147,6 @@ Vue.component('json-editor', function (resolve, reject) {
 new Vue({ // eslint-disable-line
   el: '#app',
   render: h => h(App),
+  store,
   router
 })
