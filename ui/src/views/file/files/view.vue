@@ -6,9 +6,10 @@
       </el-form-item>
     </el-form>
     <el-tabs :active-name="activeName" style="width: 100%">
-      <el-tab-pane label="JSON Schema" name="json">
+      <el-tab-pane label="Text" name="text">
         <ace-editor
           v-model="file.content"
+          v-if="file.content"
           mode="ace/mode/json"
           theme="ace/theme/solarized_light"
           :read-only="true"
@@ -23,8 +24,10 @@ export default {
   props: ['id'],
   data () {
     return {
-      file: {},
-      activeName: 'json',
+      file: {
+        content: ''
+      },
+      activeName: 'text',
       editorOptions: {
         disable_properties: false
       }
