@@ -1,14 +1,14 @@
 <template>
   <div>
-    <el-form :inline="true" :model="customerListForm" >
+    <el-form :inline="true" :model="processListForm" >
       <el-form-item>
-        <el-input placeholder="Code / Name" v-model="customerListForm.q">
+        <el-input placeholder="Customer Code / Name" v-model="processListForm.q">
           <el-button slot="append" icon="search" @click.native="search"></el-button>
         </el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" size="small">
-          <router-link :to="{ name: 'customer.customers.create' }">
+          <router-link :to="{ name: 'task.processes.create' }">
             <i class="el-icon-plus"></i>
           </router-link>
         </el-button>
@@ -30,12 +30,19 @@
         fixed>
       </el-table-column>
       <el-table-column
-        prop="code"
-        label="Code">
-      </el-table-column>
-      <el-table-column
         prop="name"
         label="Name">
+      </el-table-column>
+      <el-table-column
+        prop="interval"
+        label="Interval">
+      </el-table-column>
+      <el-table-column
+        :context="_self"
+        inline-template
+        label="Customer"
+        >
+          <router-link :to="{ name: 'customer.customers.edit', params: {id: row.customer}}">{{row.customer_code}}</router-link>
       </el-table-column>
       <el-table-column
         prop="active"
@@ -74,10 +81,10 @@
       layout="total, sizes, prev, pager, next, jumper"
       :total="pagination.itemTotal">
     </el-pagination>
-    <el-dialog title="请确认是否删除如下数据！" v-model="removeDialogVisible">
+    <el-dialog title="Sure to delete" v-model="removeDialogVisible">
       <el-table :data="toBeRemoved" :stripe="true">
-        <el-table-column property="code" label="Code" width="150"></el-table-column>
-        <el-table-column property="name" label="Name" width="200"></el-table-column>
+        <el-table-column property="customer_code" label="Customer"></el-table-column>
+        <el-table-column property="name" label="Name"></el-table-column>
         <el-table-column property="active" label="Active" inline-template>
           <el-tag :type="row.active? 'primary' : 'success'" close-transition>{{row.active? 'Enabled': 'Disabled'}}</el-tag>
         </el-table-column>
@@ -99,7 +106,7 @@ export default {
       tableData: [],
       multipleSelection: [],
       isLoadingData: false,
-      customerListForm: {
+      processListForm: {
         q: ''
       },
       pagination: {
@@ -113,7 +120,7 @@ export default {
   },
   methods: {
     handleEdit ($index, row) {
-      this.$router.push({name: 'customer.customers.edit', params: {id: row.id}})
+      this.$router.push({name: 'task.processes.edit', params: {id: row.id}})
     },
     handleSelectionChange (val) {
       this.multipleSelection = val
@@ -129,18 +136,23 @@ export default {
     search: _.debounce(function () {
       // should go with format _.debounce( function () {...} )
       this.isLoadingData = true
-      this.$http.get('/api/customer/customers/',
+      this.$http.get('/api/v1/task/processes/',
         {
           params: {
-            q: this.customerListForm.q,
+            q: this.processListForm.q,
             page: this.pagination.page,
-            page_size: this.pagination.pageSize
+            page_size: this.pagination.pageSize,
+            fields: 'id,name,interval,customer,customer_code,active'
           }
         }).then((response) => {
           // use response.body to avoid nested hell
           let data = response.body
           this.pagination.itemTotal = data.count
           this.$set(this, 'tableData', data.results)
+          // response.json().then((res) => {
+          //   this.pagination.itemTotal = res.count
+          //   this.$set(this, 'tableData', res.results)
+          // })
         }, (response) => {
           let msg = 'Empty Response'
           if (response) {
@@ -166,7 +178,7 @@ export default {
     },
     doRemoveItems () {
       let toBeRemovedIds = this.toBeRemoved.map(x => x.id).join(',')
-      this.$http.delete('/api/customer/customers/', {
+      this.$http.delete('/api/v1/task/processes/', {
         params: {
           id__in: toBeRemovedIds
         }
@@ -194,7 +206,7 @@ export default {
     }
   },
   watch: {
-    'customerListForm.q': function () {
+    'processListForm.q': function () {
       this.search()
     }
   },

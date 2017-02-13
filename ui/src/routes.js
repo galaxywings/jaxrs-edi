@@ -1,6 +1,7 @@
 import customerRoutes from './views/customer/routes'
 import serviceRoutes from './views/service/routes'
 import fileRoutes from './views/file/routes'
+import taskRoutes from './views/task/routes'
 
 export default [
   {
@@ -41,37 +42,9 @@ export default [
         component: require('./views/dashboard/index')
       },
       customerRoutes,
-      {
-        path: 'task',
-        component: {
-          render (c) { return c('router-view') }
-        },
-        children: [
-          {
-            path: '',
-            name: 'taskIndex',
-            redirect: {name: 'taskProcessList'}
-          },
-          {
-            path: 'processes',
-            name: 'process.index',
-            component: require('./views/process/index')
-          },
-          {
-            path: 'processes/:id/edit',
-            name: 'process.edit',
-            props: true,
-            component: require('./views/process/edit')
-          },
-          {
-            path: 'processes/create',
-            name: 'process.create',
-            component: require('./views/process/create')
-          }
-        ]
-      },
       serviceRoutes,
-      fileRoutes
+      fileRoutes,
+      taskRoutes
     ]
   },
   {

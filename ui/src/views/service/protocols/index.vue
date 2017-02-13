@@ -97,7 +97,7 @@ export default {
   },
   methods: {
     search: _.debounce(function () {
-      this.$http.get('/api/v1/service/protocols/',
+      this.$http.get('/api/service/protocols/',
         {
           params: {
             q: this.query,

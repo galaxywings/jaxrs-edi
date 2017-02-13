@@ -96,7 +96,7 @@ export default {
   },
   methods: {
     search () {
-      this.$http.get('/api/v1/service/ftps/',
+      this.$http.get('/api/service/ftps/',
         {
           params: {
             q: this.query,

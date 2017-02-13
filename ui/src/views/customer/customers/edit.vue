@@ -1,10 +1,5 @@
 <template>
   <div>
-    <!--<el-breadcrumb separator="/" class="breadcrumb-bar">-->
-      <!--<el-breadcrumb-item :to="{ path: '/' }">Home</el-breadcrumb-item>-->
-      <!--<el-breadcrumb-item :to="{ path: '/customer'}">客户管理</el-breadcrumb-item>-->
-      <!--<el-breadcrumb-item>客户编辑</el-breadcrumb-item>-->
-    <!--</el-breadcrumb>-->
     <el-form :model="customerForm" :rules="rules" ref="customerForm" label-width="120px" >
       <el-form-item label="Code" prop="code">
         <el-input v-model="customerForm.code"></el-input>
@@ -34,7 +29,7 @@ export default {
         callback()
         return
       }
-      this.$http.get('/api/v1/customer/customers/validate-code/', {
+      this.$http.get('/api/customer/customers/validate-code/', {
         params: {q: value}
       }).then((response) => {
         // use response.body to avoid nested hell

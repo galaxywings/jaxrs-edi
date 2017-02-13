@@ -1,14 +1,11 @@
 <template>
   <div>
-    <el-form :model="form" :rules="rules" ref="form" label-width="120px"
-      @keydown.native="form.errors.clear($event.target.name)"
-      >
-      <el-form-item label="名称" prop="name"
-       :show-message="!!form.errors.get('name')" :error="form.errors.get('name')">
+    <el-form :model="form" :rules="rules" ref="form"
+      label-width="120px">
+      <el-form-item label="名称" prop="name">
         <el-input v-model="form.name" name="name"></el-input>
       </el-form-item>
-      <el-form-item label="发送方" prop="sender"
-       :show-message="!!form.errors.get('sender')" :error="form.errors.get('sender')">
+      <el-form-item label="发送方" prop="sender">
        <el-select
          v-model="form.sender"
          filterable
@@ -24,12 +21,10 @@
          </el-option>
        </el-select>
       </el-form-item>
-      <el-form-item label="发送方格式" prop="src_format"
-       :show-message="!!form.errors.get('src_format')" :error="form.errors.get('src_format')">
+      <el-form-item label="发送方格式" prop="src_format">
         <el-input v-model="form.src_format" name="src_format"></el-input>
       </el-form-item>
-      <el-form-item label="接收方" prop="receiver"
-       :show-message="!!form.errors.get('receiver')" :error="form.errors.get('receiver')">
+      <el-form-item label="接收方" prop="receiver">
        <el-select
          v-model="form.receiver"
          filterable
@@ -45,13 +40,10 @@
          </el-option>
        </el-select>
       </el-form-item>
-      <el-form-item label="接收方格式" prop="dest_format"
-       :show-message="!!form.errors.get('dest_format')" :error="form.errors.get('dest_format')">
+      <el-form-item label="接收方格式" prop="dest_format">
          <el-input v-model="form.dest_format" name="dest_format"></el-input>
       </el-form-item>
-      <el-form-item label="文件名" prop="filename"
-       :show-message="!!form.errors.get('filename')" :error="form.errors.get('filename')">
-        <el-input v-model="form.filename" name="filename" v-show="false"></el-input>
+      <el-form-item label="文件" prop="filename">
         <el-upload
           action="/api/misc/dbfiles/file/"
           type="drag"
@@ -63,11 +55,9 @@
           >
           <i class="el-icon-upload"></i>
           <div class="el-dragger__text">Drop file here or <em>click to upload</em></div>
-          <div class="el-upload__tip" slot="tip">Attachment</div>
         </el-upload>
       </el-form-item>
-      <el-form-item label="配置类型" prop="extra_schema"
-       :show-message="!!form.errors.get('extra_schema')" :error="form.errors.get('extra_schema')">
+      <el-form-item label="配置类型" prop="extra_schema">
         <el-select v-model="form.extra_schema" name="extra_schema" @change="handleSchemaChange">
           <el-option v-for="item in schemas" :label="item.name" :value="item.id"></el-option>
         </el-select>
@@ -80,7 +70,8 @@
         </json-editor>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="handleSubmit" :disabled="form.errors.any()">提交</el-button>
+        <el-button type="primary" @click="handleSubmit"
+          :disabled="isSubmitting">提交</el-button>
         <el-button @click="handleReset">重置</el-button>
       </el-form-item>
     </el-form>
@@ -88,22 +79,22 @@
 </template>
 
 <script>
-import Form from 'src/models/Form'
-import Protocol from 'src/models/Protocol'
+import rules from './rules'
 import _ from 'lodash'
 export default {
   props: ['initFormData'],
   data () {
     // console.log(this.initFormData)
     return {
-      form: new Form(this.initFormData),
-      rules: Protocol.rules,
+      form: this.initFormData,
+      rules: rules,
       schemas: [],
       senders: [],
       isSendersLoading: false,
       receivers: [],
       isReceiversLoading: false,
-      extra_schema: {}
+      extra_schema: {},
+      isSubmitting: false
     }
   },
   computed: {
@@ -123,25 +114,37 @@ export default {
       this.$refs.form.resetFields()
     },
     handleSubmit: _.debounce(function () {
-      let method = this.form.id ? 'put' : 'post'
-      let url = this.form.id ? `/api/service/protocols/${this.form.id}/` : `/api/service/protocols/`
-      let action = this.form.id ? '修改' : '添加'
-      this.form[method](url)
-        .then((response) => {
-          this.$notify.success({
-            title: '成功',
-            message: `协议${action}成功!`
-          })
-          this.$router.push({name: 'service.protocols.edit', params: { id: response.id }})
-        },
-        (response) => {
-          console.error(response)
+      this.$refs.form.validate((valid) => {
+        if (!valid) {
           this.$notify.error({
-            title: '错误',
-            message: `协议${action}失败!`
+            title: 'Error',
+            message: 'Please correct the outstanding error(s)'
           })
-          this.form.errors.clear()
-        })
+          return false
+        }
+        let method = this.form.id ? 'put' : 'post'
+        let url = this.form.id ? `/api/service/protocols/${this.form.id}/` : `/api/service/protocols/`
+        let action = this.form.id ? '修改' : '添加'
+        this.isSubmitting = true
+        this.$http[method](url, this.form)
+          .then(({data}) => {
+            this.$notify.success({
+              title: '成功',
+              message: `协议${action}成功!`
+            })
+            this.$router.push({name: 'service.protocols.edit',
+              params: { id: data.id }})
+          },
+          (response) => {
+            console.error(response)
+            this.$notify.error({
+              title: '错误',
+              message: `协议${action}失败!`
+            })
+          }).finally(() => {
+            this.isSubmitting = false
+          })
+      })
     }, 500),
     loadServiceSchemas () {
       return this.$http.get('/api/service/schemas/',
