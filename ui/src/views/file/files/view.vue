@@ -10,7 +10,7 @@
         <ace-editor
           v-model="file.content"
           v-if="file.content"
-          mode="ace/mode/json"
+          mode="ace/mode/text"
           theme="ace/theme/solarized_light"
           :read-only="true"
           class="ace-editor-xl-screen" >
