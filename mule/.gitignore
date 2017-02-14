@@ -41,5 +41,5 @@ target/
 catalog/
 out/
 
-src/main/app/mule-app.properties
+mule-app.properties
 classes/
