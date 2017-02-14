@@ -6,14 +6,17 @@ from django.core.files.base import ContentFile
 from django.urls.base import reverse_lazy
 from django.utils.encoding import force_bytes
 from rest_framework import status
+from rest_framework.decorators import list_route
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.viewsets import ViewSet
+from rest_framework.viewsets import ReadOnlyModelViewSet, ViewSet
 from rest_framework_bulk.generics import BulkModelViewSet
 
-from api.v1.misc.filtersers import ContentTypeFilterSet
-from api.v1.misc.serializers import ContentTypeSerializer
+from api.v1.misc.filtersets import ContentTypeFilterSet
+from api.v1.misc.filtersets import DbBasedFileGenericFilterSet
+from api.v1.misc.serializers import ContentTypeSerializer, DbBasedFileSerializer
+from misc.models import DbBasedFile
 from misc.storages import dbfile_storage
 
 
@@ -25,12 +28,22 @@ class ContentTypeViewSet(BulkModelViewSet):
     #permission_classes = (IsAuthenticated, )
 
 class DbFileViewSet(ViewSet):
+    @staticmethod
+    def get_available_filename(filename, overwrite):
+        if overwrite:
+            result = filename
+        else:
+            result = dbfile_storage.get_available_name(filename, 
+                                                         max_length=128)
+        return result
+    
     def save_file(self, request):
         file = request.data.get('file', None)
         if file is None:
             raise ValidationError('`file` is required')
-        
-        filename = dbfile_storage.save(file.name, file)
+        overwrite = request.data.get('overwrite', False)
+        a_filename = self.get_available_filename(file.name, overwrite)
+        filename = dbfile_storage.save(a_filename, file)
         result = {
             'filename': filename, 
             'download_url': reverse_lazy('api:v1:misc:dbfile_dowload', 
@@ -48,10 +61,11 @@ class DbFileViewSet(ViewSet):
         
         # tested we need to unquote it to make json call, form-data or x-www-form-urlencode to work
         txt_content = parse.unquote(txt_content)
-        
+        overwrite = request.data.get('overwrite', False)
+        a_filename = self.get_available_filename(filename, overwrite)
         # force_bytes in order to make it compatible with those via posting file
         # always saving bytes
-        file = ContentFile(force_bytes(txt_content), name=filename)
+        file = ContentFile(force_bytes(txt_content), name=a_filename)
         filename = dbfile_storage.save(file.name, file)
         result = {
             'filename': filename, 
@@ -74,5 +88,11 @@ class DbFileViewSet(ViewSet):
         
         content = file_obj.read()
         return Response(content)
-        
-        
+
+class ReadOnlyDbBasedFileViewSet(ReadOnlyModelViewSet):
+    queryset = DbBasedFile.objects.all()
+    serializer_class = DbBasedFileSerializer
+    filter_class = DbBasedFileGenericFilterSet
+    search_fields = ('filename', )
+    
+    

@@ -179,7 +179,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'www', '').replace('\\', '/'),
+    os.path.join(BASE_DIR, 'www').replace('\\', '/'),
 )
 
 # in order to save the history logs
@@ -322,3 +322,5 @@ JWT_AUTH = {
                                                     # This is how much time after the original token that future tokens can be refreshed from.
     'JWT_AUTH_HEADER_PREFIX': 'JWT', # that HTTP Header Authorization: Bearer xxx, Bearer part
 }
+
+SCHEMA_SYNC_API_ENDPOINT = 'http://localhost:8090/static/schemas.json'

@@ -13,7 +13,7 @@
   </div>
 </template>
 <script>
-  import Ftp from './schemas/ftp.vue'
+  import Ftp from './contenttypes/ftp.vue'
   export default {
     props: {
       step: {

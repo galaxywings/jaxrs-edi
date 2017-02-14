@@ -141,10 +141,6 @@ export default {
           let data = response.body
           this.pagination.itemTotal = data.count
           this.$set(this, 'tableData', data.results)
-          // response.json().then((res) => {
-          //   this.pagination.itemTotal = res.count
-          //   this.$set(this, 'tableData', res.results)
-          // })
         }, (response) => {
           let msg = 'Empty Response'
           if (response) {

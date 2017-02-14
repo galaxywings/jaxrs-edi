@@ -6,15 +6,6 @@
           <el-button slot="append" icon="search" @click.native="search"></el-button>
         </el-input>
       </el-form-item>
-      <el-form-item>
-        <el-button type="danger"
-          size="small"
-          icon="setting"
-          :disabled="isLoadingData"
-          @click="syncSchemas">
-          同步Schema列表
-        </el-button>
-      </el-form-item>
     </el-form>
     <el-table
       :data="tableData"
@@ -27,13 +18,13 @@
         >
       </el-table-column>
       <el-table-column
-        prop="code"
-        label="Code"
+        prop="filename"
+        label="Filename"
         >
       </el-table-column>
       <el-table-column
-        prop="name"
-        label="Name"
+        prop="size"
+        label="Size"
         >
       </el-table-column>
       <el-table-column
@@ -44,7 +35,7 @@
         <div>
           <el-button
             size="small"
-            @click="handleEdit($index, row)">
+            @click="handleView($index, row)">
             <i class="el-icon-view"></i>
           </el-button>
         </div>
@@ -80,8 +71,8 @@
       }
     },
     methods: {
-      handleEdit ($index, row) {
-        this.$router.push({name: 'service.schemas.edit', params: {id: row.id}})
+      handleView ($index, row) {
+        this.$router.push({name: 'file.files.view', params: {id: row.id}})
       },
       handleSizeChange (val) {
         this.pagination.pageSize = val
@@ -93,11 +84,11 @@
       },
       search: _.debounce(function () {
         this.isLoadingData = true
-        this.$http.get('/api/service/schemas/',
+        this.$http.get('/api/misc/dbfiles/',
           {
             params: {
               q: this.form.q,
-              fields: 'id,code,name',
+              fields: 'id,filename,size',
               page: this.pagination.page,
               page_size: this.pagination.pageSize
             }
@@ -115,37 +106,6 @@
             })
           }).finally(() => {
             this.isLoadingData = false
-          })
-      }, 500),
-      syncSchemas: _.debounce(function () {
-        this.isLoadingData = true
-        this.$http.post('/api/service/schemas/sync/')
-          .then(({data}) => {
-            let msgs = [
-              `created: ${data.created}`,
-              `updated: ${data.updated}`
-            ]
-            if (!_.isEmpty(data.errors)) {
-              msgs.push(data.errors.join(', '))
-            }
-            this.$notify({
-              title: 'Success',
-              message: msgs.join(', '),
-              type: 'success'
-            })
-            this.search()
-          }, (response) => {
-            let msg = 'Empty Response'
-            if (response) {
-              msg = response.body.detail
-            }
-            this.$notify.error({
-              title: response.statusText,
-              message: msg
-            })
-            this.isLoadingData = false
-          }).finally(() => {
-            // this.isLoadingData = false
           })
       }, 500)
     },

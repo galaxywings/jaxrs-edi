@@ -13,16 +13,17 @@
     "lint": "eslint --ext .js,.vue src test/unit/specs test/e2e/specs"
   },
   "dependencies": {
-    "vue": "^2.1.10",
-    "vue-router": "^2.2.0",
     "bootstrap-sass": "^3.3.7",
     "brace": "^0.9.1",
     "element-ui": "^1.1.6",
     "json-editor": "git+https://github.com/ace-han/json-editor.git",
     "lodash": "^4.17.4",
+    "vue": "^2.1.10",
     "vue-awesome": "^2.1.0",
     "vue-i18n": "^5.0.0",
-    "vue-resource": "^1.2.0"
+    "vue-resource": "^1.2.0",
+    "vue-router": "^2.2.0",
+    "vuex": "^2.1.2"
   },
   "devDependencies": {
     "autoprefixer": "^6.7.2",

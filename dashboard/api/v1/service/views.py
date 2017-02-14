@@ -1,4 +1,7 @@
 
+from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
+import requests
 from rest_framework.decorators import list_route
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
@@ -6,11 +9,14 @@ from rest_framework.response import Response
 from rest_framework_bulk.generics import BulkModelViewSet
 
 from api.v1.service.filtersets import ServiceSchemaGenericFilterSet, \
-    GenericServiceFilterSet, FtpServiceFilterSet
+    GenericServiceFilterSet, FtpServiceFilterSet, ProtocolServiceFilterSet, \
+    TemplateServiceFilterSet
 from api.v1.service.serializers import ServiceSchemaSerializer, \
-    GenericServiceSerializer, FtpServiceSerializer
+    GenericServiceSerializer, FtpServiceSerializer, ProtocolServiceSerializer, \
+    TemplateServiceSerializer
 from authx.permissions import IsAdminUser
-from service.models import ServiceSchema, GenericService, Ftp
+from service.models import ServiceSchema, GenericService, Ftp, Protocol, \
+    Template
 from service.utils.ftp import exec_ftp_cmds, test_ftp_connection
 
 
@@ -21,6 +27,39 @@ class ServiceSchemaViewSet(BulkModelViewSet):
     filter_class = ServiceSchemaGenericFilterSet
     search_fields = ('code', 'name')
     #permission_classes = (IsAuthenticated, )
+    
+    @list_route(
+        methods=('get', 'post', ),
+        url_path='sync'
+    )
+    def sync_schemas(self, request):
+        r = requests.get(settings.SCHEMA_SYNC_API_ENDPOINT)
+        result = {
+            'created': 0,
+            'updated': 0,
+            'errors': [],
+        }
+        ct_qs = ContentType.objects.filter(app_label='service').only('id', 'model')
+        model_ct_dict = { ct.model: ct for ct in ct_qs }
+        for schema_json in r.json():
+            model_str = schema_json.pop('category', None)
+            if model_str not in model_ct_dict:
+                result['errors'].append('category: %s is not valid' % (model_str, ))
+                continue
+            schema_json['content_type'] = model_ct_dict[model_str]
+            try:
+                _, created = ServiceSchema.objects.update_or_create(
+                        code = schema_json['code'],
+                        defaults=schema_json)
+            except Exception as e:
+                result['errors'].append(str(e))
+            else: 
+                if created:
+                    result['created'] += 1
+                else:
+                    result['updated'] += 1
+        
+        return Response(result)
 
 class GenericServiceViewSet(BulkModelViewSet):
     queryset = GenericService.objects.all()
@@ -53,4 +92,15 @@ class FtpServiceViewSet(BulkModelViewSet):
         ftp_service = Ftp(**params)
         exec_ftp_cmds(test_ftp_connection, ftp_service)
         return Response('OK')
-        
+
+class ProtocolServiceViewSet(BulkModelViewSet):
+    queryset = Protocol.objects.all()
+    serializer_class = ProtocolServiceSerializer
+    filter_class = ProtocolServiceFilterSet
+    search_fields = ('name', 'filename', 'sender__code', 'receiver__code', )
+    
+class TemplateServiceViewSet(BulkModelViewSet):
+    queryset = Template.objects.all()
+    serializer_class = TemplateServiceSerializer
+    filter_class = TemplateServiceFilterSet
+    search_fields = ('name', 'filename')

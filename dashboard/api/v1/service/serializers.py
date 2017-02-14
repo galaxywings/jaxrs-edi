@@ -1,12 +1,17 @@
 from jsonschema.exceptions import ValidationError as JsonValidationError
 from jsonschema.validators import validate
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField, JSONField, BooleanField
+from rest_framework.fields import CharField, JSONField, BooleanField, \
+    SerializerMethodField
 from rest_framework_bulk.serializers import BulkSerializerMixin, \
     BulkListSerializer
+
 from common.serializers import DynamicFieldsModelSerializer
-from service.models import ServiceSchema, GenericService, Ftp
+from customer.utils import get_id_customer_dict
+from service.models import ServiceSchema, GenericService, Ftp, Protocol, \
+    Template
 from service.utils.ftp import exec_ftp_cmds, create_ftp_transfer_folders
+
 
 class ServiceSchemaSerializer(BulkSerializerMixin, DynamicFieldsModelSerializer):
     code = CharField(required=True)
@@ -66,3 +71,27 @@ class FtpServiceSerializer(GenericServiceSerializer):
         if folder_creation:
             exec_ftp_cmds(create_ftp_transfer_folders, result)
         return result
+    
+class ProtocolServiceSerializer(GenericServiceSerializer):
+    sender_code = SerializerMethodField()
+    receiver_code = SerializerMethodField()
+    class Meta:
+        model = Protocol
+        list_serializer_class = BulkListSerializer
+        fields = '__all__'
+    
+    def get_sender_code(self, obj):
+        id_customer_dict = get_id_customer_dict()
+        customer = id_customer_dict.get(obj.sender_id, None)
+        return (customer and customer.code) or ''
+    
+    def get_receiver_code(self, obj):
+        id_customer_dict = get_id_customer_dict()
+        customer = id_customer_dict.get(obj.receiver_id, None)
+        return (customer and customer.code) or ''
+        
+class TemplateServiceSerializer(GenericServiceSerializer):
+    class Meta:
+        model = Template
+        list_serializer_class = BulkListSerializer
+        fields = '__all__'

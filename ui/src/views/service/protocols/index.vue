@@ -2,13 +2,13 @@
   <div>
     <el-form :inline="true" >
       <el-form-item>
-        <el-input placeholder="Code / Name" v-model="query" @change="search">
+        <el-input placeholder="Name/Attachment/Sender/Receiver" v-model="query" @change="search">
           <el-button slot="append" icon="search"></el-button>
         </el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" size="small">
-          <router-link :to="{ name: 'service.ftps.create' }">
+          <router-link :to="{ name: 'service.protocols.create' }">
             <i class="el-icon-plus"></i>
           </router-link>
         </el-button>
@@ -27,13 +27,13 @@
       selection-mode="multiple"
       @selection-change="handleSelectionChange">
       <el-table-column type="selection" ></el-table-column>
-      <el-table-column sortable prop="id" label="编号"></el-table-column>
-      <el-table-column sortable prop="name" label="名称"></el-table-column>
-      <el-table-column sortable prop="username" label="用户名"></el-table-column>
-      <el-table-column sortable prop="password" label="密码"></el-table-column>
-      <el-table-column sortable prop="host" label="地址"></el-table-column>
-      <el-table-column sortable prop="port" label="端口"></el-table-column>
-      <el-table-column sortable prop="path" label="路径"></el-table-column>
+      <el-table-column prop="id" label="编号"></el-table-column>
+      <el-table-column prop="name" label="名称"></el-table-column>
+      <el-table-column prop="sender_code" label="发送方code"></el-table-column>
+      <el-table-column prop="src_format" label="发送格式"></el-table-column>
+      <el-table-column prop="receiver_code" label="接收方code"></el-table-column>
+      <el-table-column prop="dest_format" label="接收格式"></el-table-column>
+      <el-table-column prop="filename" label="附件"></el-table-column>
       <el-table-column :context="_self" inline-template label="Operations">
         <div>
           <el-button
@@ -64,11 +64,11 @@
       <el-table :data="toBeRemoved" :stripe="true">
         <el-table-column prop="id" label="编号"></el-table-column>
         <el-table-column prop="name" label="名称"></el-table-column>
-        <el-table-column prop="username" label="用户名"></el-table-column>
-        <el-table-column prop="password" label="密码"></el-table-column>
-        <el-table-column prop="host" label="地址"></el-table-column>
-        <el-table-column prop="port" label="端口"></el-table-column>
-        <el-table-column prop="path" label="路径"></el-table-column>
+        <el-table-column prop="sender_code" label="发送方code"></el-table-column>
+        <el-table-column prop="src_format" label="发送格式"></el-table-column>
+        <el-table-column prop="receiver_code" label="接收方code"></el-table-column>
+        <el-table-column prop="dest_format" label="接收格式"></el-table-column>
+        <el-table-column prop="filename" label="附件"></el-table-column>
       </el-table>
       <span slot="footer" class="dialog-footer">
         <el-button @click="showDialog = false">Cancel</el-button>
@@ -78,6 +78,7 @@
   </div>
 </template>
 <script>
+import _ from 'lodash'
 export default {
   data () {
     return {
@@ -95,8 +96,8 @@ export default {
     }
   },
   methods: {
-    search () {
-      this.$http.get('/api/service/ftps/',
+    search: _.debounce(function () {
+      this.$http.get('/api/service/protocols/',
         {
           params: {
             q: this.query,
@@ -109,9 +110,9 @@ export default {
         }, (error) => {
           console.log(error)
         })
-    },
+    }, 500),
     handleEdit ($index, row) {
-      this.$router.push({name: 'service.ftps.edit', params: {id: row.id}})
+      this.$router.push({name: 'service.protocols.edit', params: {id: row.id}})
     },
     removeItem ($index, row) {
       this.toBeRemoved = [row]
@@ -125,7 +126,7 @@ export default {
     doRemoveItems () {
       // Delete items
       let ids = this.toBeRemoved.map(item => item.id).join(',')
-      this.$http.delete('/api/service/ftps/', {
+      this.$http.delete('/api/service/protocols/', {
         params: {
           id__in: ids
         }

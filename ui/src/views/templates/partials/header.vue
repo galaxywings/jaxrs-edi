@@ -33,7 +33,7 @@
     </el-submenu>
     <el-submenu  index="/misc">
       <template slot="title"><i class="el-icon-setting"></i>杂项</template>
-      <el-menu-item index="/misc/files">文件列表</el-menu-item>
+      <el-menu-item index="/file/files">文件列表</el-menu-item>
     </el-submenu>
     <el-menu-item index="/auth">
       <i class="el-icon-setting"></i>权限

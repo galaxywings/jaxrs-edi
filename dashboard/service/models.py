@@ -48,9 +48,25 @@ class Ftp(AbstractBaseService):
     password = models.CharField(_('password'), max_length=128)
     host = models.CharField(_('host'), max_length=32)
     port = models.PositiveIntegerField(_('port'))
-    path = models.CharField(_('file'), max_length=255)
+    path = models.CharField(_('path'), max_length=255)
     
     customer = models.ForeignKey('customer.Customer', on_delete=models.CASCADE)
     # http://slacksite.com/other/ftp.html
     mode = models.SmallIntegerField(_('mode'), choices=FTP_MODE_CHOICES, default=0)
     ssl = models.BooleanField(_('ssl'), default=False)
+
+@reversion.register()
+class Protocol(AbstractBaseService):
+    sender = models.ForeignKey('customer.Customer', 
+                               related_name='sender_protocols',
+                               on_delete=models.CASCADE)
+    receiver = models.ForeignKey('customer.Customer', 
+                                 related_name='receiver_protocols',
+                                 on_delete=models.CASCADE)
+    src_format = models.CharField(_('src_format'), max_length=16)
+    dest_format = models.CharField(_('dest_format'), max_length=16)
+    filename = models.CharField(_('filename'), max_length=128)
+
+@reversion.register()
+class Template(AbstractBaseService):
+    filename = models.CharField(_('filename'), max_length=128)

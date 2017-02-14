@@ -1,0 +1,31 @@
+[
+	{
+		"code": "ftp_inbound",
+		"name": "FTP Inbound",
+		"category": "ftp",
+		"extra_schema": {
+			"description":"Ftp extra properties",
+			"type":"object",
+			"properties": {
+				"working_hour":{
+					"description":"First and Last name",
+					"type":"string",
+					"default":"08:00~17:00",
+					"minLength":4
+				}
+			}
+		}
+	},
+	{
+		"code": "ftp_outbound",
+		"name": "FTP Outbound",
+		"category": "ftp",
+		"extra_schema": null
+	},	
+	{
+		"code": "ace_to_bob",
+		"name": "Ace 2 Bob",
+		"category": "protocol",
+		"extra_schema": null
+	}
+]

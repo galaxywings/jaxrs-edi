@@ -1,11 +1,5 @@
 <template>
   <div>
-    <el-breadcrumb separator="/" class="breadcrumb-bar">
-      <el-breadcrumb-item :to="{ path: '/' }">Home</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path: '/task'}">任务管理</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path: '/task/processes'}">Process管理</el-breadcrumb-item>
-      <el-breadcrumb-item>编辑Process</el-breadcrumb-item>
-    </el-breadcrumb>
     <el-form :model="processForm" :rules="rules" ref="processForm" label-width="120px" >
       <el-form-item label="客户" prop="customer">
         <el-select
