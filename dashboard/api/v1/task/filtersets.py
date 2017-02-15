@@ -1,13 +1,10 @@
 
 from rest_framework_filters import FilterSet, RelatedFilter
 
-from customer.models import Customer
 from task.models import Step, Process
 
 
 class ProcessGenericFilterSet(FilterSet):
-    customer = RelatedFilter('api.v1.customer.filtersets.CustomerGenericFilterSet', queryset=Customer.objects.all())
-    
     class Meta:
         model = Process
         fields = {

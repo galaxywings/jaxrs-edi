@@ -51,14 +51,12 @@ class StepSerializer(DynamicFieldsModelSerializer):
         return (service and service.extra_schema and service.extra_schema.code) or ''
 
 class ProcessSerializer(BulkSerializerMixin, DynamicFieldsModelSerializer):
-    customer_code = StringRelatedField(source='customer')
-    
     steps = SerializerMethodField()
 
     class Meta:
         model = Process
         list_serializer_class = BulkListSerializer
-        exclude = ('customer', )
+        fields = '__all__'
     
     def get_steps(self, instance):
         # in order to ensure the order of steps inside

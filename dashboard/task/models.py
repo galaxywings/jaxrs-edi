@@ -7,16 +7,15 @@ import reversion
 
 @reversion.register()
 class Process(models.Model):
-    customer = models.ForeignKey('customer.Customer')
     name = models.CharField(_('name'), max_length=64, help_text=_('Display name'))
     interval = models.PositiveIntegerField(_('interval'), default=300)
     active = models.BooleanField(_('active'), default=False)
 
     class Meta:
-        unique_together = (('customer', 'name',), )
+        unique_together = (('name',), )
     
     def __str__(self):
-        return 'customer_id: {}, name: {}'.format(self.customer_id, self.name)
+        return 'Process name: {}'.format(self.name)
 
 @reversion.register()
 class Step(models.Model):

@@ -26,7 +26,6 @@ class StepServiceSerializer(DynamicFieldsModelSerializer):
         fields = '__all__'
 
 class ProcessSerializer(BulkSerializerMixin, DynamicFieldsModelSerializer):
-    customer_code = StringRelatedField(source='customer')
     class Meta:
         model = Process
         list_serializer_class = BulkListSerializer
