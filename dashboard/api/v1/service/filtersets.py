@@ -33,7 +33,7 @@ class GenericServiceFilterSet(filters.FilterSet):
         }
 
 class FtpServiceFilterSet(filters.FilterSet):
-    extra_schemas = filters.RelatedFilter(ServiceSchemaGenericFilterSet,
+    extra_schema = filters.RelatedFilter(ServiceSchemaGenericFilterSet,
                                          queryset=ServiceSchema.objects.all())
     class Meta:
         model = Ftp
