@@ -1,32 +1,34 @@
 <template>
   <div>
-    <el-form :model="processForm" :rules="rules" ref="processForm" label-width="120px" >
-      <el-form-item label="客户" prop="customer">
-        <el-select
-          v-model="processForm.customer"
-          filterable
-          :remote="true"
-          placeholder="客户代码或名称"
-          :remote-method="querySearchCustomer"
-          :loading="isCustomerLoading">
-          <el-option
-            v-for="item in customerOptions"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id">
-          </el-option>
-        </el-select>
+    <el-form :model="form" ref="form" label-width="120px" >
+      <el-form-item label="名称" prop="name"
+        :rules="[
+          { required: true, message: 'Name is required', trigger: 'blur' },
+          { min: 3, max: 128, message: 'Length should be 3 to 128', trigger: 'blur' }
+        ]">
+        <el-input v-model="form.name"></el-input>
       </el-form-item>
-      <el-form-item label="工作流程名称" prop="name">
-        <el-input v-model="processForm.name"></el-input>
+      <el-form-item label="间隔" prop="interval"
+        :rules="[
+          { type: 'integer', min: 60, message: 'Interval better greater than 60 secs', trigger: 'input' }
+        ]">
+        <el-input v-model="form.interval"></el-input>
       </el-form-item>
-      <el-form-item label="间隔" prop="interval">
-        <el-input v-model="processForm.interval"></el-input>
+      <el-form-item label="激活" prop="active">
+         <el-switch on-text="Yes" off-text="No" v-model="form.active"></el-switch>
       </el-form-item>
-      <el-form-item label="已激活" prop="active">
-         <el-switch on-text="Yes" off-text="No" v-model="processForm.active"></el-switch>
+      <el-form-item v-for="(step, index) in form.steps"
+        :prop="'steps.'+index"
+        :label="'步骤 ' + (index+1)"
+        :rules="[
+          { validator: checkStep, trigger: 'blur' }
+        ]"
+        >
+
+        <component :item="step" ref="steps"
+          :is="step.content_type.model">
+        </component>
       </el-form-item>
-      <steps :process.sync="processForm"></steps>
       <el-form-item>
         <el-button type="primary" @click.native="handleSubmit">Submit</el-button>
       </el-form-item>
@@ -36,153 +38,173 @@
 
 <script>
 import _ from 'lodash'
-import Steps from './snippets/steps.vue'
+import Ftp from './snippets/contenttypes/ftp.vue'
+import NotFound from './snippets/contenttypes/notFound.vue'
 export default {
   props: ['id'],
   data () {
     return {
-      processForm: {
-        customer: null,
+      form: {
         name: '',
         interval: 0,
         active: false,
-        steps: []
+        steps: [] // to be tested if needed
       },
       oldProcess: {},
-      isCustomerLoading: false,
-      customerOptions: [],
-      rules: {
-        customer: [
-          { type: 'integer', min: 1, required: true, message: 'Customer is required', trigger: 'change' }
-        ],
-        name: [
-          { required: true, message: 'Name is required', trigger: 'blur' },
-          { min: 3, max: 128, message: 'Length should be 3 to 128', trigger: 'blur' }
-        ],
-        interval: [
-          { type: 'integer', min: 60, message: 'Interval better greater than 60 secs', trigger: 'input' }
-        ]
-      }
+      serviceSchemas: [],
+      isSchemaSearching: false,
+      stepItems: [],
+      idContentTypeMap: new Map()
     }
   },
   computed: {
-    apiEndpoint () {
-      return `/api/task/processes/${this.id}/`
-    }
+
   },
   components: {
-    Steps
+    Ftp,
+    NotFound
   },
   methods: {
-    querySearchCustomer: _.debounce(function (queryString) {
-      this.searchCustomers(queryString)
+    checkStep (rule, value, callback) {
+      console.info(rule, value, callback)
+    },
+    querySchemas: _.debounce(function (queryString) {
+      this.searchSchemas(queryString)
     }, 500),
-    searchCustomers (q = '', id = false) {
-      this.isCustomerLoading = true
-      let url = '/api/v1/customer/customers/'
-      if (id) {
-        url = `${url}/${id}/`
+    searchSchemas (q = '', ids = []) {
+      this.isSchemaSearching = true
+      let url = '/api/service/schemas/'
+      let params = {q: q}
+      if (ids.length > 0) {
+        params.id__in = ids.join(',')
       }
-      this.$http.get(url, {
-        params: {q: q}
-      }).then((response) => {
-        // use response.body to avoid nested hell
-        let result = response.body.results
-        this.customerOptions = result
+      return this.$http.get(url, {
+        params: params
+      }).then(({data}) => {
+        this.serviceSchemas = data.results
+        return this.serviceSchemas
       }, (response) => {
         this.$notify.error({
           title: response.statusText,
           message: response.body
         })
+        return response
       }).finally(() => {
-        this.isCustomerLoading = false
+        this.isSchemaSearching = false
       })
     },
-    handleSubmit (ev) {
-//      this.$refs.processForm.validate((valid) => {
-//        console.log('validate', arguments)
-//        if (!valid) {
-//          this.$notify.error({
-//            title: 'Error',
-//            message: 'Please correct the outstanding error(s)'
-//          })
-//          return false
-//        }
-      if (this.processForm.steps.length === 0) {
+    fetchContentTypes () {
+      let url = '/api/misc/contenttypes/'
+      return this.$http.get(url, {
+        params: {app_label: 'service'}
+      }).then(({body}) => {
+        return body.results
+      }, (response) => {
         this.$notify.error({
-          title: 'Error',
-          message: 'At least one step is required'
+          title: response.statusText,
+          message: response.body
         })
-        return false
-      }
-
-//      let params = this.processForm
-      let processRequest = this.$http.put(
-          this.apiEndpoint,
-          this.processForm
-      )
-//      params = this.processForm.steps
-      let stepsRequest = []
-      for (let index of this.processForm.steps.keys()) {
-        console.log(index)
-        console.log(this.processForm.steps[index])
-        let step = this.processForm.steps[index]
-        let method = ''
-        let url = ''
-
-        if (step.id) {
-          method = 'put'
-          url = `/api/task/steps/${step.id}/`
-        } else {
-          method = 'post'
-          url = '/api/task/steps/'
-        }
-        stepsRequest[index] = this.$http[method](
-          url,
-          {
-            process: this.$route.params.id,
-            content_type: step.content_type,
-            seq: index + 1,
-            object_id: step.object_id
+      })
+    },
+    fetchSteps () {
+      let promise = new Promise((resolve, reject) => {
+        this.$http.get(`/api/task/steps/detail/`, {
+          params: { process: this.id }
+        }).then(({body}) => {
+          let schemaIdSet = new Set()
+          let steps = body.results
+          for (let step of steps) {
+            schemaIdSet.add(step.content_object.extra_schema)
           }
-        )
-      }
-//      let stepsRequest = this.$http.post(
-//          `${this.apiEndpoint}save-steps/`,
-//          this.processForm.steps
-//      )
-      Promise.all([processRequest, ...stepsRequest])
-        .then((response) => {
-          this.fetchProcess()
+          this.searchSchemas('', [...schemaIdSet])
+            .then((schemas) => {
+              resolve({steps: steps, schemas: schemas})
+            }, (response) => {
+              reject(response)
+            })
+          return
         }, (response) => {
           this.$notify.error({
             title: response.statusText,
-            message: response.body.detail
+            message: response.body
           })
+          reject(response)
         })
-//      })
+      })
+      return promise
     },
     fetchProcess () {
-      this.$http.get(this.apiEndpoint).then((response) => {
-        let data = response.body
-        for (let property in data) {
-          this.processForm[property] = data[property]
-        }
-        this.searchCustomers('', this.processForm.cutomer)
-        this.oldProcess = _.cloneDeep(this.processForm)
-      }, (response) => {
-        if (response.status === 404) {
-          this.$notify.warning({
-            title: response.statusText,
-            message: 'The process cannot be found'
-          })
-          this.$router.push({name: 'process.index'})
-        }
-      })
+      return this.$http.get(`/api/task/processes/${this.id}/`)
+        .then(({body}) => {
+          return body
+        }, (response) => {
+          if (response.status === 404) {
+            this.$notify.warning({
+              title: response.statusText,
+              message: 'The process cannot be found'
+            })
+            this.$router.push({name: 'task.process.index'})
+          }
+        })
+    },
+    handleSubmit () {
+
     }
   },
   mounted () {
-    this.fetchProcess()
+    Promise.all([
+      this.fetchProcess(),
+      this.fetchContentTypes(),
+      this.fetchSteps()
+    ]).then(([process, contentTypes, {steps, schemas}]) => {
+      this.form = process
+      this.form.steps = []
+      for (let contentType of contentTypes) {
+        this.idContentTypeMap.set(contentType.id, contentType)
+      }
+
+      let idSchemaMap = new Map()
+      for (let schema of schemas) {
+        idSchemaMap.set(schema.id, schema)
+      }
+      // we will get an item of
+      // stepItem = {
+      //   "value": {
+      //     "seq": 0,
+      //     "content_type": 0,
+      //     "object_id": 0,
+      //     "id": 0, // could be omitted in the ajax
+      //     "process": 0, // could omitted in the ajax
+      //   },
+      //   "schema": {
+      //     "code": "xxx"
+      //     "name": "xxx",
+      //     "extra_schema": {...}
+      //   },
+      //   "content_type": {
+      //     "id": 0,
+      //     "app_label": "xxx",
+      //     "model": "xxx"
+      //   },
+      //   "content_object": {...}
+      // }
+      for (let step of steps) {
+        let item = {}
+        item.value = step
+        item.content_object = step.content_object
+        delete item.value.content_object
+        item.schema = idSchemaMap.get(item.content_object.extra_schema)
+        if (item.schema) {
+          item.content_type = this.idContentTypeMap.get(item.schema.content_type)
+          if (!item.content_type) {
+            item.content_type = {model: 'not-found'}
+          }
+        } else {
+          item.content_type = {model: 'not-found'}
+        }
+        this.form.steps.push(item)
+      }
+    })
   }
 }
 </script>

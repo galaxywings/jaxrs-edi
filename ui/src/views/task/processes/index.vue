@@ -2,7 +2,7 @@
   <div>
     <el-form :inline="true" :model="processListForm" >
       <el-form-item>
-        <el-input placeholder="Customer Code / Name" v-model="processListForm.q">
+        <el-input placeholder="名称" v-model="processListForm.q">
           <el-button slot="append" icon="search" @click.native="search"></el-button>
         </el-input>
       </el-form-item>
@@ -30,23 +30,22 @@
         fixed>
       </el-table-column>
       <el-table-column
+        prop="id"
+        sortable
+        label="ID">
+      </el-table-column>
+      <el-table-column
         prop="name"
-        label="Name">
+        sortable
+        label="名称">
       </el-table-column>
       <el-table-column
         prop="interval"
-        label="Interval">
-      </el-table-column>
-      <el-table-column
-        :context="_self"
-        inline-template
-        label="Customer"
-        >
-          <router-link :to="{ name: 'customer.customers.edit', params: {id: row.customer}}">{{row.customer_code}}</router-link>
+        label="间隔">
       </el-table-column>
       <el-table-column
         prop="active"
-        label="Active"
+        label="激活"
         :filters="[{ text: 'Enabled', value: 'Enabled' }, { text: 'Disabled', value: 'Disabled' }]"
         :filter-method="filterActive"
         inline-template>
@@ -56,7 +55,7 @@
         :context="_self"
         fixed="right"
         inline-template
-        label="Operations"
+        label="操作"
         >
         <div>
           <el-button
@@ -136,7 +135,7 @@ export default {
     search: _.debounce(function () {
       // should go with format _.debounce( function () {...} )
       this.isLoadingData = true
-      this.$http.get('/api/v1/task/processes/',
+      this.$http.get('/api/task/processes/',
         {
           params: {
             q: this.processListForm.q,
@@ -144,15 +143,9 @@ export default {
             page_size: this.pagination.pageSize,
             fields: 'id,name,interval,customer,customer_code,active'
           }
-        }).then((response) => {
-          // use response.body to avoid nested hell
-          let data = response.body
+        }).then(({data}) => {
           this.pagination.itemTotal = data.count
           this.$set(this, 'tableData', data.results)
-          // response.json().then((res) => {
-          //   this.pagination.itemTotal = res.count
-          //   this.$set(this, 'tableData', res.results)
-          // })
         }, (response) => {
           let msg = 'Empty Response'
           if (response) {
@@ -178,7 +171,7 @@ export default {
     },
     doRemoveItems () {
       let toBeRemovedIds = this.toBeRemoved.map(x => x.id).join(',')
-      this.$http.delete('/api/v1/task/processes/', {
+      this.$http.delete('/api/task/processes/', {
         params: {
           id__in: toBeRemovedIds
         }
