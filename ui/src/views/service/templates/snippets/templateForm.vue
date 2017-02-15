@@ -12,12 +12,12 @@
           <el-option v-for="item in schemas" :label="item.name" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="额外配置" prop="extra_params">
+      <el-form-item label="额外配置" prop="extra_params" ref="editor">
         <json-editor
           v-if="isExtraSchemaVisible"
           :schema="extra_schema"
           v-model="form.extra_params"
-          @invalid="handleInvalid">
+          >
         </json-editor>
       </el-form-item>
       <el-tabs :active-name="activeName" style="width: 100%">
@@ -29,7 +29,8 @@
             :read-only="false"
             class="ace-editor-xl-screen" >
           </ace-editor>
-        <!--<el-tab-pane label="上传模板" name="upload">
+        </el-tab-pane>
+        <el-tab-pane label="上传模板" name="upload">
           <el-form-item label="文件">
             <el-upload
               action="/api/misc/dbfiles/file/"
@@ -43,7 +44,7 @@
               <div class="el-dragger__text">Drop file here or <em>click to upload</em></div>
             </el-upload>
           </el-form-item>
-        </el-tab-pane>-->
+        </el-tab-pane>
       </el-tabs>
       <el-form-item>
         <el-button @click="handleUpload" :disabled="! file.content">上传文件</el-button>
@@ -147,8 +148,8 @@ export default {
               title: '成功',
               message: `协议${action}成功!`
             })
-            this.$router.push({name: 'service.templates.edit',
-              params: { id: data.id }})
+            // this.$router.push({name: 'service.templates.edit',
+            //   params: { id: data.id }})
           },
           (response) => {
             console.error(response)
