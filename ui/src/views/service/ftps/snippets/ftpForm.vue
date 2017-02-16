@@ -2,7 +2,7 @@
   <div>
     <el-form :model="form" :rules="rules" ref="form" label-width="120px">
       <el-form-item label="客户" prop="customer">
-       <el-select v-model="form.customer" name="extra_schema">
+       <el-select v-model="form.customer" name="customer">
          <el-option v-for="item in customers" :label="item.name" :value="item.id"></el-option>
        </el-select>
       </el-form-item>
