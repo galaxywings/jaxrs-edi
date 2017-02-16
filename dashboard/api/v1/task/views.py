@@ -1,6 +1,8 @@
 
+from django.db.transaction import atomic
 from rest_framework.decorators import list_route, detail_route
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from rest_framework_bulk.generics import BulkModelViewSet
 
 from api.v1.task.filtersets import ProcessGenericFilterSet, \
@@ -18,7 +20,33 @@ class ProcessViewSet(BulkModelViewSet):
     search_fields = ('name', )
     #permission_classes = (IsAdminUser, )
      
-   
+    @detail_route(
+        methods=('post', ),
+        url_path='save'
+    )
+    @atomic
+    def save_with_steps(self, request, *args, **kwargs):
+        # copy from restframework.mixins.UpdateModelMixin.update
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        
+        steps = request.data.get('steps')
+        for index, step in enumerate(steps):
+            step['seq'] = index
+            step['process'] = instance.id
+    
+        instance.step_set.all().delete()
+        if steps:
+            step_serializer = StepSerializer(data=steps, many=True, 
+                        context=self.get_serializer_context())
+            step_serializer.is_valid(raise_exception=True)
+            step_serializer.save()
+        result = serializer.data
+        result['steps'] = step_serializer.data
+        return Response(result)
 
 class StepViewSet(BulkModelViewSet):
     queryset = Step.objects.all()

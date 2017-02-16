@@ -1,6 +1,5 @@
 
 from generic_relations.relations import GenericRelatedField
-from rest_framework.relations import StringRelatedField
 from rest_framework_bulk.serializers import BulkSerializerMixin, BulkListSerializer
 
 from api.v1.service.serializers import FtpServiceSerializer, \
