@@ -17,18 +17,47 @@
       <el-form-item label="激活" prop="active">
          <el-switch on-text="Yes" off-text="No" v-model="form.active"></el-switch>
       </el-form-item>
-      <el-form-item v-for="(step, index) in form.steps"
+      <el-form-item
+        v-for="(step, index) in form.steps"
+        :key="step.key"
         :prop="'steps.'+index"
         :label="'步骤 ' + (index+1)"
         :rules="[
-          { validator: checkStep, trigger: 'blur' }
+          { validator: checkStep, trigger: 'change' }
         ]"
         >
-
+        <el-row :gutter="20">
+          <el-col :span="4">
+            <el-tag type="primary" v-text="step.schema.name"></el-tag>
+          </el-col>
+          <el-col :span="4">
+            <el-button type="danger" icon="delete"
+              @click.prevent="removeStep(index)"></el-button>
+          </el-col>
+        </el-row>
         <component :item="step" ref="steps"
           :is="step.content_type.model">
         </component>
       </el-form-item>
+
+      <el-form-item
+          label="服务类型">
+        <el-select
+            v-model="selectedSchemaId"
+            filterable
+            remote
+            :remote-method="querySchemas"
+            :loading="isSchemaSearching">
+          <el-option
+              v-for="(schema,index) in serviceSchemas"
+              :key="schema.id"
+              :label="schema.name"
+              :value="schema.id">
+          </el-option>
+        </el-select>
+        <el-button @click.prevent="addStep()" type="success">添加新步骤</el-button>
+      </el-form-item>
+
       <el-form-item>
         <el-button type="primary" @click.native="handleSubmit">Submit</el-button>
       </el-form-item>
@@ -48,17 +77,20 @@ export default {
         name: '',
         interval: 0,
         active: false,
-        steps: [] // to be tested if needed
+        steps: []
       },
       oldProcess: {},
+      selectedSchemaId: '',
       serviceSchemas: [],
       isSchemaSearching: false,
-      stepItems: [],
-      idContentTypeMap: new Map()
+      idContentTypeMap: new Map(),
+      isSubmitting: false
     }
   },
   computed: {
-
+    processApiEndpoint () {
+      return `/api/task/processes/${this.id}/`
+    }
   },
   components: {
     Ftp,
@@ -66,7 +98,9 @@ export default {
   },
   methods: {
     checkStep (rule, value, callback) {
-      console.info(rule, value, callback)
+      console.info('check Step', rule.fullField)
+      let index = this.form.steps.indexOf(value)
+      this.$refs.steps[index].validate(rule, value, callback)
     },
     querySchemas: _.debounce(function (queryString) {
       this.searchSchemas(queryString)
@@ -134,7 +168,7 @@ export default {
       return promise
     },
     fetchProcess () {
-      return this.$http.get(`/api/task/processes/${this.id}/`)
+      return this.$http.get(this.processApiEndpoint)
         .then(({body}) => {
           return body
         }, (response) => {
@@ -147,9 +181,84 @@ export default {
           }
         })
     },
-    handleSubmit () {
+    addStep () {
+      let schema = this.serviceSchemas.find((element) => {
+        return element.id === this.selectedSchemaId
+      })
+      let contentType = this.idContentTypeMap.get(schema.content_type)
+      let item = {
+        key: this.generateStepKey(),
+        value: {
+          content_type: contentType.id,
+          // it's important to be empty
+          // to match in step's contentObject selection
+          object_id: ''
+        },
+        schema: schema,
+        content_type: contentType,
+        content_object: {
+          // json editor just need this
+          extra_params: {}
+        }
+      }
+      this.form.steps.push(item)
+    },
+    removeStep (index) {
+      this.form.steps.splice(index, 1)
+    },
+    generateStepKey () {
+      // assigning key is important for v-for
+      // https://vuejs.org/v2/guide/list.html#key
+      // refer to http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        let r = Math.random() * 16 | 0
+        let v = c === 'x' ? r : (r & 0x3 | 0x8)
+        return v.toString(16)
+      })
+    },
+    handleSubmit: _.debounce(function () {
+      this.$refs.form.validate((valid) => {
+        if (!valid) {
+          this.$notify.error({
+            title: 'Error',
+            message: 'Please correct the outstanding error(s)'
+          })
+          return false
+        }
 
-    }
+        Promise.all(this.$refs.steps.map((x) => x.save()))
+          .then((steps) => {
+            let process = {}
+            for (let field in this.form) {
+              process[field] = this.form[field]
+            }
+            process.steps = steps
+            this.isSubmitting = true
+            this.$http.post(this.processApiEndpoint + 'save/', process)
+              .then(({data}) => {
+                this.$notify.success({
+                  title: '成功',
+                  message: `修改成功!`
+                })
+              },
+              (response) => {
+                console.error(response)
+                this.$notify.error({
+                  title: '错误',
+                  message: `修改失败!`
+                })
+              }).finally(() => {
+                this.isSubmitting = false
+              })
+          }, (error) => {
+            console.error('Steps saving error', error)
+            this.$notify.error({
+              title: 'Error',
+              message: 'Please correct the outstanding error(s)'
+            })
+          })
+      })
+    }, 500)
   },
   mounted () {
     Promise.all([
@@ -157,8 +266,14 @@ export default {
       this.fetchContentTypes(),
       this.fetchSteps()
     ]).then(([process, contentTypes, {steps, schemas}]) => {
-      this.form = process
-      this.form.steps = []
+      // DO NOT DO THIS !!!
+      // this.form = process
+
+      // using loop to avoid reference error in v-for!!!
+      for (let field in process) {
+        this.form[field] = process[field]
+      }
+      // this.form.steps = []
       for (let contentType of contentTypes) {
         this.idContentTypeMap.set(contentType.id, contentType)
       }
@@ -169,6 +284,7 @@ export default {
       }
       // we will get an item of
       // stepItem = {
+      //   "key": "xxx"
       //   "value": {
       //     "seq": 0,
       //     "content_type": 0,
@@ -194,14 +310,11 @@ export default {
         item.content_object = step.content_object
         delete item.value.content_object
         item.schema = idSchemaMap.get(item.content_object.extra_schema)
-        if (item.schema) {
-          item.content_type = this.idContentTypeMap.get(item.schema.content_type)
-          if (!item.content_type) {
-            item.content_type = {model: 'not-found'}
-          }
-        } else {
+        item.content_type = this.idContentTypeMap.get(item.schema.content_type)
+        if (!item.content_type) {
           item.content_type = {model: 'not-found'}
         }
+        item.key = this.generateStepKey()
         this.form.steps.push(item)
       }
     })
