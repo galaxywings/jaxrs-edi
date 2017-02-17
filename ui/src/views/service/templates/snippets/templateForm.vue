@@ -12,8 +12,8 @@
           <el-option v-for="item in schemas" :label="item.name" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="额外配置" prop="extra_params" ref="editor">
-        <json-editor
+      <el-form-item label="额外配置" prop="extra_params">
+        <json-editor ref="editor"
           v-if="isExtraSchemaVisible"
           :schema="extra_schema"
           v-model="form.extra_params"
@@ -56,17 +56,23 @@
 </template>
 
 <script>
-import rules from './rules'
 import _ from 'lodash'
 export default {
   props: ['initFormData'],
   data () {
-    // console.log(this.initFormData)
+    var validateParams = function (rule, value, callback) {
+      let errors = this.$refs['editor'].validate()
+      if (errors.length > 0) {
+        callback(new Error('Json Editor 格式错误.'))
+      } else {
+        callback()
+      }
+    }.bind(this)
     return {
       form: this.initFormData,
-      rules: rules.data,
       schemas: [],
       extra_schema: {},
+      extra_params_invlaid: false,
       isSubmitting: false,
       activeName: 'input',
       file: {
@@ -77,6 +83,22 @@ export default {
       },
       editorOptions: {
         disable_properties: true
+      },
+      rules: {
+        name: [
+          { required: true, message: '请输入模板名称', trigger: 'blur' },
+          { min: 3, message: '长度至少3个字符', trigger: 'blur' }
+        ],
+        filename: [
+          { required: true, message: '请输入模板名称', trigger: 'blur' },
+          { min: 6, max: 64, message: '长度至少6个字符, 最大64个字符', trigger: 'blur' }
+        ],
+        extra_schema: [
+          { type: 'number', required: true, message: '请选择配置', trigger: 'blur' }
+        ],
+        extra_params: [
+          { validator: validateParams, required: true, trigger: 'blur' }
+        ]
       }
     }
   },
@@ -86,13 +108,6 @@ export default {
     }
   },
   methods: {
-    handleInvalid (errors) {
-      console.error(errors)
-      this.$notify.error({
-        title: 'Json Editor 模板错误',
-        message: 'Json Editor 模板错误!'
-      })
-    },
     handleUpload () {
       let method = 'post'
       let url = '/api/misc/dbfiles/text/'

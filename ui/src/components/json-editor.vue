@@ -61,6 +61,11 @@
         this.editor.setValue(val)
       }, 500)
     },
+    methods: {
+      validate () {
+        return this.editor.validate()
+      }
+    },
     mounted () {
       let opts = _.assignIn({schema: this.schema}, defaultOptions, this.options)
       let editor = this.editor = new JSONEditor(this.$el, opts)
