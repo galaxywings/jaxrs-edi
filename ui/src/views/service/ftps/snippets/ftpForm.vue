@@ -132,20 +132,23 @@ export default {
           })
         })
     },
-    handleSchemaChange () {
+    handleSchemaChange (resetParams = true) {
       for (let schema of this.schemas) {
         if (schema.id === this.form.extra_schema) {
           this.extra_schema = schema.extra_schema
-          this.form.extra_params = {}
+          if (resetParams) {
+            this.form.extra_params = {}
+          }
           break
         }
       }
     }
   },
   mounted () {
+    console.log(this.form)
     this.loadServiceSchemas()
       .then(() => {
-        this.handleSchemaChange()
+        this.handleSchemaChange(false)
       })
     this.loadCustomers()
   }

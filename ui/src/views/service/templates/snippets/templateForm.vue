@@ -5,7 +5,7 @@
         <el-input v-model="form.name" name="name"></el-input>
       </el-form-item>
       <el-form-item label="文件名" prop="username">
-        <el-input v-if="form.filename" v-model="form.filename" name="filename"></el-input>
+        <span>{{form.filename}}</span>
       </el-form-item>
       <el-form-item label="配置类型" prop="extra_schema">
         <el-select v-model="form.extra_schema" name="extra_schema" @change="handleSchemaChange">
@@ -70,7 +70,8 @@ export default {
       isSubmitting: false,
       activeName: 'input',
       file: {
-        filename: Math.random().toString(36).substring(7) + '.txt', // random template file name
+        // Math.random().toString(36).substring(7) + '.txt', random template file name
+        filename: '',
         content: '',
         overwrite: true
       },
@@ -177,11 +178,13 @@ export default {
           })
         })
     },
-    handleSchemaChange () {
+    handleSchemaChange (resetParams = true) {
       for (let schema of this.schemas) {
         if (schema.id === this.form.extra_schema) {
           this.extra_schema = schema.extra_schema
-          this.form.extra_params = {}
+          if (resetParams) {
+            this.form.extra_params = {}
+          }
           break
         }
       }
@@ -190,7 +193,7 @@ export default {
   mounted () {
     this.loadServiceSchemas()
       .then(() => {
-        this.handleSchemaChange()
+        this.handleSchemaChange(false)
       })
   }
 }
