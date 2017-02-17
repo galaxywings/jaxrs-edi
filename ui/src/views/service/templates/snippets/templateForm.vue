@@ -5,7 +5,7 @@
         <el-input v-model="form.name" name="name"></el-input>
       </el-form-item>
       <el-form-item label="文件名" prop="username">
-        <el-input v-model="form.filename" name="filename"></el-input>
+        <el-input v-if="form.filename" v-model="form.filename" name="filename"></el-input>
       </el-form-item>
       <el-form-item label="配置类型" prop="extra_schema">
         <el-select v-model="form.extra_schema" name="extra_schema" @change="handleSchemaChange">
@@ -48,7 +48,7 @@
       </el-tabs>
       <el-form-item>
         <el-button @click="handleUpload" :disabled="! file.content">上传文件</el-button>
-        <el-button type="primary" @click="handleSubmit" :disabled="isSubmitting">提交</el-button>
+        <el-button type="primary" @click="handleSubmit" :disabled="isSubmitting || ! form.filename">提交</el-button>
         <el-button @click="handleReset">重置</el-button>
       </el-form-item>
     </el-form>
@@ -64,7 +64,7 @@ export default {
     // console.log(this.initFormData)
     return {
       form: this.initFormData,
-      rules: rules,
+      rules: rules.data,
       schemas: [],
       extra_schema: {},
       isSubmitting: false,
@@ -148,8 +148,8 @@ export default {
               title: '成功',
               message: `协议${action}成功!`
             })
-            // this.$router.push({name: 'service.templates.edit',
-            //   params: { id: data.id }})
+            this.$router.push({name: 'service.templates.edit',
+              params: { id: data.id }})
           },
           (response) => {
             console.error(response)
@@ -198,6 +198,6 @@ export default {
 
 <style scoped>
 div.ace-editor-xl-screen {
-  height: 450px;
+  height: 300px;
 }
 </style>

@@ -2,13 +2,13 @@
   <div>
     <el-form :inline="true" :model="form" >
       <el-form-item>
-        <el-input placeholder="Code / Name" v-model="form.q">
+        <el-input placeholder="ID / 文件名" v-model="form.q">
           <el-button slot="append" icon="search" @click.native="search"></el-button>
         </el-input>
       </el-form-item>
     </el-form>
     <el-table
-      :data="tableData"
+      :data="items"
       :stripe="true"
       v-loading="isLoadingData"
       style="">
@@ -58,7 +58,7 @@
   export default {
     data () {
       return {
-        tableData: [],
+        items: [],
         isLoadingData: false,
         form: {
           q: ''
@@ -94,7 +94,7 @@
             }
           }).then(({data}) => {
             this.pagination.itemTotal = data.count
-            this.$set(this, 'tableData', data.results)
+            this.$set(this, 'items', data.results)
           }, (response) => {
             let msg = 'Empty Response'
             if (response) {

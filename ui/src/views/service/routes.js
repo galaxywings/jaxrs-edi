@@ -103,14 +103,14 @@ export default {
       },
       component: require('./templates/template'),
       children: [
-        // {
-        //   path: '',
-        //   name: 'service.templates.list',
-        //   meta: {
-        //     name: '模板列表'
-        //   },
-        //   component: require('./templates/index')
-        // },
+        {
+          path: '',
+          name: 'service.templates.list',
+          meta: {
+            name: '模板列表'
+          },
+          component: require('./templates/index')
+        },
         {
           path: 'create',
           name: 'service.templates.create',
@@ -118,16 +118,16 @@ export default {
             name: '模板创建'
           },
           component: require('./templates/create')
+        },
+        {
+          path: ':id/edit',
+          name: 'service.templates.edit',
+          props: true,
+          meta: {
+            name: '模板编辑'
+          },
+          component: require('./templates/edit')
         }
-        // {
-        //   path: ':id/edit',
-        //   name: 'service.templates.edit',
-        //   props: true,
-        //   meta: {
-        //     name: '模板编辑'
-        //   },
-        //   component: require('./templates/edit')
-        // }
       ]
     }
   ]
