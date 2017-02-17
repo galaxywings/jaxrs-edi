@@ -52,6 +52,7 @@ class GenericServiceSerializer(BulkSerializerMixin, DynamicFieldsModelSerializer
 
 class FtpServiceSerializer(GenericServiceSerializer):
     folder_creation = BooleanField(write_only=True, required=False)
+    customer_code = SerializerMethodField()
     
     class Meta:
         model = Ftp
@@ -72,6 +73,11 @@ class FtpServiceSerializer(GenericServiceSerializer):
             exec_ftp_cmds(create_ftp_transfer_folders, result)
         return result
     
+    def get_customer_code(self, obj):
+        id_customer_dict = get_id_customer_dict()
+        customer = id_customer_dict.get(obj.customer_id, None)
+        return (customer and customer.code) or ''
+
 class ProtocolServiceSerializer(GenericServiceSerializer):
     sender_code = SerializerMethodField()
     receiver_code = SerializerMethodField()
