@@ -23,7 +23,7 @@
       <el-tabs :active-name="activeName" style="width: 100%">
         <el-tab-pane label="输入模板文件内容" name="input">
           <ace-editor
-            v-model="file.content"
+            v-model="form.file_content"
             mode="ace/mode/text"
             theme="ace/theme/solarized_light"
             :read-only="false"
@@ -47,7 +47,7 @@
         </el-tab-pane>
       </el-tabs>
       <el-form-item>
-        <el-button @click="handleUpload" :disabled="! file.content">上传文件</el-button>
+        <el-button @click="handleUpload" :disabled="! form.file_content">上传文件</el-button>
         <el-button type="primary" @click="handleSubmit" :disabled="isSubmitting || ! form.filename">提交</el-button>
         <el-button @click="handleReset">重置</el-button>
       </el-form-item>
@@ -111,7 +111,7 @@ export default {
     handleUpload () {
       let method = 'post'
       let url = '/api/misc/dbfiles/text/'
-      this.file.content = window.encodeURIComponent(this.file.content)
+      this.file.content = window.encodeURIComponent(this.form.file_content)
       this.$http[method](url, this.file)
         .then(({data}) => {
           this.$notify.success({
@@ -206,6 +206,7 @@ export default {
     }
   },
   mounted () {
+    console.log(this.form)
     this.loadServiceSchemas()
       .then(() => {
         this.handleSchemaChange(false)

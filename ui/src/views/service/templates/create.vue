@@ -12,6 +12,7 @@ export default {
       initFormData: {
         name: '',
         filename: '',
+        file_content: '',
         extra_params: '',
         extra_schema: ''
       }
