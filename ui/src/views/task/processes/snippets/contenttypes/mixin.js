@@ -1,4 +1,3 @@
-
 export default {
   props: {
     item: {
@@ -39,6 +38,9 @@ export default {
       return new Promise((resolve, reject) => {
         resolve(this.item.value)
       })
+    },
+    handleContentChange (contentObject) {
+      this.item.content_object = contentObject
     }
   }
 }

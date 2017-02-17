@@ -36,7 +36,7 @@
           </el-col>
         </el-row>
         <component :item="step" ref="steps"
-          :is="step.content_type.model">
+          :is="resolveStepContentType(step)">
         </component>
       </el-form-item>
 
@@ -55,7 +55,7 @@
               :value="schema.id">
           </el-option>
         </el-select>
-        <el-button @click.prevent="addStep()" type="success">添加新步骤</el-button>
+        <el-button @click.prevent="addStep()" type="success">添加步骤</el-button>
       </el-form-item>
 
       <el-form-item>
@@ -98,7 +98,6 @@ export default {
   },
   methods: {
     checkStep (rule, value, callback) {
-      console.info('check Step', rule.fullField)
       let index = this.form.steps.indexOf(value)
       this.$refs.steps[index].validate(rule, value, callback)
     },
@@ -181,10 +180,24 @@ export default {
           }
         })
     },
+    resolveStepContentType (step) {
+      let result = step.content_type.model
+      if (['ftp', 'generic'].indexOf(result) === -1) {
+        result = 'not-found'
+      }
+      return result
+    },
     addStep () {
       let schema = this.serviceSchemas.find((element) => {
         return element.id === this.selectedSchemaId
       })
+      if (!schema) {
+        this.$notify.error({
+          title: 'Error',
+          message: '请选择服务类型'
+        })
+        return
+      }
       let contentType = this.idContentTypeMap.get(schema.content_type)
       let item = {
         key: this.generateStepKey(),

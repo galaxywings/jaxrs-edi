@@ -1,17 +1,21 @@
 <template>
-  <div>
-    Invalid Step<br/>
+  <step-template
+    :step="item.value"
+    :schema="item.schema"
+    :contentObject="item.content_object"
+    :contentType="item.content_type">
+    Unknown Step<br/>
     content_type: {{item.value.content_type}}<br/>
     object_id: {{item.value.object_id}}<br/>
-  </div>
+  </step-template>
 </template>
 <script>
+import StepTemplate from '../stepTemplate'
+import StepMixin from './mixin'
 export default {
-  props: {
-    item: {
-      type: Object,
-      require: true
-    }
+  mixins: [StepMixin],
+  components: {
+    StepTemplate
   }
 }
 </script>
