@@ -64,6 +64,7 @@
       </el-form-item>
       <el-form-item label="额外配置" prop="extra_params">
         <json-editor
+          ref="editor"
           v-if="isExtraSchemaVisible"
           :schema="extra_schema"
           v-model="form.extra_params">
@@ -79,22 +80,58 @@
 </template>
 
 <script>
-import rules from './rules'
 import _ from 'lodash'
 export default {
   props: ['initFormData'],
   data () {
     // console.log(this.initFormData)
+    var validateParams = function (rule, value, callback) {
+      let errors = this.$refs['editor'].validate()
+      if (errors.length > 0) {
+        callback(new Error('Json Editor 格式错误.'))
+      } else {
+        callback()
+      }
+    }.bind(this)
     return {
       form: this.initFormData,
-      rules: rules,
       schemas: [],
       senders: [],
       isSendersLoading: false,
       receivers: [],
       isReceiversLoading: false,
       extra_schema: {},
-      isSubmitting: false
+      isSubmitting: false,
+      rules: {
+        name: [
+          { required: true, message: '请输入名称', trigger: 'blur' },
+          { min: 3, max: 128, message: '长度3~128个字符', trigger: 'blur' }
+        ],
+        sender: [
+          { type: 'number', required: true, message: '请选择发送方', trigger: 'blur' }
+        ],
+        src_format: [
+          { required: true, message: '请输入发送格式', trigger: 'blur' },
+          { max: 16, message: '长度最长为16个字符', trigger: 'blur' }
+        ],
+        receiver: [
+          { type: 'number', required: true, message: '请选择接收方', trigger: 'blur' }
+        ],
+        dest_format: [
+          { required: true, message: '请输入接收格式', trigger: 'blur' },
+          { max: 16, message: '长度最长为16个字符', trigger: 'blur' }
+        ],
+        filename: [
+          { required: true, message: '请设置附件', trigger: 'change' },
+          { min: 3, max: 128, message: '长度3~128个字符', trigger: 'change' }
+        ],
+        extra_schema: [
+          { type: 'number', required: true, message: '请选择配置', trigger: 'blur' }
+        ],
+        extra_params: [
+          { validator: validateParams, required: true, trigger: 'blur' }
+        ]
+      }
     }
   },
   computed: {
