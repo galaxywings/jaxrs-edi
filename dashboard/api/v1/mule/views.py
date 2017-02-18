@@ -5,7 +5,7 @@ from rest_framework.viewsets import ReadOnlyModelViewSet
 from api.v1.customer.filtersets import CustomerGenericFilterSet
 from api.v1.customer.serializers import CustomerSerializer
 from api.v1.mule.serializers import ProcessSerializer, StepSerializer
-from api.v1.task.filtersets import ProcessGenericFilterSet, \
+from api.v1.mule.filtersets import ProcessGenericFilterSet, \
     StepGenericFilterSet
 from customer.models import Customer
 from task.models import Process, Step
