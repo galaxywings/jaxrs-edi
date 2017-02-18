@@ -5,9 +5,9 @@ from rest_framework.relations import StringRelatedField
 from rest_framework_bulk.serializers import BulkSerializerMixin, BulkListSerializer
 
 from api.v1.service.serializers import FtpServiceSerializer, \
-    GenericServiceSerializer
+    GenericServiceSerializer, ProtocolServiceSerializer, TemplateServiceSerializer
 from common.serializers import DynamicFieldsModelSerializer
-from service.models import Ftp, GenericService
+from service.models import Ftp, GenericService, Protocol, Template
 from task.models import Step, Process
 from task.utils import get_contenttype_object_service_dict
 
@@ -32,12 +32,21 @@ class MuleFtpServiceSerializer(ServiceSerialzerMixin, FtpServiceSerializer):
 class MuleGenericServiceSerializer(ServiceSerialzerMixin, GenericServiceSerializer):
     pass
 
+class MuleProtocolServiceSerializer(ServiceSerialzerMixin, ProtocolServiceSerializer):
+    pass
+
+class MuleTemplateServiceSerializer(ServiceSerialzerMixin, TemplateServiceSerializer):
+    pass
+
 class StepSerializer(DynamicFieldsModelSerializer):
     service_code = SerializerMethodField()
     
     params = GenericRelatedField({
         Ftp: MuleFtpServiceSerializer(),
-        GenericService: MuleGenericServiceSerializer()
+        GenericService: MuleGenericServiceSerializer(),
+        Protocol: MuleProtocolServiceSerializer(),
+        Template: MuleTemplateServiceSerializer(),
+
     }, source='content_object')
     
     class Meta:
