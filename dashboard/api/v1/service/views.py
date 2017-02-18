@@ -11,6 +11,7 @@ from rest_framework_bulk.generics import BulkModelViewSet
 from api.v1.service.filtersets import ServiceSchemaGenericFilterSet, \
     GenericServiceFilterSet, FtpServiceFilterSet, ProtocolServiceFilterSet, \
     TemplateServiceFilterSet
+from api.v1.service.mixins import HistoricalMixin
 from api.v1.service.serializers import ServiceSchemaSerializer, \
     GenericServiceSerializer, FtpServiceSerializer, ProtocolServiceSerializer, \
     TemplateServiceSerializer
@@ -93,13 +94,13 @@ class FtpServiceViewSet(BulkModelViewSet):
         exec_ftp_cmds(test_ftp_connection, ftp_service)
         return Response('OK')
 
-class ProtocolServiceViewSet(BulkModelViewSet):
+class ProtocolServiceViewSet(HistoricalMixin, BulkModelViewSet):
     queryset = Protocol.objects.all()
     serializer_class = ProtocolServiceSerializer
     filter_class = ProtocolServiceFilterSet
     search_fields = ('name', 'filename', 'sender__code', 'receiver__code', )
-    
-class TemplateServiceViewSet(BulkModelViewSet):
+
+class TemplateServiceViewSet(HistoricalMixin, BulkModelViewSet):
     queryset = Template.objects.all()
     serializer_class = TemplateServiceSerializer
     filter_class = TemplateServiceFilterSet
