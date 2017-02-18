@@ -17,7 +17,6 @@ class Process(models.Model):
     def __str__(self):
         return 'Process name: {}'.format(self.name)
 
-@reversion.register()
 class Step(models.Model):
     process = models.ForeignKey('task.Process', on_delete=models.CASCADE)
     seq = models.SmallIntegerField(_('seq'),help_text=_('Step seq for a detail process'))

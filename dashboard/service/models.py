@@ -37,7 +37,7 @@ class AbstractBaseService(models.Model):
 class GenericService(AbstractBaseService):
     pass
         
-@reversion.register()
+@reversion.register(exclude=('extra_params', ))
 class Ftp(AbstractBaseService):
     FTP_MODE_CHOICES = (
         (0, 'Passive'),
@@ -55,7 +55,7 @@ class Ftp(AbstractBaseService):
     mode = models.SmallIntegerField(_('mode'), choices=FTP_MODE_CHOICES, default=0)
     ssl = models.BooleanField(_('ssl'), default=False)
 
-@reversion.register()
+@reversion.register(exclude=('extra_params', ))
 class Protocol(AbstractBaseService):
     sender = models.ForeignKey('customer.Customer', 
                                related_name='sender_protocols',
@@ -67,6 +67,6 @@ class Protocol(AbstractBaseService):
     dest_format = models.CharField(_('dest_format'), max_length=16)
     filename = models.CharField(_('filename'), max_length=128)
 
-@reversion.register()
+@reversion.register(exclude=('extra_params', ))
 class Template(AbstractBaseService):
     filename = models.CharField(_('filename'), max_length=128)
