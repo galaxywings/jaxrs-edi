@@ -68,6 +68,8 @@
 <script>
 import _ from 'lodash'
 import Ftp from './snippets/contenttypes/ftp.vue'
+import ServiceTemplate from './snippets/contenttypes/serviceTemplate.vue'
+import Protocol from './snippets/contenttypes/protocol.vue'
 import NotFound from './snippets/contenttypes/notFound.vue'
 export default {
   props: ['id'],
@@ -94,6 +96,8 @@ export default {
   },
   components: {
     Ftp,
+    ServiceTemplate,
+    Protocol,
     NotFound
   },
   methods: {
@@ -182,7 +186,10 @@ export default {
     },
     resolveStepContentType (step) {
       let result = step.content_type.model
-      if (['ftp', 'generic'].indexOf(result) === -1) {
+      if (result === 'template') {
+        return 'serviceTemplate'
+      }
+      if (['ftp', 'protocol', 'generic'].indexOf(result) === -1) {
         result = 'not-found'
       }
       return result
