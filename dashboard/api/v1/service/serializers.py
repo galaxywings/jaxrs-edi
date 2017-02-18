@@ -97,7 +97,12 @@ class ProtocolServiceSerializer(GenericServiceSerializer):
         return (customer and customer.code) or ''
         
 class TemplateServiceSerializer(GenericServiceSerializer):
+    extra_schema_name = SerializerMethodField()
+    
     class Meta:
         model = Template
         list_serializer_class = BulkListSerializer
         fields = '__all__'
+
+    def get_extra_schema_name(self, obj):
+        return obj.extra_schema.name or ''                

@@ -34,17 +34,17 @@
       </el-table-column>
       <el-table-column
         prop="name"
-        label="Template name"
+        label="模板名字"
         >
       </el-table-column>
       <el-table-column
         prop="filename"
-        label="Filename"
+        label="文件名"
         >
       </el-table-column>
       <el-table-column
-        prop="extra_schema"
-        label="Exaschema"
+        prop="extra_schema_name"
+        label="配置类型"
         >
       </el-table-column>
       <el-table-column
@@ -166,7 +166,7 @@
           {
             params: {
               q: this.form.q,
-              fields: 'id,name,filename,extra_schema',
+              fields: 'id,name,filename,extra_schema,extra_schema_name',
               page: this.pagination.page,
               page_size: this.pagination.pageSize
             }
