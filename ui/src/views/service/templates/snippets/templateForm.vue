@@ -50,12 +50,19 @@
         <el-button @click="handleUpload" :disabled="! form.file_content">上传文件</el-button>
         <el-button type="primary" @click="handleSubmit" :disabled="isSubmitting || ! form.filename">提交</el-button>
         <el-button @click="handleReset">重置</el-button>
+        <el-button :disabled="! form.id" @click="show_history = show_history + 1">显示历史模板文件</el-button>
       </el-form-item>
+      <template-history
+        :key="show_history"
+        v-if="form.id && show_history"
+        :id="form.id">
+      </template-history>
     </el-form>
   </div>
 </template>
 
 <script>
+import TemplateHistory from './templateHistory'
 import _ from 'lodash'
 export default {
   props: ['initFormData'],
@@ -103,8 +110,12 @@ export default {
         extra_params: [
           { validator: validateParams, required: true, trigger: 'blur' }
         ]
-      }
+      },
+      show_history: 0
     }
+  },
+  components: {
+    TemplateHistory
   },
   computed: {
     isExtraSchemaVisible: function () {
