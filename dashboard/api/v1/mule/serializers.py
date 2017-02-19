@@ -61,6 +61,7 @@ class StepSerializer(DynamicFieldsModelSerializer):
 
 class ProcessSerializer(BulkSerializerMixin, DynamicFieldsModelSerializer):
     steps = SerializerMethodField()
+    sequence = SerializerMethodField()
 
     class Meta:
         model = Process
@@ -73,3 +74,6 @@ class ProcessSerializer(BulkSerializerMixin, DynamicFieldsModelSerializer):
         step_qs = Step.objects.filter(process=instance).order_by('seq')
         s = StepSerializer(step_qs, many=True, read_only=True)
         return s.data
+
+    def get_sequence(self, instance):
+        return ','.join([step.get('service_code') for step in self.get_steps(instance)])

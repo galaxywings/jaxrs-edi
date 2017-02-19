@@ -73,7 +73,7 @@
       }, 500),
       loadFiles () {
         this.isLoadingData = true
-        this.$http.get(`/api/service/templates/${this.id}/historical-files/`)
+        this.$http.get(`/api/service/templates/${this.id}/historical-files/verbose/`)
           .then(({data}) => {
             this.$set(this, 'files', data.results)
           }, (response) => {
