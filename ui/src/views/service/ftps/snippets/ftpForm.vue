@@ -52,14 +52,18 @@ export default {
   props: ['initFormData'],
   data () {
     // console.log(this.initFormData)
-    var validateParams = function (rule, value, callback) {
+    let validateParams = (rule, value, callback) => {
+      if (!this.isExtraSchemaVisible) {
+        callback()
+        return
+      }
       let errors = this.$refs['editor'].validate()
       if (errors.length > 0) {
         callback(new Error('Json Editor 格式错误.'))
       } else {
         callback()
       }
-    }.bind(this)
+    }
     return {
       form: this.initFormData,
       schemas: [],
@@ -126,7 +130,7 @@ export default {
           .then(({data}) => {
             this.$notify.success({
               title: '成功',
-              message: `协议${action}成功!`
+              message: `FTP${action}成功!`
             })
             this.$router.push({name: 'service.ftps.edit',
               params: { id: data.id }})
@@ -135,7 +139,7 @@ export default {
             console.error(response)
             this.$notify.error({
               title: '错误',
-              message: `协议${action}失败!`
+              message: `FTP${action}失败!`
             })
           }).finally(() => {
             this.isSubmitting = false

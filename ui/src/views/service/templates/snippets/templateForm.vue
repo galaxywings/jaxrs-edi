@@ -60,14 +60,18 @@ import _ from 'lodash'
 export default {
   props: ['initFormData'],
   data () {
-    var validateParams = function (rule, value, callback) {
+    let validateParams = (rule, value, callback) => {
+      if (!this.isExtraSchemaVisible) {
+        callback()
+        return
+      }
       let errors = this.$refs['editor'].validate()
       if (errors.length > 0) {
         callback(new Error('Json Editor 格式错误.'))
       } else {
         callback()
       }
-    }.bind(this)
+    }
     return {
       form: this.initFormData,
       schemas: [],
