@@ -6,6 +6,9 @@ from django.utils.translation import ugettext_lazy as _
 from jsonfield.fields import JSONField, JSONCharField
 import reversion
 
+from common.fields import XJSONCharField
+
+
 @reversion.register()
 class ServiceSchema(models.Model):
     code = models.CharField(_('code'), max_length=128, help_text=_('Code for communication between different systems'))
@@ -24,7 +27,7 @@ class ServiceSchema(models.Model):
 class AbstractBaseService(models.Model):
     name = models.CharField(_('name'), max_length=128, help_text=_('Display name'))
     extra_schema = models.ForeignKey(ServiceSchema, on_delete=models.CASCADE)
-    extra_params = JSONCharField(load_kwargs={'object_pairs_hook': collections.OrderedDict},
+    extra_params = XJSONCharField(load_kwargs={'object_pairs_hook': collections.OrderedDict},
                             blank=True,
                             max_length=4*1024,
                             help_text=_('JSON object for storing service params value'))

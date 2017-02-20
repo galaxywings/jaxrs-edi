@@ -1,4 +1,6 @@
 from django.db.models.fields import BinaryField
+from jsonfield.fields import JSONCharField
+
 
 __special_binary_prefix = True
 try:
@@ -18,3 +20,10 @@ class XBinaryField(BinaryField):
             return '%s'
         else:
             return super().get_placeholder(value, compiler, connection)
+        
+class XJSONCharField(JSONCharField):
+    def pre_init(self, value, obj):
+        # avoid `Enter Invalid JSON` Error when doing reversion's deserialization
+        if self.blank and not value:
+            return
+        return super().pre_init(value, obj)
