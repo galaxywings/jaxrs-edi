@@ -74,13 +74,22 @@
         <el-button type="primary" @click="handleSubmit"
           :disabled="isSubmitting">提交</el-button>
         <el-button @click="handleReset">重置</el-button>
+        <el-button :disabled="! form.id" @click="show_history = show_history + 1">显示历史协议文件</el-button>
+
       </el-form-item>
+      <protocol-history
+        :key="show_history"
+        v-if="form.id && show_history"
+        :id="form.id"
+        @updateFilename="updateFilename">
+      </protocol-history>
     </el-form>
   </div>
 </template>
 
 <script>
 import _ from 'lodash'
+import ProtocolHistory from './protocolHistory'
 export default {
   props: ['initFormData'],
   data () {
@@ -135,8 +144,12 @@ export default {
         extra_params: [
           { validator: validateParams, required: true, trigger: 'blur' }
         ]
-      }
+      },
+      show_history: 0
     }
+  },
+  components: {
+    ProtocolHistory
   },
   computed: {
     isExtraSchemaVisible () {
@@ -151,6 +164,9 @@ export default {
     }
   },
   methods: {
+    updateFilename (val) {
+      this.form.filename = val
+    },
     handleReset () {
       this.$refs.form.resetFields()
     },

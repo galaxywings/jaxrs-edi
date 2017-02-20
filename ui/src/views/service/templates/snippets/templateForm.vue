@@ -23,6 +23,8 @@
       <el-tabs :active-name="activeName" style="width: 100%">
         <el-tab-pane label="输入模板文件内容" name="input">
           <ace-editor
+            v-if="ace_editor_key"
+            :key="ace_editor_key"
             v-model="form.file_content"
             mode="ace/mode/text"
             theme="ace/theme/solarized_light"
@@ -55,7 +57,8 @@
       <template-history
         :key="show_history"
         v-if="form.id && show_history"
-        :id="form.id">
+        :id="form.id"
+        @updateFilename="updateFilename">
       </template-history>
     </el-form>
   </div>
@@ -111,7 +114,8 @@ export default {
           { validator: validateParams, required: true, trigger: 'blur' }
         ]
       },
-      show_history: 0
+      show_history: 0,
+      ace_editor_key: 0
     }
   },
   components: {
@@ -123,6 +127,20 @@ export default {
     }
   },
   methods: {
+    updateFilename (val) {
+      this.form.filename = val
+      this.$http.get(`/api/misc/dbfiles/view/${val}`)
+        .then((content) => {
+          this.form.file_content = content.body
+          this.ace_editor_key += 1
+        }, (res) => {
+          let message = `读取${val}文件内容失败.`
+          this.$notify.error({
+            title: res.statusText,
+            message: message
+          })
+        })
+    },
     handleUpload () {
       let method = 'post'
       let url = '/api/misc/dbfiles/text/'
@@ -225,6 +243,7 @@ export default {
     this.loadServiceSchemas()
       .then(() => {
         this.handleSchemaChange(false)
+        this.ace_editor_key += 1
       })
   }
 }

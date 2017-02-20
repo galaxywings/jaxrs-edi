@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-dialog title="历史模板文件列表" v-model="showDialog">
+    <el-dialog title="历史协议文件列表" v-model="showDialog">
       <el-table
         :data="files"
         :stripe="true"
@@ -48,7 +48,7 @@
       },
       restoreFile: _.debounce(function () {
         let method = 'patch'
-        let url = `/api/service/templates/${this.id}/`
+        let url = `/api/service/protocols/${this.id}/`
         let action = '修改'
         let params = {
           id: this.id,
@@ -73,7 +73,7 @@
       }, 500),
       loadFiles () {
         this.isLoadingData = true
-        this.$http.get(`/api/service/templates/${this.id}/historical-files/`)
+        this.$http.get(`/api/service/protocols/${this.id}/historical-files/`)
           .then(({data}) => {
             this.files = data.results
           }, (response) => {
