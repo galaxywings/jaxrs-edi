@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <medi:edimap xmlns:medi="http://www.milyn.org/schema/edi-message-mapping-1.5.xsd">
 
-    <medi:description name="IFTMBF" version="1.0"/>
+    <medi:description name="Focus Booking" version="1.0"/>
 
     <medi:delimiters segment="'" field=":" component="" sub-component="" escape="?"/>
 
@@ -27,7 +27,7 @@
         </medi:segment>
 
         <!-- 船舶信息 -->
-        <medi:segment segcode="10" xmltag="vessel" minOccurs="1" maxOccurs="1" truncatable="true">
+        <medi:segment segcode="10" xmltag="vessel" minOccurs="1" maxOccurs="1">
             <medi:field xmltag="vessel-code-imo" dataType="Integer" required="false" maxLength="9"/>
             <medi:field xmltag="vessel" dataType="String" required="false" maxLength="35"/>
             <medi:field xmltag="voyage" dataType="String" required="false" maxLength="6"/>
@@ -48,7 +48,7 @@
 
         <medi:segmentGroup minOccurs="1" maxOccurs="99">
             <!-- 港口信息 -->
-            <medi:segment segcode="12" xmltag="ports" truncatable="true">
+            <medi:segment segcode="12" xmltag="ports">
                 <medi:field xmltag="load-port-code" dataType="String" required="false" maxLength="5"/>
                 <medi:field xmltag="load-port" dataType="String" required="false" maxLength="35"/>
                 <medi:field xmltag="discharge-port-code" dataType="String" required="false" maxLength="5"/>
@@ -78,7 +78,7 @@
             </medi:segmentGroup>
 
             <medi:segmentGroup minOccurs="1" maxOccurs="999">
-                <medi:segment segcode="14" xmltag="booking-no" truncatable="true">
+                <medi:segment segcode="14" xmltag="booking-no">
                     <medi:field xmltag="issue-party-code" dataType="String" required="false" maxLength="8"/>
                     <medi:field xmltag="slot-charter-id" dataType="String" required="false" maxLength="1"/>
                     <medi:field xmltag="booking-no-id" dataType="String" required="true" maxLength="1"/>
@@ -99,72 +99,72 @@
                     <medi:field xmltag="carrier" dataType="String" required="false" maxLength="3"/>
                 </medi:segment>
 
-                <medi:segment segcode="20" xmltag="shipper" minOccurs="1" maxOccurs="1" truncatable="true" ignoreUnmappedFields="true">
+                <medi:segment segcode="20" xmltag="shipper" minOccurs="1" maxOccurs="1">
                     <medi:field xmltag="shipper-code" dataType="String" required="false" maxLength="17"/>
                     <medi:field xmltag="shipper-name" dataType="String" required="true" maxLength="70"/>
                     <medi:field xmltag="address" dataType="String" required="true" maxLength="70"/>
-                    <medi:field xmltag="shipper-telephone" dataType="String" required="false" maxLength="35"/>
-                    <medi:field xmltag="shipper-email" dataType="String" required="false" maxLength="35"/>
-                    <medi:field xmltag="shipper-fax" dataType="String" required="false" maxLength="35"/>
+                    <medi:field xmltag="communication-number" dataType="String" required="false" maxLength="35"/>
+                    <medi:field xmltag="communication-number" dataType="String" required="false" maxLength="35"/>
+                    <medi:field xmltag="communication-number" dataType="String" required="false" maxLength="35"/>
                     <medi:field xmltag="city-name" dataType="String" required="false" maxLength="35"/>
                     <medi:field xmltag="country-sub-entity" dataType="String" required="false" maxLength="5"/>
-                    <medi:field xmltag="country-sub-entity-name" dataType="String" required="false" maxLength="35"/>
+                    <medi:field xmltag="country-sub-entity，name" dataType="String" required="false" maxLength="35"/>
                     <medi:field xmltag="postcode-identification" dataType="String" required="false" maxLength="6"/>
                     <medi:field xmltag="country-code" dataType="String" required="false" maxLength="2"/>
                 </medi:segment>
 
-                <medi:segment segcode="21" xmltag="consignee" minOccurs="1" maxOccurs="1" ignoreUnmappedFields="true" truncatable="true">
+                <medi:segment segcode="21" xmltag="consignee" minOccurs="1" maxOccurs="1">
                     <medi:field xmltag="consignee-code" dataType="String" required="false" maxLength="17"/>
                     <medi:field xmltag="consignee-name" dataType="String" required="true" maxLength="70"/>
                     <medi:field xmltag="address" dataType="String" required="true" maxLength="70"/>
-                    <medi:field xmltag="consignee-telephone" dataType="String" required="false" maxLength="35"/>
-                    <medi:field xmltag="consignee-email" dataType="String" required="false" maxLength="35"/>
-                    <medi:field xmltag="consignee-fax" dataType="String" required="false" maxLength="35"/>
+                    <medi:field xmltag="communication-number" dataType="String" required="false" maxLength="35"/>
+                    <medi:field xmltag="communication-number" dataType="String" required="false" maxLength="35"/>
+                    <medi:field xmltag="communication-number" dataType="String" required="false" maxLength="35"/>
                     <medi:field xmltag="city-name" dataType="String" required="false" maxLength="35"/>
                     <medi:field xmltag="country-sub-entity" dataType="String" required="false" maxLength="5"/>
-                    <medi:field xmltag="country-sub-entity-name" dataType="String" required="false" maxLength="35"/>
+                    <medi:field xmltag="country-sub-entity，name" dataType="String" required="false" maxLength="35"/>
                     <medi:field xmltag="postcode-identification" dataType="String" required="false" maxLength="6"/>
                     <medi:field xmltag="country-code" dataType="String" required="false" maxLength="2"/>
                     <medi:field xmltag="department-or-employee-contact-name" dataType="String" required="false"
                                 maxLength="20"/>
-                    <medi:field xmltag="communication-email" dataType="String" required="false"
+                    <medi:field xmltag="communication-numberemail（em）" dataType="String" required="false"
                                 maxLength="35"/>
-                    <medi:field xmltag="communication-fax" dataType="String" required="false" maxLength="35"/>
-                    <medi:field xmltag="communication-telephone" dataType="String" required="false" maxLength="35"/>
+                    <medi:field xmltag="communication-number（fx）" dataType="String" required="false" maxLength="35"/>
+                    <medi:field xmltag="communication-number（te）" dataType="String" required="false" maxLength="35"/>
                 </medi:segment>
 
                 <medi:segmentGroup minOccurs="1" maxOccurs="9">
-                    <medi:segment segcode="22" xmltag="notify-party" truncatable="true">
-                        <medi:field xmltag="notify-i" dataType="Integer" required="false" maxLength="1"/>
+                    <medi:segment segcode="22" xmltag="notify-party">
+                        <medi:field xmltag="notify-i" dataType="Integer" required="true" maxLength="1"/>
                         <medi:field xmltag="notify-code" dataType="String" required="false" maxLength="17"/>
-                        <medi:field xmltag="notify-name" dataType="String" required="false" maxLength="70"/>
-                        <medi:field xmltag="address" dataType="String" required="false" maxLength="70"/>
-                        <medi:field xmltag="communication-telephone" dataType="String" required="false" maxLength="35"/>
-                        <medi:field xmltag="communication-email" dataType="String" required="false" maxLength="35"/>
-                        <medi:field xmltag="communication-fax" dataType="String" required="false" maxLength="35"/>
+                        <medi:field xmltag="notify-1-name" dataType="String" required="true" maxLength="70"/>
+                        <medi:field xmltag="address1" dataType="String" required="true" maxLength="70"/>
+                        <medi:field xmltag="communication-number" dataType="String" required="false" maxLength="35"/>
+                        <medi:field xmltag="communication-number" dataType="String" required="false" maxLength="35"/>
+                        <medi:field xmltag="communication-number" dataType="String" required="false" maxLength="35"/>
                         <medi:field xmltag="city-name" dataType="String" required="false" maxLength="35"/>
                         <medi:field xmltag="country-sub-entity" dataType="String" required="false" maxLength="5"/>
-                        <medi:field xmltag="country-sub-entity-name" dataType="String" required="false" maxLength="35"/>
+                        <medi:field xmltag="country-sub-entity，name" dataType="String" required="false" maxLength="35"/>
                         <medi:field xmltag="postcode-identification" dataType="String" required="false" maxLength="6"/>
                         <medi:field xmltag="country-code" dataType="String" required="false" maxLength="2"/>
                     </medi:segment>
                 </medi:segmentGroup>
 
                 <medi:segmentGroup minOccurs="1" maxOccurs="99">
-                    <medi:segment segcode="40" xmltag="container-of-booking" truncatable="true">
+                    <medi:segment segcode="40" xmltag="container-of-booking">
                         <medi:field xmltag="container-item-no" dataType="String" required="true" maxLength="1"/>
                         <medi:field xmltag="ctn-size-type" dataType="String" required="true" maxLength="4"/>
                         <medi:field xmltag="ctn-numbers" dataType="Integer" required="true" maxLength="6"/>
                         <medi:field xmltag="ctn-status" dataType="String" required="true" maxLength="1"/>
                         <medi:field xmltag="ctn-no-1" dataType="String" required="false" maxLength="20"/>
                         <medi:field xmltag="vanning-depot" dataType="String" required="false" maxLength="13"/>
-                        <medi:field xmltag="container-soc" dataType="String" required="false" maxLength="1"/>
+                        <medi:field xmltag="container-soc" dataType="String" required="true" maxLength="1"/>
                         <medi:field xmltag="consolidator-code" dataType="String" required="false" maxLength="17"/>
                     </medi:segment>
                 </medi:segmentGroup>
 
                 <medi:segmentGroup minOccurs="1" maxOccurs="99">
-                    <medi:segment segcode="41" xmltag="cargo-of-booking" truncatable="true">
+                    <medi:segment segcode="41" xmltag="cargo-of-booking">
                         <medi:field xmltag="cargo-sequence-no" dataType="Integer" required="true" maxLength="3"/>
                         <medi:field xmltag="cargo-code" dataType="String" required="false" maxLength="8"/>
                         <medi:field xmltag="cargo-id" dataType="String" required="true" maxLength="1"/>
@@ -178,7 +178,7 @@
                         <medi:field xmltag="packages-des-2" dataType="String" required="false" maxLength="35"/>
                         <medi:field xmltag="cargo-gross-wt-2" dataType="Integer" required="false" maxLength="9"/>
                         <medi:field xmltag="cargo-measurement-2" dataType="Integer" required="false" maxLength="5"/>
-                        <medi:field xmltag="cargo-net-weight" dataType="Integer" required="false" maxLength="9"/>
+                        <medi:field xmltag="cargo-net-weight" dataType="Integer" required="true" maxLength="9"/>
                         <medi:field xmltag="grossvolumemeasure" dataType="Integer" required="false" maxLength="5"/>
                         <medi:field xmltag="consignment-reference-number" dataType="String" required="false"
                                     maxLength="15"/>
@@ -187,29 +187,29 @@
 
                     <medi:segment segcode="43" xmltag="dangerous-reefer-oog" minOccurs="0" maxOccurs="1">
                         <medi:field xmltag="cargo-sequence-no" dataType="Integer" required="true" maxLength="3"/>
-                        <medi:field xmltag="dangerous-class" dataType="String" required="false" maxLength="5"/>
-                        <medi:field xmltag="dangerous-page" dataType="String" required="false" maxLength="7"/>
-                        <medi:field xmltag="dangerous-undg-no" dataType="String" required="false" maxLength="4"/>
-                        <medi:field xmltag="dangerous-label" dataType="String" required="false" maxLength="32"/>
-                        <medi:field xmltag="dangerous-flash-point" dataType="String" required="false" maxLength="5"/>
-                        <medi:field xmltag="dangerous-ems-no" dataType="String" required="false" maxLength="6"/>
-                        <medi:field xmltag="dangerous-mfag-no" dataType="String" required="false" maxLength="4"/>
-                        <medi:field xmltag="dangerous-mpt" dataType="String" required="false" maxLength="1"/>
-                        <medi:field xmltag="dangerous-emergency-contact" dataType="String" required="false" maxLength="35"/>
-                        <medi:field xmltag="reefer-temperature-id" dataType="String" required="false" maxLength="1"/>
-                        <medi:field xmltag="reefer-temperature-setting" dataType="String" required="false" maxLength="5"/>
-                        <medi:field xmltag="reefer-min-temperature" dataType="String" required="false" maxLength="5"/>
-                        <medi:field xmltag="reefer-max-temperature" dataType="String" required="false" maxLength="5"/>
-                        <medi:field xmltag="oog-over-length-front" dataType="String" required="false" maxLength="4"/>
-                        <medi:field xmltag="oog-over-length-back" dataType="String" required="false" maxLength="4"/>
-                        <medi:field xmltag="oog-over-width-left" dataType="String" required="false" maxLength="4"/>
-                        <medi:field xmltag="oog-over-width-right" dataType="String" required="false" maxLength="4"/>
-                        <medi:field xmltag="oog-over-height" dataType="String" required="false" maxLength="4"/>
-                        <medi:field xmltag="dangerous-contact-name" dataType="String" required="false"
+                        <medi:field xmltag="class" dataType="String" required="true" maxLength="5"/>
+                        <medi:field xmltag="page" dataType="String" required="true" maxLength="7"/>
+                        <medi:field xmltag="undg-no" dataType="String" required="true" maxLength="4"/>
+                        <medi:field xmltag="label" dataType="String" required="true" maxLength="32"/>
+                        <medi:field xmltag="flash-point" dataType="String" required="false" maxLength="5"/>
+                        <medi:field xmltag="ems-no" dataType="String" required="false" maxLength="6"/>
+                        <medi:field xmltag="mfag-no" dataType="String" required="false" maxLength="4"/>
+                        <medi:field xmltag="mptmarine-pollutant" dataType="String" required="false" maxLength="1"/>
+                        <medi:field xmltag="emergency-contact" dataType="String" required="false" maxLength="35"/>
+                        <medi:field xmltag="temperature-id" dataType="String" required="true" maxLength="1"/>
+                        <medi:field xmltag="temperature-setting" dataType="String" required="false" maxLength="5"/>
+                        <medi:field xmltag="min-temperature" dataType="String" required="false" maxLength="5"/>
+                        <medi:field xmltag="max-temperature" dataType="String" required="false" maxLength="5"/>
+                        <medi:field xmltag="over-length-front" dataType="String" required="false" maxLength="4"/>
+                        <medi:field xmltag="over-length-back" dataType="String" required="false" maxLength="4"/>
+                        <medi:field xmltag="over-width-left" dataType="String" required="false" maxLength="4"/>
+                        <medi:field xmltag="over-width-right" dataType="String" required="false" maxLength="4"/>
+                        <medi:field xmltag="over-height" dataType="String" required="false" maxLength="4"/>
+                        <medi:field xmltag="dangerous-item-contact-name" dataType="String" required="true"
                                     maxLength="35"/>
-                        <medi:field xmltag="dangerous-contact-email" dataType="String" required="false"
+                        <medi:field xmltag="dangerous-item-contact-email" dataType="String" required="false"
                                     maxLength="35"/>
-                        <medi:field xmltag="dangerous-contact-fax" dataType="String" required="false"
+                        <medi:field xmltag="dangerous-item-contact-fax" dataType="String" required="false"
                                     maxLength="35"/>
                     </medi:segment>
 
@@ -226,7 +226,6 @@
                             <medi:field xmltag="cargo-description-1" dataType="String" maxLength="35" required="false" />
                             <medi:field xmltag="cargo-description-2" dataType="String" maxLength="35" required="false" />
                             <medi:field xmltag="cargo-description-3" dataType="String" maxLength="35" required="false" />
-                            <medi:field xmltag="cargo-description-4" dataType="String" maxLength="35" required="false" />
                         </medi:segment>
                     </medi:segmentGroup>
 
@@ -282,14 +281,14 @@
                     <medi:field xmltag="remarks-1-3" dataType="String" required="true" maxLength="35"/>
                 </medi:segment>
 
-                <medi:segment segcode="71" xmltag="bl" minOccurs="1" maxOccurs="1" truncatable="true">
+                <medi:segment segcode="71" xmltag="bl" minOccurs="1" maxOccurs="1">
                     <medi:field xmltag="type-of-bl-form" dataType="String" required="false" maxLength="4"/>
                     <medi:field xmltag="place-of-bl-issue-code" dataType="String" required="false" maxLength="5"/>
                     <medi:field xmltag="date-of-issue" dataType="Date" required="false" maxLength="8"
                                 dataTypeParameters="format=yyyyMMdd"/>
-                    <medi:field xmltag="numbers-of-original-bl" dataType="Integer" required="false" maxLength="3"/>
+                    <medi:field xmltag="numbers-of-original-bl" dataType="Integer" required="true" maxLength="3"/>
                     <medi:field xmltag="prepaid-at" dataType="String" required="false" maxLength="35"/>
-                    <medi:field xmltag="payable-at" dataType="String" required="false" maxLength="35"/>
+                    <!--<medi:field xmltag="payable-at" dataType="String" required="false" maxLength="35"/>-->
                 </medi:segment>
                 
                 <medi:segment xmltag="other" segcode="72" minOccurs="0" maxOccurs="1">
