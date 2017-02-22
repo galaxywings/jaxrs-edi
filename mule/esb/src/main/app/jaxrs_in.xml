@@ -23,8 +23,7 @@ http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mul
 http://www.mulesoft.org/schema/mule/ftp http://www.mulesoft.org/schema/mule/ftp/current/mule-ftp.xsd
 http://www.mulesoft.org/schema/mule/mulerequester http://www.mulesoft.org/schema/mule/mulerequester/1.0-SNAPSHOT/mule-mulerequester.xsd
 http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
-http://www.mulesoft.org/schema/mule/jersey  http://www.mulesoft.org/schema/mule/jersey/current/mule-jersey.xsd
-http://jersey.apache.org/core http://jersey.apache.org/schemas/core.xsd">
+http://www.mulesoft.org/schema/mule/jersey  http://www.mulesoft.org/schema/mule/jersey/current/mule-jersey.xsd">
 
     <!-- Use Mule Requester to get files from FTP -->
      <flow name="jax-rs_in">
@@ -33,6 +32,7 @@ http://jersey.apache.org/core http://jersey.apache.org/schemas/core.xsd">
                                 path="jaxrs_in"
                                 method="POST"
                                 exchange-pattern="one-way"/>
+
          <!--
          <component  class="com.wjelogistics.edi.esb.component.BeforeService"/>
 
@@ -57,7 +57,7 @@ http://jersey.apache.org/core http://jersey.apache.org/schemas/core.xsd">
          <component class=""  />
         -->
          <jersey:resources>
-             <component class=""/>
+             <component class="com.wjelogistics.edi.esb.service.MuleJaxRS"/>
          </jersey:resources>
 
         <amqp:outbound-endpoint connector-ref="defaultAmqpConnector" queueDurable="true"
