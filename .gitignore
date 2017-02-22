@@ -30,3 +30,7 @@ out
 dashboard-logs
 npm-debug.log
 .vscode
+
+### eclipse ###
+*.classpath
+*.project
