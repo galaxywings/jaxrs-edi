@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db"
+      xmlns:http="http://www.mulesoft.org/schema/mule/http"
+      xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:amqp="http://www.mulesoft.org/schema/mule/amqp"
+      xmlns:ftp="http://www.mulesoft.org/schema/mule/ftp"
+      xmlns:redis="http://www.mulesoft.org/schema/mule/redis"
+      xmlns:json="http://www.mulesoft.org/schema/mule/json"
+      xmlns:spring="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:script="http://www.mulesoft.org/schema/mule/core"
+      xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+      xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
+      xmlns:mulerequester="http://www.mulesoft.org/schema/mule/mulerequester"
+      xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:jersey="http://www.mulesoft.org/schema/mule/jersey"
+      xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/amqp http://www.mulesoft.org/schema/mule/amqp/current/mule-amqp.xsd
+http://www.mulesoft.org/schema/mule/redis http://www.mulesoft.org/schema/mule/redis/current/mule-redis.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
+http://www.mulesoft.org/schema/mule/ftp http://www.mulesoft.org/schema/mule/ftp/current/mule-ftp.xsd
+http://www.mulesoft.org/schema/mule/mulerequester http://www.mulesoft.org/schema/mule/mulerequester/1.0-SNAPSHOT/mule-mulerequester.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
+http://www.mulesoft.org/schema/mule/jersey  http://www.mulesoft.org/schema/mule/jersey/current/mule-jersey.xsd
+http://jersey.apache.org/core http://jersey.apache.org/schemas/core.xsd">
+
+    <!-- Use Mule Requester to get files from FTP -->
+     <flow name="jax-rs_in">
+      <http:inbound-endpoint host="${http.host}"
+                                port="${http.port}"
+                                path="jaxrs_in"
+                                method="POST"
+                                exchange-pattern="one-way"/>
+         <!--
+         <component  class="com.wjelogistics.edi.esb.component.BeforeService"/>
+
+        <mulerequester:request-collection config-ref="Mule_Requester" count="-1"
+                                          resource="ftp://#[flowVars.user]:#[flowVars.password]@#[flowVars.host]:#[flowVars.port]/#[flowVars.path]/?connector=FTPConfig"/>
+
+        <expression-filter expression="#[payload != empty]"/>
+        -->
+        <!-- https://docs.mulesoft.com/mule-user-guide/v/3.8/splitter-flow-control-reference -->
+         <!--
+        <collection-splitter/>
+
+        <set-property propertyName="MULE_CORRELATION_ID" value="#[message.correlationId + '-'
+         + message.correlationSequence]"/>
+
+        <set-session-variable variableName="originalFilename" value="#[message.inboundProperties.originalFilename]" />
+
+        <expression-filter expression="#[sessionVars.WUJIE_PROCESS_SEQ != empty]"/>
+
+        <component class="com.wjelogistics.edi.esb.component.AfterService"/>
+
+         <component class=""  />
+        -->
+         <jersey:resources>
+             <component class=""/>
+         </jersey:resources>
+
+        <amqp:outbound-endpoint connector-ref="defaultAmqpConnector" queueDurable="true"
+                                queueName="jaxin"/>
+
+        <exception-strategy ref="SentToQueue_Strategy"/>
+    </flow>
+
+</mule>
