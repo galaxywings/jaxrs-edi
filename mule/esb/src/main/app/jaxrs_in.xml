@@ -12,7 +12,7 @@
       xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
       xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
       xmlns:mulerequester="http://www.mulesoft.org/schema/mule/mulerequester"
-      xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:jersey="http://www.mulesoft.org/schema/mule/jersey"
+      xmlns:jersey="http://www.mulesoft.org/schema/mule/jersey"
       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
@@ -21,17 +21,19 @@ http://www.mulesoft.org/schema/mule/redis http://www.mulesoft.org/schema/mule/re
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
 http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
 http://www.mulesoft.org/schema/mule/ftp http://www.mulesoft.org/schema/mule/ftp/current/mule-ftp.xsd
-http://www.mulesoft.org/schema/mule/mulerequester http://www.mulesoft.org/schema/mule/mulerequester/1.0-SNAPSHOT/mule-mulerequester.xsd
+http://www.mulesoft.org/schema/mule/mulerequester
+http://www.mulesoft.org/schema/mule/mulerequester/1.0-SNAPSHOT/mule-mulerequester.xsd
 http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
-http://www.mulesoft.org/schema/mule/jersey  http://www.mulesoft.org/schema/mule/jersey/current/mule-jersey.xsd">
+http://www.mulesoft.org/schema/mule/jersey http://www.mulesoft.org/schema/mule/jersey/current/mule-jersey.xsd">
 
     <!-- Use Mule Requester to get files from FTP -->
      <flow name="jax-rs_in">
-      <http:inbound-endpoint host="${http.host}"
-                                port="${http.port}"
-                                path="jaxrs_in"
-                                method="POST"
-                                exchange-pattern="one-way"/>
+         <http:listener config-ref="HTTP_Listener_Configuration" path="/jaxrs_in" />
+         <!--<http:inbound-endpoint host="${http.host}"-->
+                                <!--port="${http.port}"-->
+                                <!--path="jaxrs_in"-->
+                                <!--method="POST"-->
+                                <!--exchange-pattern="one-way"/>-->
 
          <!--
          <component  class="com.wjelogistics.edi.esb.component.BeforeService"/>
