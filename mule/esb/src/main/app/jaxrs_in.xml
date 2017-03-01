@@ -28,7 +28,8 @@ http://www.mulesoft.org/schema/mule/jersey http://www.mulesoft.org/schema/mule/j
 
     <!-- Use Mule Requester to get files from FTP -->
      <flow name="jax-rs_in">
-         <http:listener config-ref="HTTP_Listener_Configuration" path="/jaxrs_in" />
+         <http:listener config-ref="HTTP_Listener_Configuration" path="/*"  doc:name="HTTP"/>
+         <logger message="#[payload]"/>
          <!--<http:inbound-endpoint host="${http.host}"-->
                                 <!--port="${http.port}"-->
                                 <!--path="jaxrs_in"-->
@@ -62,10 +63,10 @@ http://www.mulesoft.org/schema/mule/jersey http://www.mulesoft.org/schema/mule/j
              <component class="com.wjelogistics.edi.esb.service.MuleJaxRS"/>
          </jersey:resources>
 
-        <amqp:outbound-endpoint connector-ref="defaultAmqpConnector" queueDurable="true"
-                                queueName="jaxin"/>
+         <!--<http:outbound-endpoint />-->
+        <!--<amqp:outbound-endpoint connector-ref="defaultAmqpConnector" queueDurable="true"  queueName="test12"/>-->
+        <!--<exception-strategy ref="SentToQueue_Strategy"/>-->
 
-        <exception-strategy ref="SentToQueue_Strategy"/>
     </flow>
 
 </mule>
