@@ -7,9 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>callService complex type锟斤拷 Java 锟洁。
+ * <p>callService complex type的 Java 类。
  * 
- * <p>锟斤拷锟斤拷模式片锟斤拷指锟斤拷锟斤拷锟斤拷锟节达拷锟斤拷锟叫碉拷预锟斤拷锟斤拷锟捷★拷
+ * <p>以下模式片段指定包含在此类中的预期内容。
  * 
  * <pre>
  * &lt;complexType name="callService"&gt;
@@ -43,7 +43,7 @@ public class CallService {
     protected String arg3;
 
     /**
-     * 锟斤拷取arg0锟斤拷锟皆碉拷值锟斤拷
+     * 获取arg0属性的值。
      * 
      * @return
      *     possible object is
@@ -55,7 +55,7 @@ public class CallService {
     }
 
     /**
-     * 锟斤拷锟斤拷arg0锟斤拷锟皆碉拷值锟斤拷
+     * 设置arg0属性的值。
      * 
      * @param value
      *     allowed object is
@@ -67,7 +67,7 @@ public class CallService {
     }
 
     /**
-     * 锟斤拷取arg1锟斤拷锟皆碉拷值锟斤拷
+     * 获取arg1属性的值。
      * 
      * @return
      *     possible object is
@@ -79,7 +79,7 @@ public class CallService {
     }
 
     /**
-     * 锟斤拷锟斤拷arg1锟斤拷锟皆碉拷值锟斤拷
+     * 设置arg1属性的值。
      * 
      * @param value
      *     allowed object is
@@ -91,7 +91,7 @@ public class CallService {
     }
 
     /**
-     * 锟斤拷取arg2锟斤拷锟皆碉拷值锟斤拷
+     * 获取arg2属性的值。
      * 
      * @return
      *     possible object is
@@ -103,7 +103,7 @@ public class CallService {
     }
 
     /**
-     * 锟斤拷锟斤拷arg2锟斤拷锟皆碉拷值锟斤拷
+     * 设置arg2属性的值。
      * 
      * @param value
      *     allowed object is
@@ -115,7 +115,7 @@ public class CallService {
     }
 
     /**
-     * 锟斤拷取arg3锟斤拷锟皆碉拷值锟斤拷
+     * 获取arg3属性的值。
      * 
      * @return
      *     possible object is
@@ -127,7 +127,7 @@ public class CallService {
     }
 
     /**
-     * 锟斤拷锟斤拷arg3锟斤拷锟皆碉拷值锟斤拷
+     * 设置arg3属性的值。
      * 
      * @param value
      *     allowed object is

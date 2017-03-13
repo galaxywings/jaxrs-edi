@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:http="http://www.mulesoft.org/schema/mule/http"
+      xmlns:spring="http://www.springframework.org/schema/beans"
+      xmlns:redis="http://www.mulesoft.org/schema/mule/redis"
+      xmlns:amqp="http://www.mulesoft.org/schema/mule/amqp"
+      xmlns:json="http://www.mulesoft.org/schema/mule/json"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+      http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+      http://www.mulesoft.org/schema/mule/redis http://www.mulesoft.org/schema/mule/redis/current/mule-redis.xsd
+      http://www.mulesoft.org/schema/mule/amqp http://www.mulesoft.org/schema/mule/amqp/current/mule-amqp.xsd
+      http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+
+    <!--<flow name="scheduleConsumer">-->
+        <!--&lt;!&ndash;<http:listener config-ref="HTTP_Listener_Configuration" path="/dashboard/schedules.json" />&ndash;&gt;-->
+
+        <!--&lt;!&ndash;<set-payload value="#[Thread.currentThread().getContextClassLoader().getResourceAsStream('schedules.json')]"/>&ndash;&gt;-->
+        <!--&lt;!&ndash;<set-property propertyName="Content-Type" value="application/json" />&ndash;&gt;-->
+        <!--<poll>-->
+            <!--<fixed-frequency-scheduler frequency="${scheduler.beat.interval}" timeUnit="SECONDS" startDelay="5"/>-->
+        <!--</poll>-->
+        <!--<exception-strategy ref="SentToQueue_Strategy" />-->
+    <!--</flow>-->
+
+    <!-- Scheduler Beater -->
+    <flow name="scheduleConsumer">
+        <poll>
+            <fixed-frequency-scheduler frequency="${scheduler.beat.interval}" timeUnit="SECONDS" startDelay="5"/>
+            <component  class="com.wjelogistics.edi.esb.component.CallNbportService"/>
+        </poll>
+
+        <!--<expression-filter expression="#[payload != empty]"/>-->
+        <!--&lt;!&ndash; https://docs.mulesoft.com/mule-user-guide/v/3.8/splitter-flow-control-reference &ndash;&gt;-->
+        <!--<collection-splitter />-->
+
+        <amqp:outbound-endpoint connector-ref="defaultAmqpConnector"
+                                queueName="configurator.inbox" queueDurable="true"/>
+
+        <exception-strategy ref="SentToQueue_Strategy" />
+    </flow>
+</mule>
