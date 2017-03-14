@@ -36,7 +36,7 @@
         <!--<collection-splitter />-->
 
         <amqp:outbound-endpoint connector-ref="defaultAmqpConnector"
-                                queueName="configurator.inbox" queueDurable="true"/>
+                                queueName="YT_inbox" queueDurable="true"/>
 
         <exception-strategy ref="SentToQueue_Strategy" />
     </flow>
