@@ -24,10 +24,10 @@ http://www.mulesoft.org/schema/mule/mulerequester http://www.mulesoft.org/schema
 http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd">
 
     <flow name="messageOutbound">
-        <amqp:inbound-endpoint queueName="YT.inbox" queueDurable="true"
+        <amqp:inbound-endpoint queueName="YT_inbox" queueDurable="true"
                                connector-ref="defaultAmqpConnector"/>
 
-        <component class="com.wjelogistics.edi.esb.component.BeforeService" />
+        <component class="com.wjelogistics.edi.esb.component.ConsumeNbportMessage" />
 
         <!-- https://docs.mulesoft.com/mule-user-guide/v/3.8/ftp-transport-reference -->
 
