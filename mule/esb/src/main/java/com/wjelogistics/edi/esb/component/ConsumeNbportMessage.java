@@ -20,7 +20,7 @@ public class ConsumeNbportMessage implements org.mule.api.lifecycle.Callable {
                 new TypeReference<Map<String, Object>>() {});
 
         String val = (String) payloadMap.get("test");
-        System.out.println(val);
+//        System.out.println(val);
         return null;
     }
 }

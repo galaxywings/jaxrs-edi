@@ -38,12 +38,12 @@ public class CallNbportService implements Callable {
         // java.lang.String _callService_arg1 = "";
         // java.lang.String _callService_arg2 = "";
         // java.lang.String _callService_arg3 = "";
-//        String _callService__return = port.callService(usr, pwd, serviceID, applyData);
+        String _callService__return = port.callService(usr, pwd, serviceID, applyData);
 //        System.out.println("callService.result=" + _callService__return);
 
 
         Map<String, Object> payloadMap = Maps.newHashMap();
-        payloadMap.put("test","test");
+        payloadMap.put("message","m");
 
 
         return ObjectMapperFactory.get().writeValueAsString(payloadMap);
