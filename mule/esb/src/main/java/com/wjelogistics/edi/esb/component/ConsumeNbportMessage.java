@@ -1,6 +1,8 @@
 package com.wjelogistics.edi.esb.component;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.google.gson.Gson;
+import com.wjelogistics.edi.esb.model.entity.VesselInfo;
 import com.wjelogistics.edi.esb.util.ObjectMapperFactory;
 import org.mule.api.MuleEventContext;
 import org.mule.api.MuleMessage;
@@ -19,8 +21,11 @@ public class ConsumeNbportMessage implements org.mule.api.lifecycle.Callable {
         Map<String, Object> payloadMap = ObjectMapperFactory.get().readValue(message.getPayloadAsBytes(),
                 new TypeReference<Map<String, Object>>() {});
 
-        String val = (String) payloadMap.get("test");
-//        System.out.println(val);
+        String val = (String) payloadMap.get("message");
+
+        Gson gson = new Gson();
+        VesselInfo vesselInfo = gson.fromJson(val,VesselInfo.class);
+        System.out.println(vesselInfo.getVoyage());
         return null;
     }
 }

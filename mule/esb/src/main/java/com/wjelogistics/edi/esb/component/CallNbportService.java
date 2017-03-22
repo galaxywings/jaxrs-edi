@@ -43,7 +43,7 @@ public class CallNbportService implements Callable {
 
 
         Map<String, Object> payloadMap = Maps.newHashMap();
-        payloadMap.put("message","m");
+        payloadMap.put("message",_callService__return);
 
 
         return ObjectMapperFactory.get().writeValueAsString(payloadMap);
