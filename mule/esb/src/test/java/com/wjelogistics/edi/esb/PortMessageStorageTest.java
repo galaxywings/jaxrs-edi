@@ -459,7 +459,6 @@ public class PortMessageStorageTest {
                 ctnInfoMapper.insert(ctnInfo);
             }
 
-
             vesselInfo.setId(vessle_id);
             vesselInfoMapper.insert(vesselInfo);
             session.commit();
