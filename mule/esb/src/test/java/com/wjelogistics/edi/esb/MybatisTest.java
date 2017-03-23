@@ -9,6 +9,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.UUID;
 
 /**
  * Created by wangwy on 2017/3/22.
@@ -25,6 +26,12 @@ public class MybatisTest {
             VesselInfoMapper mapper = session.getMapper(VesselInfoMapper.class);
             VesselInfo obj = mapper.selectByPrimaryKey("1");
             System.out.println(obj.getVoyage());
+            VesselInfo vessel = new VesselInfo();
+            vessel.setId(UUID.randomUUID().toString());
+            vessel.setArrivalTime("1111");
+            mapper.insert(vessel);
+            session.commit();
+            System.out.println("inserted");
         }catch(Exception e){
             e.printStackTrace();
         }finally{

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+<!-- 数据库驱动包位置 -->  
+  <classPathEntry  
+        location="C:\Users\wangwy.WJE-LOGISTICS\.m2\repository\mysql\mysql-connector-java\5.1.29\mysql-connector-java-5.1.29.jar" />  
+  <context id="context1">
+    <jdbcConnection connectionURL="jdbc:mysql://172.41.176.34:3306/edi" driverClass="com.mysql.jdbc.Driver" password="wujie123" userId="root" />
+    <javaModelGenerator targetPackage="com.wjelogistics.edi.esb.model.entity" targetProject="mule/esb/src/main/java" />
+    <sqlMapGenerator targetPackage="com.wjelogistics.edi.esb.model.mapper" targetProject="mule/esb/src/main/resources" />
+    <javaClientGenerator targetPackage="com.wjelogistics.edi.esb.model.dao" targetProject="mule/esb/src/main/java" type="XMLMAPPER" />
+    <table schema="edi" tableName="ctn_info"></table>
+    <table schema="edi" tableName="ctn_status"></table>
+    <table schema="edi" tableName="vessel_info"></table>
+  </context>
+</generatorConfiguration>
