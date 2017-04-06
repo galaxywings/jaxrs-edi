@@ -28,7 +28,7 @@
     <flow name="scheduleConsumer">
         <poll>
             <fixed-frequency-scheduler frequency="${scheduler.beat.interval}" timeUnit="SECONDS" startDelay="5"/>
-            <component  class="com.wjelogistics.edi.esb.component.CallNbportService"/>
+            <component  class="com.wjelogistics.edi.esb.component.NbportLogisticsService"/>
         </poll>
 
         <!--<expression-filter expression="#[payload != empty]"/>-->
