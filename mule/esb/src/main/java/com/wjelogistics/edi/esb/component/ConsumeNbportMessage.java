@@ -8,6 +8,7 @@ import com.wjelogistics.edi.esb.model.dao.VesselInfoMapper;
 import com.wjelogistics.edi.esb.model.entity.CtnInfo;
 import com.wjelogistics.edi.esb.model.entity.CtnStatus;
 import com.wjelogistics.edi.esb.model.entity.VesselInfo;
+import com.wjelogistics.edi.esb.service.impl.DatAnalyzeService;
 import com.wjelogistics.edi.esb.service.impl.StatusAnalyzeService;
 import com.wjelogistics.edi.esb.util.ObjectMapperFactory;
 import org.apache.ibatis.io.Resources;
@@ -47,7 +48,9 @@ public class ConsumeNbportMessage implements org.mule.api.lifecycle.Callable {
             String result = statusAnalyzeService.analyze();
             System.out.println(result);
         }else if(serviceName.equals(QUERY_LOGISTICS)){
-
+            DatAnalyzeService datAnalyzeService = new DatAnalyzeService(ServiceReturn);
+            String result = datAnalyzeService.analyze();
+            System.out.println(result);
         }
 
 //        Gson gson = new Gson();

@@ -1,5 +1,22 @@
 package com.wjelogistics.edi.esb.service.impl;
 
+import com.google.gson.Gson;
+import com.wjelogistics.edi.esb.model.dao.CtnInfoMapper;
+import com.wjelogistics.edi.esb.model.dao.CtnStatusMapper;
+import com.wjelogistics.edi.esb.model.dao.DatResultMapper;
+import com.wjelogistics.edi.esb.model.dao.VesselInfoMapper;
+import com.wjelogistics.edi.esb.model.entity.CtnInfo;
+import com.wjelogistics.edi.esb.model.entity.CtnStatus;
+import com.wjelogistics.edi.esb.model.entity.DatResult;
+import com.wjelogistics.edi.esb.model.entity.VesselInfo;
+import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+
+import java.io.InputStream;
+import java.util.UUID;
+
 /**
  * Created by wangwy on 2017/3/28.
  */
@@ -7,11 +24,33 @@ public class DatAnalyzeService {
     private  String result;
 
 
-    public void StatusAnalyzeService(String result){
+    public DatAnalyzeService(String result){
         this.result = result;
     }
 
-    public void  analyze(){
+    public String analyze () throws Exception{
+        Gson gson = new Gson();
+        DatResult datResult = gson.fromJson(result,DatResult.class);
 
+        String resource = "mybatis-config.xml";
+        InputStream inputStream = Resources.getResourceAsStream(resource);
+        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+        SqlSession session = sqlSessionFactory.openSession();
+
+        try {
+            DatResultMapper datResultMapper = session.getMapper(DatResultMapper.class);
+
+            String id = UUID.randomUUID().toString();
+
+            datResult.setId(id);
+            datResultMapper.insert(datResult);
+            session.commit();
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            session.close();
+        }
+
+        return "1";
     }
 }
