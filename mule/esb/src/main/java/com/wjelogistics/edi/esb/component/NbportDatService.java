@@ -31,7 +31,7 @@ public class NbportDatService implements Callable {
         String usr = "WS_WJDS";
         String pwd  = "64a7909b3b3abf538f7fe1f746aa155660d6bfa457b53da44495609845642823";//SHA-256
         String serviceID = "QueryDatResult";
-        String applyData = "{bl_no:'177CNPNPN64247A'}";
+        String applyData = "{bill_no:'177CNPNPN64247A'}";
 
         String _callService__return = port.callService(usr, pwd, serviceID, applyData);
 

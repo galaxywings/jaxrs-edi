@@ -19,6 +19,6 @@
         <mapper resource="com/wjelogistics/edi/esb/model/mapper/CtnInfoMapper.xml"/>
         <mapper resource="com/wjelogistics/edi/esb/model/mapper/CtnStatusMapper.xml"/>
         <mapper resource="com/wjelogistics/edi/esb/model/mapper/VesselInfoMapper.xml"/>
-
+        <mapper resource="com/wjelogistics/edi/esb/model/mapper/DatResultMapper.xml"/>
     </mappers>
 </configuration>

@@ -46,11 +46,11 @@ public class ConsumeNbportMessage implements org.mule.api.lifecycle.Callable {
         if(serviceName.equals(QUERY_LOGISTICS)){
             StatusAnalyzeService statusAnalyzeService = new StatusAnalyzeService(ServiceReturn);
             String result = statusAnalyzeService.analyze();
-            System.out.println(result);
-        }else if(serviceName.equals(QUERY_LOGISTICS)){
+            System.out.println(QUERY_LOGISTICS+"---"+result);
+        }else if(serviceName.equals(QUERY_DAT)){
             DatAnalyzeService datAnalyzeService = new DatAnalyzeService(ServiceReturn);
             String result = datAnalyzeService.analyze();
-            System.out.println(result);
+            System.out.println(QUERY_DAT+"---"+result);
         }
 
 //        Gson gson = new Gson();

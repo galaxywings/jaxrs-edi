@@ -1,5 +1,6 @@
 package com.wjelogistics.edi.esb.service.impl;
 
+import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.wjelogistics.edi.esb.model.dao.CtnInfoMapper;
 import com.wjelogistics.edi.esb.model.dao.CtnStatusMapper;
@@ -15,6 +16,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 import java.io.InputStream;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -30,7 +32,7 @@ public class DatAnalyzeService {
 
     public String analyze () throws Exception{
         Gson gson = new Gson();
-        DatResult datResult = gson.fromJson(result,DatResult.class);
+        List<DatResult> datResultList = gson.fromJson(result,new TypeToken<List<DatResult>>(){}.getType());
 
         String resource = "mybatis-config.xml";
         InputStream inputStream = Resources.getResourceAsStream(resource);
@@ -39,11 +41,11 @@ public class DatAnalyzeService {
 
         try {
             DatResultMapper datResultMapper = session.getMapper(DatResultMapper.class);
-
-            String id = UUID.randomUUID().toString();
-
-            datResult.setId(id);
-            datResultMapper.insert(datResult);
+            for (DatResult datResult:datResultList) {
+                String id = UUID.randomUUID().toString();
+                datResult.setId(id);
+                datResultMapper.insert(datResult);
+            }
             session.commit();
         }catch (Exception e){
             e.printStackTrace();

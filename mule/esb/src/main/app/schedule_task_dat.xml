@@ -25,7 +25,7 @@
     <!--</flow>-->
 
     <!-- Scheduler Beater -->
-    <flow name="scheduleConsumer">
+    <flow name="scheduleConsumerDat">
         <poll>
             <fixed-frequency-scheduler frequency="${scheduler.beat.interval}" timeUnit="SECONDS" startDelay="5"/>
             <component  class="com.wjelogistics.edi.esb.component.NbportDatService"/>

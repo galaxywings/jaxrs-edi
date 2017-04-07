@@ -1,10 +1,13 @@
 package com.wjelogistics.edi.esb;
 
+import com.google.common.reflect.TypeToken;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.wjelogistics.edi.esb.model.entity.DatResult;
 import com.wjelogistics.edi.esb.model.entity.VesselInfo;
+
+import java.util.List;
 
 /**
  * Created by wangwy on 2017/3/22.
@@ -413,41 +416,14 @@ public class GsonTest {
 //                "    'voyage': '122W'" +
 //                "}";
 
-        String val = "{" +
-                "    \"agent\": \"CPXH\", " +
-                "    \"agentcode\": \"PENNPO\", " +
-                "    \"billno\": \"177CNPNPN64247A\", " +
-                "    \"compareFlag\": \"N\", " +
-                "    \"compareTime\": \"20170328132321\", " +
-                "    \"containerno\": \"TCNU8990965\", " +
-                "    \"customFlag\": \"Y\", " +
-                "    \"customRemark\": \"\", " +
-                "    \"envessel\": \"MAERSKEDIRNE\", " +
-                "    \"id\": 12243041, " +
-                "    \"ifcsumFlag\": \"Y\", " +
-                "    \"linecode\": \"\", " +
-                "    \"matou\": \"BLCT3\", " +
-                "    \"matouFlag\": \"Y\", " +
-                "    \"matouRemark\": \"\", " +
-                "    \"passFlag\": \"Y\", " +
-                "    \"reason\": \"\", " +
-                "    \"receivetime\": \"20170328133054\", " +
-                "    \"remark\": \"放行成功\", " +
-                "    \"sendEnable\": \"N\", " +
-                "    \"sendFlag\": \"N\", " +
-                "    \"sendTime\": \"\", " +
-                "    \"sizetype\": \"40HC\", " +
-                "    \"sldFlag\": \"N\", " +
-                "    \"sldRemark\": \"缺少电子口岸三联单。\", " +
-                "    \"unvessel\": \"UN9502867\", " +
-                "    \"voyage\": \"712W\"" +
-                "}";
+        String val = "[{\"agent\":\"CPXH\",\"agentcode\":\"PENNPO\",\"billno\":\"177CNPNPN64247A\",\"compareFlag\":\"N\",\"compareTime\":\"20170328132321\",\"containerno\":\"TCNU8990965\",\"customFlag\":\"Y\",\"customRemark\":\"\",\"envessel\":\"MAERSKEDIRNE\",\"id\":12243041,\"ifcsumFlag\":\"Y\",\"linecode\":\"\",\"matou\":\"BLCT3\",\"matouFlag\":\"Y\",\"matouRemark\":\"\",\"passFlag\":\"Y\",\"reason\":\"\",\"receivetime\":\"20170328133054\",\"remark\":\"放行成功\",\"sendEnable\":\"N\",\"sendFlag\":\"N\",\"sendTime\":\"\",\"sizetype\":\"40HC\",\"sldFlag\":\"N\",\"sldRemark\":\"缺少电子口岸三联单。\",\"unvessel\":\"UN9502867\",\"voyage\":\"712W\"}]";
         Gson gson =  new GsonBuilder()
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                 .create();
 //        VesselInfo vesselInfo = gson.fromJson(val,VesselInfo.class);
-        DatResult datResult = gson.fromJson(val,DatResult.class);
-        System.out.println(datResult.getVoyage());
-
+        List<DatResult> datResult = gson.fromJson(val,new TypeToken<List<DatResult>>(){}.getType());
+        for (DatResult d:datResult) {
+            System.out.println(d.getVoyage());
+        }
     }
 }
